@@ -4,15 +4,84 @@ import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
 import Plot from 'react-plotly.js';
-       
+
+/*
+class Title extends Component{
+// The forwardRef is important!!
+// Dropdown needs access to the DOM node in order to position the Menu
+
+
+// forwardRef again here!
+// Dropdown needs access to the DOM of the Menu to measure it
+
+
+render() { 
+  const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+  <a
+    href=""
+    ref={ref}
+    onClick={(e) => {
+      e.preventDefault();
+      onClick(e);
+    }}
+  >
+    {children}
+    &#x25bc;
+  </a>
+));
+const CustomMenu = React.forwardRef(
+  ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
+    const [value, setValue] = useState('');
+
+    return (
+      <div
+        ref={ref}
+        style={style}
+        className={className}
+        aria-labelledby={labeledBy}
+      >
+        <FormControl
+          autoFocus
+          className="mx-3 my-2 w-auto"
+          placeholder="Type to filter..."
+          onChange={(e) => setValue(e.target.value)}
+          value={value}
+        />
+        <ul className="list-unstyled">
+          {React.Children.toArray(children).filter(
+            (child) =>
+              !value || child.props.children.toLowerCase().startsWith(value),
+          )}
+        </ul>
+      </div>
+    );
+  },
+);
+return(
+  <Dropdown>
+    <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+      Custom toggle
+    </Dropdown.Toggle>
+
+    <Dropdown.Menu as={CustomMenu}>
+      <Dropdown.Item eventKey="1">Red</Dropdown.Item>
+      <Dropdown.Item eventKey="2">Blue</Dropdown.Item>
+      <Dropdown.Item eventKey="3" active>Orange</Dropdown.Item>
+      <Dropdown.Item eventKey="1">Red-Orange</Dropdown.Item>
+    </Dropdown.Menu>
+  </Dropdown>)
+}
+}*/
 class Visualizer extends Component{
   render(){
-    const Atomic_coords = this.props.Coords['3D_structure_atomic_coords'];
+    const Atomic_coords = this.props.Coords['data']['attributes']['sites']; 
     var data = {
-      x: Object.keys(Atomic_coords).map(i => Atomic_coords[i].x),
-      y: Object.keys(Atomic_coords).map(i => Atomic_coords[i].y),
-      z: Object.keys(Atomic_coords).map(i => Atomic_coords[i].z),
+      x: Object.keys(Atomic_coords).map(i => Atomic_coords[i].position[0]),
+      y: Object.keys(Atomic_coords).map(i => Atomic_coords[i].position[1]),
+      z: Object.keys(Atomic_coords).map(i => Atomic_coords[i].position[2]),
       mode: 'markers',
 	    marker: {    
 	    	size: 12,
@@ -35,25 +104,9 @@ class Visualizer extends Component{
           <h2> Visualizer</h2>
           <div> Coordinates: <span className="blue">{this.props.CoordsBox}</span></div>
           <Plot
-             data={[
-               {
-                 x: Object.keys(Atomic_coords).map(i => Atomic_coords[i].x),
-                 y: Object.keys(Atomic_coords).map(i => Atomic_coords[i].y),
-                 z: Object.keys(Atomic_coords).map(i => Atomic_coords[i].z),
-                 type: 'scatter3d',
-                 mode: 'markers',
-                 marker: {size: 12,line: {color: 'rgba(217, 217, 217, 0.14)',width: 0.5}},
-               },
-
-             ]}
-
-             layout={ {margin:{l:0,r:0,b:0,t:0 } } }
-
+             data={[data,]}
+             layout={ layout }
             />
-          
-          
-
-          
         </div>);
 
     }
@@ -78,10 +131,11 @@ class InfoBox extends Component{
 
 class CoordsBox extends Component{
   
-  
   render(){
-    const Cell_coords = this.props.CoordsBox['3D_structure_cell'];
-    const Atomic_coords = this.props.CoordsBox['3D_structure_atomic_coords'];   
+    const Cell_coords = this.props.CoordsBox['data']['attributes']['cell'];
+    const Atomic_coords = this.props.CoordsBox['data']['attributes']['sites'];
+    //console.log('!');
+    //console.log(Cell_coords);   
         return (
         <div>
           <div>
@@ -96,13 +150,15 @@ class CoordsBox extends Component{
                 </tr>
               </thead>
               <tbody>
-              {Object.keys(Cell_coords).map(i => { return(
+              {
+                
+                Object.keys(Cell_coords).map(i => { return(
                 <tr>
-                  <td>{i}</td>
-                  <td>{Cell_coords[i].x}</td>
-                  <td>{Cell_coords[i].y}</td>
-                  <td>{Cell_coords[i].z}</td>
-                </tr>)})
+                  <td>v{parseInt(i)+1}</td>
+                  <td>{Cell_coords[i][0]}</td>
+                  <td>{Cell_coords[i][1]}</td>
+                  <td>{Cell_coords[i][2]}</td>
+                </tr>);})
                 }
               </tbody>
             </Table>
@@ -119,10 +175,10 @@ class CoordsBox extends Component{
               <tbody>
               {Object.keys(Atomic_coords).map(i => { return(
                 <tr>
-                  <td>{Atomic_coords[i].Kind_label}</td>
-                  <td>{Atomic_coords[i].x}</td>
-                  <td>{Atomic_coords[i].y}</td>
-                  <td>{Atomic_coords[i].z}</td>
+                  <td>{Atomic_coords[i].kind_name}</td>
+                  <td>{Atomic_coords[i].position[0]}</td>
+                  <td>{Atomic_coords[i].position[1]}</td>
+                  <td>{Atomic_coords[i].position[2]}</td>
                 </tr>)})
                 }
               </tbody>
@@ -139,61 +195,73 @@ class CoordsBox extends Component{
 //<div>Coordinates: <span className="blue">{this.props.CoordsBox['3D_structure_atomic_coords'].a1.y}</span></div>
 
 class DetailPage extends Component{
-
-    constructor(props) {
-        super(props);
-        this.state =  {
-        isLoaded: false,
-        compound: null,
-        info: [],
-        //cell_vectors: [],
-        coords: [],
-        error: null
-    }
-}
-componentDidMount(){
-  Promise.all([  
-    fetch("https://dev-www.materialscloud.org/mcloud/api/v2/discover/3dd/compounds/Sb2Zr").then(res => res.json()),
-    fetch("Sb2Zr_CoordsBox.json", {headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}}).then(res => res.json())
-  ]).then((allResponses) => {
-      const info_data = allResponses[0];
-      const coords_data = allResponses[1];
-      //console.log("!");   
-      //console.log(coords_data);
-    return {"info_d":info_data, "coords_d":coords_data};
-  })
-        .then(
-          (result) => {    
-             const compound_curr = Object.keys(result.info_d.data)[0];
-             //const cell_vectors_curr = result.coords_d.data[compound_curr]["3D_structure_cell"];
-              //for (let i = 0; i < 5; i++){
-
-              //}
-            this.setState({
-            isLoaded: true,
-              info: result.info_d, 
-              compound: compound_curr,
-              coords: result.coords_d
-              //cell_vectors
-            });
-          },
-          (error) => {
-            this.setState({
-              isLoaded: true,
-              error
-            });
-          }
-        )
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      info: [],
+      coords: [],
+      xrd_plot_params: {"fit_type": "gauss", "FWHM":0.4},
+      xrd_pattern:[],
+      page_details: []
+    };
   }
+
+componentDidMount(){
+const url = this.props.page_details_link;
+
+const result = fetch(url, { method: 'get' })
+  .then(response => response.json()) // pass the data as promise to next then block
+  .then(data => {
+    const compounds_url = data.data.compounds_url;
+  
+    return Promise.all([fetch(`${compounds_url}/${this.props.compound}`).then(res => res.json()),
+    fetch(this.props.compound+"_CoordBox_correct.json", {
+      headers: {
+        'Content-Type': 'application/json', 
+        'Accept': 'application/json'
+      }
+    }
+    ).then(res => res.json()),
+    fetch(`xrd_${this.props.compound}_CuKa.json`, {
+      headers: {
+        'Content-Type': 'application/json', 
+        'Accept': 'application/json'
+      }
+    }
+    ).then(res => res.json())]); // make a 2nd request and return a promise
+  })
+
+// I'm using the result const to show that you can continue to extend the chain from the returned promise
+result.then(r => {
+  //console.log(r[1]);
+  this.setState({
+    isLoaded: true,
+    info: r[0],
+    coords: r[1],
+    xrd_pattern: r[2]
+  });
+}, (error) => {
+  this.setState({
+    isLoaded: true,
+    error
+  });
+}
+);
+
+  }
+
   
  render() {
-    //var compound = this.props.compound;
 
-    // get JSON data for this compound
-    //var data={"data":{"AgB2":[{"info":{"bravais_lattice":"hP","formula":"AgB2","spacegroup_international":"P6/mmm","spacegroup_number":191},"properties":{"total_energy":{"uuid":"9004a082-b699-4375-bb78-a2edd73533c2","value":-4081.72}},"source":[{"source_database":"MPDS","source_identifier":"S528990","source_url":"https://mpds.io/#entry/S528990","source_version":"1.0.0"}],"uuid_structure":"5fabc153-e6c4-4279-ab3e-01f5c0cb9096"}],"metadata":{"info":{"bravais_lattice":{"default_value":null,"description":"Bravais lattice","label":"Bravais lattice","order":4,"units":""},"formula":{"default_value":null,"description":"Chemical formula","label":"Formula","order":1,"units":""},"spacegroup_international":{"default_value":null,"description":"Spacegroup international","label":"Spacegroup international","order":2,"units":""},"spacegroup_number":{"default_value":null,"description":"Spacegroup number","label":"Spacegroup number","order":3,"units":""}},"order":["info","source","properties"],"properties":{"absolute_magnetization":{"default_value":"N/A","description":"Absolute magnetization","label":"Absolute magnetization","order":3,"units":"\u03bcB/cell"},"total_energy":{"default_value":null,"description":"Total energy","label":"Total energy","order":1,"units":"eV/cell"},"total_magnetization":{"default_value":"N/A","description":"Total magnetization","label":"Total magnetization","order":2,"units":"\u03bcB/cell"}},"source":{}}},"method":"GET","path":"/api/v2/discover/3dd/compounds/AgB2","url":"https://dev-www.materialscloud.org/mcloud/api/v2/discover/3dd/compounds/AgB2","url_root":"https://dev-www.materialscloud.org/mcloud/"};
-
-    // show
-    const { isLoaded, compound, data, error } = this.state;
+    const compound = this.props.compound;
+    const isLoaded = this.state.isLoaded;
+    const info = this.state.info;
+    const coords = this.state.coords;
+    const xrd_pattern = this.state.xrd_pattern;
+    const xrd_params = this.state.xrd_plot_params;
+    const error = this.state.error;
     if (error) {
       return <div>Error: {error.message}</div>;
     } else if (!isLoaded) {
@@ -201,20 +269,21 @@ componentDidMount(){
     } else {
         return (
         <div className="details-page" > 
-          <h1>Compound: <span>{this.state.compound}</span></h1>
+          <h1>Compound: <span>{compound}</span></h1>
           <Container fluid>
             <Row>
-              <Col><Visualizer Coords={this.state.coords['data'][this.state.compound][0]}></Visualizer></Col>
+              <Col><Visualizer Coords={coords}></Visualizer></Col>
               <Col>
                 {<InfoBox 
-                  bravaisLattice={this.state.info['data'][this.state.compound][0]['info']['bravais_lattice']} 
-                  spacegroupInternational = {this.state.info['data'][this.state.compound][0]['info']['spacegroup_international']}
-                  spacegroupNumber = {this.state.info['data'][this.state.compound][0]['info']['spacegroup_number']}
-                  formula = {this.state.info['data'][this.state.compound][0]['info']['formula']}
+                  bravaisLattice={info['data'][compound][0]['info']['bravais_lattice']} 
+                  spacegroupInternational = {info['data'][compound][0]['info']['spacegroup_international']}
+                  spacegroupNumber = {info['data'][compound][0]['info']['spacegroup_number']}
+                  formula = {info['data'][compound][0]['info']['formula']}
                 />}
-                <XrdPlot />
+                <XrdPlot xrdPattern={xrd_pattern}
+                         xrdParameters={xrd_params} />
               </Col>
-            <Col><CoordsBox CoordsBox={this.state.coords['data'][this.state.compound][0]}></CoordsBox></Col>
+            <Col><CoordsBox CoordsBox={coords}></CoordsBox></Col>
             
             
             </Row>
@@ -226,5 +295,26 @@ componentDidMount(){
 
 }
 
+class ThreeDimDataBase extends Component{
+  
+  render(){
+    //console.log('!');
+    //console.log(this.state.page_details);
+    const info_page_link = "https://dev-www.materialscloud.org/mcloud/api/v2/discover/3dd/info";
+    const compound = "Sb2Zr";
+    return(
+    <div className="3dcd">
+        <div className="3dcd-details_page">
+        <DetailPage 
+            page_details_link={info_page_link}
+            compound={compound}
+          />
+          </div>
+      </div>
+    );
+  }
+
+}
+
 //<Col><Visualizer CoordsBox={this.state.coords['data'][this.state.compound][0]}></Visualizer></Col>//
-   export default DetailPage;
+   export default  ThreeDimDataBase; 

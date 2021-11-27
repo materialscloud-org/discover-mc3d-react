@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import Plot from 'react-plotly.js';
-import data from '../data/Sb2Zr_CuKa_fit_gauss_compact.json'
+//import data from '../data/Sb2Zr_CuKa_fit_gauss_compact.json'
 
 class XrdPlot extends Component {
-
+  
   render() {
-
+    const data = {...this.props.xrdPattern, ...this.props.xrdParameters};
+    console.log(data);
     return (
       <div>
       <h3>Simulated X-Ray diffraction pattern</h3>

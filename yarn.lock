@@ -2126,7 +2126,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@popperjs/core@npm:^2.10.1":
+"@popperjs/core@npm:^2.10.1, @popperjs/core@npm:^2.10.2":
   version: 2.10.2
   resolution: "@popperjs/core@npm:2.10.2"
   checksum: 43c189e3eb6d032433512d94761b54fc7cae15957ca5528008813f887a67b5760b949f30a5141b476be2ba5a6c677c91def150f603d2d3e30b5e97a5ae51474e
@@ -10889,6 +10889,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "materialscloud-3d-react@workspace:."
   dependencies:
+    "@popperjs/core": ^2.10.2
     "@testing-library/jest-dom": ^5.11.4
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10
