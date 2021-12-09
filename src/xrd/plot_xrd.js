@@ -1,12 +1,91 @@
 import React, { Component } from 'react'
 import Plot from 'react-plotly.js';
-//import data from '../data/Sb2Zr_CuKa_fit_gauss_compact.json'
+
 
 class XrdPlot extends Component {
+  constructor(props){
+    super(props);
+    this.doFitting = this.doFitting.bind(this);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      xrdPattern: [],
+      hkls: [],
+      wavelength: null,
+      angular_range: [],
+      FWHM: null,
+      fit_type: null,
+    };    
+  }
+  componentDidMount(){
+    console.log("Xrd componentDidMount was called!")
+    const compound = this.props.compound;
+    fetch(`../xrd_${compound}_CuKa.json`, { headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}})
+    .then(res => res.json())
+    .then(
+      r => {
+        this.setState({
+        isLoaded: true,
+        wavelength: r.wavelength,
+        angular_range: r.angular_range,
+        xrdPattern: {peaks_positions:r.peaks_positions,intensities: r.intensities},
+        hkls: extract_hkl(r.hkls),
+        fit_type: "gauss",
+        FWHM: 0.4,
+    });
+  },(error) => {
+    this.setState({
+      isLoaded: true,
+      error
+    });
+  }
+);
+  }
+  doFitting(){
+    var two_thetas = this.state.xrdPattern.peaks_positions;
+    var intensities = this.state.xrdPattern.intensities;
+    var FWHM = this.state.FWHM; 
+    var th_range = this.state.angular_range;
+    
+    var N = 1000; 
+    var fit_type = this.state.fit_type;
+    var x = makeArr(th_range[0], th_range[1], N);
+
+    if (fit_type == "gauss"){
+      var fit = do_gauss_fit(two_thetas, intensities, FWHM, x);
+    } else if (fit_type == "lorentz"){
+      var fit = do_lorentz_fit(two_thetas, intensities, FWHM, x);
+    } else {
+      console.log("Fit type not defined!");
+      return -1;
+    }
+      
+    var curve = fit.curve;
+    var peaks = fit.peaks;
+    return {
+      x: x,
+      curve: curve,
+      peaks: peaks
+    };
+  }
   
   render() {
+    let isLoaded = this.state.isLoaded;
+    let error = this.state.error;
+    const xrd_pattern = this.state.xrdPattern;
+    const hkls = this.state.hkls;
+    const wavelength = this.state.wavelength;
+    const angular_range = this.state.angular_range;
+    const FWHM = this.state.FWHM;
+    const fit_type = this.state.fit_type;
     const data = {...this.props.xrdPattern, ...this.props.xrdParameters};
-    console.log(data);
+
+    if (error) {
+      return <div>Error: {error.message}</div>;
+    } else if (!isLoaded) {
+        return <div>loading...</div>;
+    } else { 
+      const fit = this.doFitting();
     return (
       <div>
       <h3>Simulated X-Ray diffraction pattern</h3>
@@ -18,8 +97,8 @@ class XrdPlot extends Component {
           {
             type: 'scatter',
             mode: 'lines+points',
-            x: do_fitting(data).x,
-            y: do_fitting(data).curve,
+            x: fit.x,
+            y: fit.curve,
             marker: {color: 'red'},
             hoverinfo: "none"
           },
@@ -28,23 +107,23 @@ class XrdPlot extends Component {
             mode: 'markers',
             marker: {color: 'red'},
             marker: { size: 2 },
-            x: data.peaks_positions,
-            y: do_fitting(data).peaks,
+            x: this.state.xrdPattern.peaks_positions,
+            y: fit.peaks,
             hovertemplate: 'hkl: <b>%{text}</b><extra></extra>',
-            text: extract_hkl(data)
-            },
+            text: this.state.hkls
+            }
     
           ]}
 
       
-      layout = { {
-          width: 660,
-          height: 480,
-          //title: 'Sb2Zr_Cu_Ka_fit_gauss',
-          showlegend: false,
-          xaxis: {title: "2\u03F4" + ", degrees"},
-          yaxis: {title: "Intensity, a.u."}
-        } }
+      layout =           { {
+        width: 660,
+        height: 480,
+        //title: 'Sb2Zr_Cu_Ka_fit_gauss',
+        showlegend: false,
+        xaxis: {title: "2\u03F4" + ", degrees"},
+        yaxis: {title: "Intensity, a.u."}
+      } }
       
       
 
@@ -52,7 +131,7 @@ class XrdPlot extends Component {
       </div>
 
     );
-
+    }
   }
 
 }
@@ -142,13 +221,14 @@ function do_lorentz_fit(two_thetas, intensities, FWHM, x){
   };
 }
 
-function do_fitting(plot_data){
-  var two_thetas = plot_data.peaks_positions;
-  var intensities = plot_data.intensities;
-  var FWHM = plot_data.FWHM; 
-  var th_range = plot_data.angular_range;
-  var N = plot_data.number_of_points; 
-  var fit_type = plot_data.fit_type;
+function do_fitting(pattern_data, N=1000){
+  var two_thetas = pattern_data.peaks_positions;
+  var intensities = pattern_data.intensities;
+  var FWHM = pattern_data.FWHM; 
+  var th_range = pattern_data.angular_range;
+  
+  //var N = pattern_data.number_of_points; 
+  var fit_type = pattern_data.fit_type;
   var x = makeArr(th_range[0], th_range[1], N);
   if (fit_type == "gauss"){
     var fit = do_gauss_fit(two_thetas, intensities, FWHM, x);
@@ -161,7 +241,9 @@ function do_fitting(plot_data){
     
   var curve = fit.curve;
   var peaks = fit.peaks;
-  //console.log(peaks);
+  console.log("th_range= ")
+  console.log(th_range);
+  console.log(N);
   return {
     x: x,
     curve: curve,
@@ -169,14 +251,46 @@ function do_fitting(plot_data){
   };
 }
 
-function extract_hkl(plot_data){
+function extract_hkl(plot_data_hkls){
   //var hkl_arr = plot_data.hkls;
   var hkl_list = [];
-  for (let i = 0; i < plot_data.hkls.length; i++){
-  hkl_list.push(plot_data.hkls[i][0]['hkl'].join(''));
+  for (let i = 0; i < plot_data_hkls.length; i++){
+  hkl_list.push(plot_data_hkls[i][0]['hkl'].join(''));
   }
   return hkl_list;
 }
+/*
+{[
+
+          {
+            type: 'scatter',
+            mode: 'lines+points',
+            x: do_fitting(data).x,
+            y: do_fitting(data).curve,
+            marker: {color: 'red'},
+            hoverinfo: "none"
+          },
+          {
+            ,type: 'scatter',
+            mode: 'markers',
+            marker: {color: 'red'},
+            marker: { size: 2 },
+            x: data.peaks_positions,
+            y: do_fitting(data).peaks,
+            hovertemplate: 'hkl: <b>%{text}</b><extra></extra>',
+            text: extract_hkl(data)
+            }
+    
+          ]}
+          { {
+          width: 660,
+          height: 480,
+          //title: 'Sb2Zr_Cu_Ka_fit_gauss',
+          showlegend: false,
+          xaxis: {title: "2\u03F4" + ", degrees"},
+          yaxis: {title: "Intensity, a.u."}
+        } }
+*/
 /*
 ReactDOM.render(
   React.createElement(Plot, {
