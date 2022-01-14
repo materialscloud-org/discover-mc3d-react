@@ -9,6 +9,10 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Plot from 'react-plotly.js';
 import Popper from 'react-popper';
 import { useParams } from "react-router-dom";
+import './index.css';
+import './mcloud_theme.css';
+import './theme.css';
+
 
 /*
 class Title extends Component{
@@ -159,14 +163,66 @@ class Visualizer extends Component{
 class InfoBox extends Component{
 
     render() {
+      const info = this.props.info;
+      const source = this.props.source;
+      const properties = this.props.properties;
       return ( 
       <div>
-        <h3> Info </h3>
-        <div>Formula: <span className="blue">{this.props.formula}</span></div>
-        <div>Spacegroup international: <span className="blue">{this.props.spacegroupInternational}</span></div>
-        <div>Spacegroup number: <span className="blue">{this.props.spacegroupNumber}</span></div>
-        <div>Bravais lattice: <span className="blue">{this.props.bravaisLattice}</span></div>
-
+        <div className="panel-group compound-properties properties-3dd">
+          <div className="panel panel-default">
+            <div className="panel-heading" style={{paddingBottom: '7px', paddingTop: '4px'}}>
+              <h3 className="panel-title"> Info </h3>
+            </div>
+              <div className="panel-body">
+              <div className="property">
+                  <div className="key">MC3D-ID: </div>
+                  <div className="value"> <span>{info.mc3d_id}</span> </div>
+                </div>
+                <div className="property">
+                  <div className="key">Formula: </div>
+                  <div className="value"> <span>{info.formula}</span> </div>
+                </div>
+              <div className="property">
+                <div className="key">Spacegroup international: </div>
+                <div className="value"><span>{info.spacegroup_international}</span></div>
+              </div>
+              <div className="property">
+                <div className="key">Spacegroup number: </div>
+                <div className="value"><span>{info.spacegroup_number}</span></div>
+              </div>
+              <div className="property">
+                <div className="key">Bravais lattice: </div>
+                <div className="value"><span>{info.bravais_lattice}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="panel-group compound-properties properties-3dd">
+        <div className="panel panel-default">
+            <div className="panel-heading" style={{paddingBottom: '7px', paddingTop: '4px'}}>
+              <h3 className="panel-title"> Source </h3>
+            </div>
+              <div className="panel-body">
+              <div className="property">
+                  <div className="key">{source[0]['source_database']} ID: </div>
+                  <div className="value"> <span>{source[0]['source_id']}</span> </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="panel-group compound-properties properties-3dd">
+        <div className="panel panel-default">
+            <div className="panel-heading" style={{paddingBottom: '7px', paddingTop: '4px'}}>
+              <h3 className="panel-title"> Properties </h3>
+            </div>
+              <div className="panel-body">
+              <div className="property">
+                  <div className="key"> Total energy: </div>
+                  <div className="value"> <span>{properties.total_energy.value}</span> </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       );
     }
@@ -177,8 +233,10 @@ class CellBox extends Component{
     const Cell_coords = this.props.CoordsBox['data']['attributes']['cell'];
     return (
       <div>
-      <h3> 3D structure cell </h3>
-        <Table striped bordered hover>
+        <div className="panel-heading">
+      <h3 className="panel-title"> 3D structure cell </h3>
+      </div>
+        <Table className="table attribute-table numbers-font-family">
           <thead >
             <tr>
               <th></th>
@@ -210,8 +268,10 @@ class AtomBox extends Component{
     const Atomic_coords = this.props.CoordsBox['data']['attributes']['sites'];
     return(
       <div>
-        <h3> 3D structure atomic coordinates </h3>
-            <Table striped bordered hover>
+        <div className="panel-heading">
+        <h3 className="panel-title"> 3D structure atomic coordinates </h3>
+        </div>
+            <Table className="table attribute-table numbers-font-family">
               <thead >
                 <tr>
                   <th>Kind label</th>
@@ -305,11 +365,13 @@ class DetailPage extends Component{
   constructor(props) {
     super(props);
     this.fetchData = this.fetchData.bind(this);
+    this.handleClickWavelength = this.handleClickWavelength.bind(this);
     this.state = {
       error: null,
       isLoaded: false,
       info: [],
       coords: [],
+      wavelength: 'CuKa',
       //xrd_plot_params: {"fit_type": "gauss", "FWHM":0.4},
       //xrd_pattern:[],
       //page_details:[],
@@ -424,10 +486,18 @@ componentDidUpdate(prevProps) {
       isLoaded: false,
       info: [],
       coords: [],
+      wavelength: 'CuKa',
       //xrd_plot_params: {"fit_type": "gauss", "FWHM":0.4},
       //xrd_pattern:[],
     });
     this.fetchData(this.props.compound_name);
+  }
+}
+
+handleClickWavelength(wl){
+  if (this.state.wavelength !== wl){
+    this.setState({wavelength: wl});
+    console.log(wl);
   }
 }
 render() {
@@ -439,6 +509,8 @@ render() {
     //const xrd_pattern = this.state.xrd_pattern;
     //const xrd_params = this.state.xrd_plot_params;
     const error = this.state.error;
+    const wavelengths_list = this.props.wavelengths_list;
+    const wavelength = this.state.wavelength;
     //const info_page_link = this.props.page_details_link;
     console.log("render function info");
     console.log(`this.props.compound_name = ${compound}`);
@@ -453,24 +525,67 @@ render() {
         return <div>loading...</div>;
     } else {
         return (
-        <div className="details-page" > 
-          
-          <Container >
-            <Row><h1>Compound <span>{this.props.compound_name}</span></h1></Row>
+        <div className="details-page" >
+        <div className="mcloud-wrapper">
+        
+        <div className="mcloud-container">
+        <div className="mcloud-page-container">
+        <div className="mcloud-page-content panel panel-default">
+        <div className="discover-main-container">
+        <div className="structures2d" id="topLocation">
+          <div className="page-subtitle">
+          <h2>Compound: <span compile="compoundDisplayName">{this.props.compound_name}</span></h2>
+          </div>
+          <div className="selection-box">
+            <h3 className="title">Available space groups for this formula: </h3>
+            <div className="dropdown-select">
+            <Dropdown >
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+            Pnma
+              </Dropdown.Toggle>
+
+              {/*<Dropdown.Menu>
+                <Dropdown.Item onClick= {}> </Dropdown.Item>
+                
+              </Dropdown.Menu>*/}
+            </Dropdown>
+            </div>
+          </div>
+          <Container fluid>
+            
             <Row>
-              <Col><Visualizer Coords={coords}></Visualizer></Col>
-              <Col>
-                {<InfoBox 
-                  bravaisLattice={info['data'][compound][0]['info']['bravais_lattice']} 
-                  spacegroupInternational = {info['data'][compound][0]['info']['spacegroup_international']}
-                  spacegroupNumber = {info['data'][compound][0]['info']['spacegroup_number']}
-                  formula = {info['data'][compound][0]['info']['formula']}
-                />}
-                <XrdPlot compound = {compound} />
+              <Col sm="6" md="4">
+                {/*<Visualizer Coords={coords}/>*/}
+                <div className="panel-header">
+              <h3 className="panel-title">Visualizer</h3>
+              </div>
+              <div className="panel-header">
+              <h3 className="panel-title">Simulated X-Ray diffraction pattern</h3>
+              </div>
+                   <Dropdown>
+                   <Dropdown.Toggle variant="success" id="dropdown-basic">
+                     Select wavelength
+                     </Dropdown.Toggle>
+
+                     <Dropdown.Menu>
+                       {wavelengths_list.map((wl)=>(
+                       <Dropdown.Item eventKey={wl}>{ conv_wl_name(wl)} </Dropdown.Item>
+
+                       ),)
+                       }
+                     </Dropdown.Menu>
+                   </Dropdown>
+                <XrdPlot compound = {compound} wavelength = {wavelength}/>    
               </Col>
-            <Col>
+              <Col sm="6" md="4">
+                <InfoBox info = {info['data'][compound][0]['info']} source = {info['data'][compound][0]['source']} properties = {info['data'][compound][0]['properties']} />
+              </Col>
+            <Col sm="6" md="4">
+            <div className="structure-attribute-container-height structure-attributes-3dd">
             <CellBox CoordsBox={coords}></CellBox>
             <AtomBox CoordsBox={coords}></AtomBox>
+
+            </div>
             </Col>
             
             
@@ -478,6 +593,15 @@ render() {
             </Row>
             
           </Container>
+          </div>
+          </div>
+          </div>
+          </div>
+          </div>
+          </div>
+          
+          
+          
         </div>  
     ); } 
     }
@@ -490,6 +614,7 @@ export default function ThreeDimDataBase() {
     //console.log('!');
     //console.log(this.state.page_details);
     const info_page_link = "https://dev-www.materialscloud.org/mcloud/api/v2/discover/mc3d/info";
+    const wavelengths_list = ['CuKa', 'MoKa', 'CrKa', 'FeKa', 'CoKa', 'AgKa'];
     //const compound= "Sb2Zr";
     let params = useParams();
     let compound = params.compound;
@@ -501,11 +626,27 @@ export default function ThreeDimDataBase() {
             <DetailPage 
             page_details_link={info_page_link}
             compound_name={compound}
+            wavelengths_list = {wavelengths_list}
           /> 
           </div>
       </div>
     );
 
+    }
+
+  function conv_wl_name(name){
+    let result = name.slice(0,-1);
+    if (name.charAt(name.length-1)==='a'){
+      result = result.concat("\u03B1")
+    }
+    else if (name.charAt(name.length-1)==='b'){
+      result = result.concat("\u03B2")
+    }
+    else {
+      console.log("wavelength name conversion failed!");
+      result = name;
+    }
+    return result;
     }
 /*                <h1>Compound: <span><Title_dropdown 
                                 info_page_link={info_page_link}

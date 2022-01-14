@@ -1,17 +1,25 @@
 import React, { Component } from 'react'
 import Plot from 'react-plotly.js';
-
+import Form from 'react-bootstrap/Form';
+import DropdownButton from 'react-bootstrap/Dropdown';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import RangeSlider from 'react-bootstrap-range-slider';
+import '../index.css';
 
 class XrdPlot extends Component {
   constructor(props){
     super(props);
     this.doFitting = this.doFitting.bind(this);
+    this.handleChangeFWHM = this.handleChangeFWHM.bind(this);
+    this.handleClickGFit = this.handleClickGFit.bind(this);
+    this.handleClickLFit = this.handleClickLFit.bind(this);
     this.state = {
       error: null,
       isLoaded: false,
       xrdPattern: [],
       hkls: [],
-      wavelength: null,
       angular_range: [],
       FWHM: null,
       fit_type: null,
@@ -20,13 +28,13 @@ class XrdPlot extends Component {
   componentDidMount(){
     console.log("Xrd componentDidMount was called!")
     const compound = this.props.compound;
-    fetch(`../xrd_${compound}_CuKa.json`, { headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}})
+    const wavelength = this.props.wavelength;
+    fetch(`../xrd_${compound}_${wavelength}.json`, { headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}})
     .then(res => res.json())
     .then(
       r => {
         this.setState({
         isLoaded: true,
-        wavelength: r.wavelength,
         angular_range: r.angular_range,
         xrdPattern: {peaks_positions:r.peaks_positions,intensities: r.intensities},
         hkls: extract_hkl(r.hkls),
@@ -41,6 +49,60 @@ class XrdPlot extends Component {
   }
 );
   }
+
+  /*componentDidUpdate(prevProps) {
+    const compound = this.props.compound;
+    const wavelength = this.props.wavelength;
+    if (this.props.wavelength !== prevProps.wavelength) {
+      console.log("XRD componentDidUpdate was called!");
+      this.setState({
+        error: null,
+        isLoaded: false,
+        xrdPattern: [],
+        hkls: [],
+        angular_range: [],
+        FWHM: null,
+        fit_type: null,
+      });
+      fetch(`../xrd_${compound}_${wavelength}.json`, { headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}})
+      .then(res => res.json())
+      .then(
+        r => {
+          this.setState({
+          isLoaded: true,
+          angular_range: r.angular_range,
+          xrdPattern: {peaks_positions:r.peaks_positions,intensities: r.intensities},
+          hkls: extract_hkl(r.hkls),
+          fit_type: "gauss",
+          FWHM: 0.4,
+      });
+    },(error) => {
+      this.setState({
+        isLoaded: true,
+        error
+      });
+    }
+  );
+    }
+  }*/
+
+  handleChangeFWHM(e){
+    if (this.state.FWHM !== e.target.value){
+    this.setState({FWHM: e.target.value});
+    }
+  }
+  handleClickGFit(){
+    if (this.state.fit_type !== "gauss"){
+    this.setState({fit_type: "gauss"});
+    }
+  }
+  handleClickLFit(){
+    if (this.state.fit_type !== "lorentz"){
+      this.setState({fit_type: "lorentz"});
+    }
+  }
+
+
   doFitting(){
     var two_thetas = this.state.xrdPattern.peaks_positions;
     var intensities = this.state.xrdPattern.intensities;
@@ -51,9 +113,9 @@ class XrdPlot extends Component {
     var fit_type = this.state.fit_type;
     var x = makeArr(th_range[0], th_range[1], N);
 
-    if (fit_type == "gauss"){
+    if (fit_type === "gauss"){
       var fit = do_gauss_fit(two_thetas, intensities, FWHM, x);
-    } else if (fit_type == "lorentz"){
+    } else if (fit_type === "lorentz"){
       var fit = do_lorentz_fit(two_thetas, intensities, FWHM, x);
     } else {
       console.log("Fit type not defined!");
@@ -74,11 +136,12 @@ class XrdPlot extends Component {
     let error = this.state.error;
     const xrd_pattern = this.state.xrdPattern;
     const hkls = this.state.hkls;
-    const wavelength = this.state.wavelength;
+    const wavelength = this.props.wavelength;
     const angular_range = this.state.angular_range;
     const FWHM = this.state.FWHM;
     const fit_type = this.state.fit_type;
     const data = {...this.props.xrdPattern, ...this.props.xrdParameters};
+    
 
     if (error) {
       return <div>Error: {error.message}</div>;
@@ -88,7 +151,40 @@ class XrdPlot extends Component {
       const fit = this.doFitting();
     return (
       <div>
-      <h3>Simulated X-Ray diffraction pattern</h3>
+
+      <Dropdown className="white-background">
+      <Dropdown.Toggle variant="success" id="dropdown-basic" >
+        Select function type
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu>
+          <Dropdown.Item onClick= {this.handleClickGFit}>Gaussian </Dropdown.Item>
+          <Dropdown.Item onClick= {this.handleClickLFit}>Lorentzian</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+      <Form>
+      <Form.Label>FWHM</Form.Label>
+      <Form.Group as={Row}>
+        <Col xs="3">
+          <RangeSlider
+            value={FWHM}
+            min="0" max = "1" step="0.05"
+            onChange={this.handleChangeFWHM}
+            hideLabels={true}
+          />
+        </Col>
+        {<Col xs="2">
+          <Form.Control value={FWHM}/>
+    </Col>}
+      </Form.Group>
+    </Form>
+      {/*<Form.Label>FWHM: {FWHM}</Form.Label>
+      <Form.Range value={FWHM} min="0" max = "1" step="0.05" onChange={this.handleChangeFWHM} />
+      
+      <fieldset>
+        <legend>Enter FWHM:</legend>
+        <input value={FWHM} onChange={this.handleChangeFWHM} /> 
+      </fieldset>*/}
 
       <Plot
 
