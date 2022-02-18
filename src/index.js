@@ -17,7 +17,7 @@ ReactDOM.render(
     <Route path="/" element={<App />}/>
     
     <Route path="details/:compound" element={<ThreeDimDataBase />} />
-    
+    <Route path="details/:compound/:id/:id_pp" element={<ThreeDimDataBase />} />
     
     <Route
       path="*"

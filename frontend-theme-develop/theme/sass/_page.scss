@@ -1,0 +1,250 @@
+//side menu
+
+$page-wrapper-min-height:       650px;
+$page-status-bar-height:        20px;
+$page-content-margin-left:      255px;
+$page-side-bar-width:           250px;
+$page-item-padding:             5px;
+$page-background-color:         #f0f6f9;
+$page-content-full-margin:      0px;
+
+
+.mcloud-wrapper {
+  transition: all 0.4s ease 0s;
+  padding: $page-item-padding;
+  min-height: $page-wrapper-min-height;
+  background-color: $page-background-color;
+}
+
+.mcloud-page-content-min-height {
+  min-height: $page-wrapper-min-height;
+}
+
+.mcloud-status-bar {
+  height: $page-status-bar-height;
+  width: 100%;
+  background-color: $page-background-color;
+}
+
+.mcloud-general-message {
+  background-color: #fff8b4;
+  width: 90%;
+  margin: auto;
+  border: 1pt solid #eee8a4;
+  color: #455860;
+  text-align: center;
+
+  p {
+    font-weight: 400;
+    margin-bottom: 0px;
+  }
+}
+
+.mcloud-page-container {
+  position: relative;
+  margin-top: $page-item-padding;
+  min-height: $page-wrapper-min-height;
+}
+
+.mcloud-page-content {
+  min-height: $page-wrapper-min-height;
+  /*overflow-y: auto;*/
+  padding: 5px;
+}
+
+.mcloud-page-sidebar {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: $page-side-bar-width;
+
+  overflow-y: auto;
+  z-index: 1000;
+  transition: all 0.4s ease 0s;
+  height: 100%;
+  padding: $page-item-padding;
+}
+
+ul#panelbar{
+  border-color: white !important;
+}
+
+.mcloud-page-content-left-margin {
+  margin-left: $page-content-margin-left;
+}
+
+// network loading bar
+#loading-bar .bar {
+  position: relative !important;
+}
+
+// login container max-width
+.mcloud-login-container {
+  max-width: 700px;
+  top: 100px;
+}
+
+.command-block {
+  background-color: #f2f2f2;
+  padding: 6px;
+  border-radius: 3px
+}
+
+// to display loading spinner...
+
+.splash {
+  display: none;
+}
+
+[ng-cloak].splash {
+  display: block !important;
+}
+
+[ng-cloak].splash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height:100%;
+  width:100%;
+  opacity: 1;
+  background: white;
+}
+
+@keyframes rotate360 {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@-webkit-keyframes rotate360 {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
+}
+
+.mcloud-boot-spinner {
+  display:inline-block;
+  border-radius: 200px;
+  border-style: solid;
+  border-bottom-color: #4b5486;
+  border-top-color: #67b3a9;
+  border-left-color: #df7950;
+  border-right-color: #decb3f;
+  text-align: center;
+  vertical-align: middle;
+  position: absolute;
+  top: 47%;
+  left: 47%;
+  animation: rotate360 1s linear infinite;
+  -webkit-animation: rotate360 1s linear infinite;
+  border-width: 10px;
+  width: 100px;
+  height: 100px;
+}
+
+// end loading spinner
+
+
+// grid title header should be centre aligned and bold
+.k-grid-header .k-header {
+  text-align: center !important;
+  font-weight: 400 !important;
+}
+
+// in calculations.html when col-md-6 used, they overflow
+// with h-scrollbar and hence needed .nopadding and .row
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.only-left-padding {
+  padding-left: 15px !important;
+}
+
+.only-right-padding {
+  padding-right: 15px !important;
+}
+
+.row {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+
+// panelbar used for sidebar should not have expland/collapse arrow images
+div.mcloud-page-sidebar span.k-icon {
+  background-image: none;
+}
+
+//signin box centred
+.col-centered{
+  float: none !important;
+  margin: 0 auto;
+}
+
+// start footer customization
+
+.mcloud-footer {
+  padding: 10px;
+  background-color: white;
+}
+
+.footer-content {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.footer-caption {
+  margin-left: 15px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+.footer-logo {
+  width: 120px;
+  height: 30px;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.footer-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  /*bottom: 0;*/
+  right: 0;
+  top: 0;
+  left: 0;
+}
+
+// end footer customization
+
+// start main page customization
+
+.custom-bullet li {
+  display: block;
+  margin: 10px 0;
+}
+
+.custom-bullet li:before  {
+  content: "\e080";
+  //font-family: 'Glyphicons Halflings';
+  font-size: 9px;
+  float: left;
+  margin-top: 4px;
+  margin-left: -17px;
+  color: #6d6d6d;
+}
+
+.main-page-section-title {
+  color:#4a5ca5;
+}
+
+.main-page-br {
+  display: block;
+  margin: 10px 0;
+}
+// end main page

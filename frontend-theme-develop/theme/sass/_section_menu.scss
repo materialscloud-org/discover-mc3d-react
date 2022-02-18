@@ -1,0 +1,122 @@
+
+.page-header h3 {
+  display: inline-block;
+}
+
+.page-description {
+  margin: 20px 0px;
+  font-size: 16px;
+}
+
+.submenu-holder {
+  margin: 40px auto;
+  min-width: 350px;
+  max-width: 900px;
+  width: 100%;
+}
+
+.submenu-entry {
+  width: 100%;
+  min-height: 140px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: rgba(245, 245, 245, 0.19);
+  border: 1px solid rgba(227, 227, 227, 0.31);
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+}
+
+.submenu-entry .submenu-icon {
+  float: left;
+  width: 120px;
+  height: 100px;
+  position: relative;
+  margin-top: 11px;
+}
+
+.submenu-icon, .submenu-title {
+  cursor: pointer;
+}
+
+.submenu-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  /*bottom: 0;*/
+  right: 0;
+  top: 0;
+  left: 0;
+}
+
+.submenu-entry .submenu-description {
+  overflow: hidden;
+  zoom: 1;
+  padding-left: 30px;
+  height: 100%;
+}
+
+.submenu-entry .submenu-description span {
+  display: block;
+}
+
+.work-options {
+  margin-top: 50px;
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  .work-menu-options {
+
+    min-width: 240px;
+    min-height: 240px;
+    max-width: 400px;
+    max-height: 400px;
+    width: 100%;
+    height: 100%;
+    margin: 10px auto;
+    background-color: rgba(245, 245, 245, 0.19);
+    border: 1px solid rgba(227, 227, 227, 0.31);
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    text-align: center;
+    padding: 5px;
+
+    .icon {
+      position: relative;
+      height: 120px;
+      width: 120px;
+      margin: 10px auto;
+    }
+
+    .icon img {
+      position: absolute;
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto;
+      bottom: 0;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    .subtitle {
+      padding: 5px 10px;
+    }
+  }
+}
+
+/*
+
+
+.submenu-entry .submenu-description {
+  display: table-cell;
+  width: 75%;
+  text-align: left;
+  background-color: yellow;
+}
+*/
