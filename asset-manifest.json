@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/discover-mc3d-react/static/css/main.fe56d80a.css",
+    "main.js": "/discover-mc3d-react/static/js/main.1aa53c27.js",
+    "static/js/787.22838421.chunk.js": "/discover-mc3d-react/static/js/787.22838421.chunk.js",
+    "static/media/glyphicons-halflings-regular.svg": "/discover-mc3d-react/static/media/glyphicons-halflings-regular.92506597600a9f9b220f.svg",
+    "static/media/cod.png": "/discover-mc3d-react/static/media/cod.724cb4ace869f2644793.png",
+    "static/media/glyphicons-halflings-regular.ttf": "/discover-mc3d-react/static/media/glyphicons-halflings-regular.4692b9ec53fd5972caa2.ttf",
+    "static/media/glyphicons-halflings-regular.woff": "/discover-mc3d-react/static/media/glyphicons-halflings-regular.82b1212e45a2bc35dd73.woff",
+    "static/media/glyphicons-halflings-regular.eot": "/discover-mc3d-react/static/media/glyphicons-halflings-regular.5be1347c682810f199c7.eot",
+    "static/media/glyphicons-halflings-regular.woff2": "/discover-mc3d-react/static/media/glyphicons-halflings-regular.be810be3a3e14c682a25.woff2",
+    "static/media/mpds.png": "/discover-mc3d-react/static/media/mpds.3f5d7560dfa61158b156.png",
+    "index.html": "/discover-mc3d-react/index.html",
+    "main.fe56d80a.css.map": "/discover-mc3d-react/static/css/main.fe56d80a.css.map",
+    "main.1aa53c27.js.map": "/discover-mc3d-react/static/js/main.1aa53c27.js.map",
+    "787.22838421.chunk.js.map": "/discover-mc3d-react/static/js/787.22838421.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fe56d80a.css",
+    "static/js/main.1aa53c27.js"
+  ]
+}
