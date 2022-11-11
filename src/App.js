@@ -83,7 +83,7 @@ function formatRows(compounds) {
         abs_mag: "am" in comp ? comp["am"] : null,
         n_elem: elemArr.length,
         elem_array: elemArr,
-        href: `/details/${i}/${comp["id"]}`,
+        href: `${process.env.PUBLIC_URL}/#/details/${i}/${comp["id"]}`,
       };
       rows.push(row);
     });

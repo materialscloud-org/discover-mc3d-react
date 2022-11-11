@@ -1,8 +1,8 @@
 {
   "name": "discover-mc3d-react",
   "version": "0.1.0",
-  "homepage": "https://materialscloud-org.github.io/discover-mc3d-react/",
   "private": true,
+  "homepage": "http://materialscloud-org.github.io/discover-mc3d-react",
   "dependencies": {
     "@popperjs/core": "^2.11.0",
     "@testing-library/jest-dom": "^5.11.4",
