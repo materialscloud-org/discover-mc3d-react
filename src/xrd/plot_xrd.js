@@ -37,10 +37,12 @@ class XrdPlot extends Component {
     //console.log("Xrd componentDidMount was called!")
     const wavelength = this.props.wavelength;
     const mc3d_id = this.props.mc3d_id;
-    fetch(`../../../mc3d-pbe/${mc3d_id.replaceAll("/","-")}.json`, { headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}})
+    const root_url = "https://raw.githubusercontent.com/materialscloud-org/discover-mc3d-react/main/public/mc3d-pbe/";
+    fetch(`${root_url}${mc3d_id.replaceAll("/","-")}.json`)
     .then(res => res.json())
     .then(
       r => {
+        console.log(r);
         this.setState({
         isLoaded: true,
         data: r.data,
