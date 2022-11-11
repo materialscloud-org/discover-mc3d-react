@@ -1,5 +1,9 @@
 # Discover section of Materials Cloud 3D crystals database
 
+Published via GitHub pages to https://materialscloud-org.github.io/discover-mc3d-react/.
+
+# Create React App
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
