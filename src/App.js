@@ -4,7 +4,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './theme.css';
 
-import MaterialSelector from "react-ptable-materials-grid2";
+import MaterialSelector from "react-ptable-materials-grid";
 
 /* The MaterialsSelector needs two inputs:
  1) column definitions
