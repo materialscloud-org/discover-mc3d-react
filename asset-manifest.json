@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/discover-mc3d-react/static/css/main.fe56d80a.css",
-    "main.js": "/discover-mc3d-react/static/js/main.c9f3bc36.js",
+    "main.js": "/discover-mc3d-react/static/js/main.2eea4f17.js",
     "static/js/787.22838421.chunk.js": "/discover-mc3d-react/static/js/787.22838421.chunk.js",
     "static/media/glyphicons-halflings-regular.svg": "/discover-mc3d-react/static/media/glyphicons-halflings-regular.92506597600a9f9b220f.svg",
     "static/media/cod.png": "/discover-mc3d-react/static/media/cod.724cb4ace869f2644793.png",
@@ -12,11 +12,11 @@
     "static/media/mpds.png": "/discover-mc3d-react/static/media/mpds.3f5d7560dfa61158b156.png",
     "index.html": "/discover-mc3d-react/index.html",
     "main.fe56d80a.css.map": "/discover-mc3d-react/static/css/main.fe56d80a.css.map",
-    "main.c9f3bc36.js.map": "/discover-mc3d-react/static/js/main.c9f3bc36.js.map",
+    "main.2eea4f17.js.map": "/discover-mc3d-react/static/js/main.2eea4f17.js.map",
     "787.22838421.chunk.js.map": "/discover-mc3d-react/static/js/787.22838421.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.fe56d80a.css",
-    "static/js/main.c9f3bc36.js"
+    "static/js/main.2eea4f17.js"
   ]
 }
