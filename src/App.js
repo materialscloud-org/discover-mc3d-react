@@ -1,8 +1,10 @@
-import './App.css';
-import './mcloud_theme.css';
+
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './theme.css';
+
+import './App.css';
+// import './mcloud_theme.css';
+// import './theme.css';
 
 import MaterialSelector from "react-ptable-materials-grid";
 
