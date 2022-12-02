@@ -1,0 +1,16 @@
+.detail-page {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.detail-page > * {
+  width: 950px;
+  background-color: rgb(234, 234, 241);
+  border: 1px solid #999;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 10px;
+}

@@ -7,9 +7,9 @@ import Col from 'react-bootstrap/Col';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Plot from 'react-plotly.js';
 import { useParams, useNavigate } from "react-router-dom";
-import './index.css';
-import './mcloud_theme.css';
-import './theme.css';
+//import './index.css';
+//import './mcloud_theme.css';
+//import './theme.css';
 
 
 class Visualizer extends Component{

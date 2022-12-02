@@ -1,0 +1,7 @@
+.structure-section {
+}
+.structure-section-inner {
+  display: flex;
+  /* align-items: center; */
+  justify-content: space-evenly;
+}
