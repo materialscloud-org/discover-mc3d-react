@@ -7,6 +7,8 @@ import './App.css';
 
 import MaterialSelector from "react-ptable-materials-grid";
 
+import MaterialsCloudHeader from "react-materialscloud-header";
+
 /* The MaterialsSelector needs two inputs:
  1) column definitions
  2) async function that loads data
@@ -105,9 +107,16 @@ async function loadDataMc3d() {
 
 function App() {
   return (
-    <div className="App">
-      <MaterialSelector columns={columns} loadData={loadDataMc3d} />
-    </div>
+    <MaterialsCloudHeader
+      activeSection={"discover"}
+      breadcrumbsPath={[
+        { name: "Discover", link: "https://www.materialscloud.org/discover" },
+        { name: "Materials Cloud three-dimensional crystals database", link: null },
+      ]}> 
+      <div className="App">
+        <MaterialSelector columns={columns} loadData={loadDataMc3d} />
+      </div>
+    </MaterialsCloudHeader>
   );
 }
 
