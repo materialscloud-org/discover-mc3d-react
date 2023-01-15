@@ -6,8 +6,6 @@ import { Routes, Route, HashRouter } from "react-router-dom";
 
 import DetailPage from "./components/DetailPage"
 
-import ThreeDimDataBase from './DetailPage';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './index.css';

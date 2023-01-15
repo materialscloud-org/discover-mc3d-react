@@ -112,7 +112,7 @@ function App() {
       breadcrumbsPath={[
         { name: "Discover", link: "https://www.materialscloud.org/discover" },
         { name: "Materials Cloud three-dimensional crystals database", link: null },
-      ]}> 
+      ]}>
       <div className="App">
         <MaterialSelector columns={columns} loadData={loadDataMc3d} />
       </div>
