@@ -9,6 +9,8 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import Spinner from "react-bootstrap/Spinner";
 
+import MaterialsCloudHeader from "react-materialscloud-header";
+
 import "./index.css";
 
 const mcRestApiUrl =
@@ -96,9 +98,15 @@ class DetailPage extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     let loading = this.state.compoundInfo == null;
     return (
+      <MaterialsCloudHeader
+      activeSection={"discover"}
+      breadcrumbsPath={[
+        { name: "Discover", link: "https://www.materialscloud.org/discover" },
+        { name: "Materials Cloud three-dimensional crystals database", link: "https://www.materialscloud.org/discover/mc3d" },
+        { name: formatTitle(this.props.params), link: null },
+      ]}> 
       <div className="detail-page">
         <h3>{formatTitle(this.props.params)}</h3>
         {loading ? (
@@ -123,6 +131,7 @@ class DetailPage extends React.Component {
           </>
         )}
       </div>
+      </MaterialsCloudHeader>
     );
   }
 }
