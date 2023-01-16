@@ -101,36 +101,40 @@ class DetailPage extends React.Component {
     let loading = this.state.compoundInfo == null;
     return (
       <MaterialsCloudHeader
-      activeSection={"discover"}
-      breadcrumbsPath={[
-        { name: "Discover", link: "https://www.materialscloud.org/discover" },
-        { name: "Materials Cloud three-dimensional crystals database", link: "https://www.materialscloud.org/discover/mc3d" },
-        { name: formatTitle(this.props.params), link: null },
-      ]}> 
-      <div className="detail-page">
-        <h3>{formatTitle(this.props.params)}</h3>
-        {loading ? (
-          <Spinner
-            style={{
-              padding: "20px",
-              margin: "100px",
-              background: "transparent",
-            }}
-            animation="border"
-            role="status"
-            variant="primary"
-          >
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        ) : (
-          <>
-            <InfoSection compoundInfo={this.state.compoundInfo} />
-            <StructureSection aiidaAttributes={this.state.aiidaAttributes} />
-            <XrdSection />
-            <SelectionSection />
-          </>
-        )}
-      </div>
+        activeSection={"discover"}
+        breadcrumbsPath={[
+          { name: "Discover", link: "https://www.materialscloud.org/discover" },
+          {
+            name: "Materials Cloud three-dimensional crystals database",
+            link: "https://www.materialscloud.org/discover/mc3d",
+          },
+          { name: formatTitle(this.props.params), link: null },
+        ]}
+      >
+        <div className="detail-page">
+          <h3>{formatTitle(this.props.params)}</h3>
+          {loading ? (
+            <Spinner
+              style={{
+                padding: "20px",
+                margin: "100px",
+                background: "transparent",
+              }}
+              animation="border"
+              role="status"
+              variant="primary"
+            >
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          ) : (
+            <>
+              <InfoSection compoundInfo={this.state.compoundInfo} />
+              <StructureSection aiidaAttributes={this.state.aiidaAttributes} />
+              {/* <XrdSection /> */}
+              <SelectionSection />
+            </>
+          )}
+        </div>
       </MaterialsCloudHeader>
     );
   }

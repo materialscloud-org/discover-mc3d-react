@@ -2,6 +2,8 @@ import React from "react";
 
 import "./InfoSection.css";
 
+import StructureVisualizer from "./StructureVisualizer";
+
 class InfoBox extends React.Component {
   constructor(props) {
     super(props);
@@ -61,7 +63,7 @@ class InfoSection extends React.Component {
       <div className="info-section">
         <b>General info</b>
         <div className="info-section-inner">
-          <div className="structure-visualizer">Structure visualizer</div>
+          <StructureVisualizer />
           <InfoBox compoundInfo={this.props.compoundInfo} />
         </div>
       </div>
