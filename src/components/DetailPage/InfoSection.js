@@ -63,7 +63,7 @@ class InfoSection extends React.Component {
       <div className="info-section">
         <b>General info</b>
         <div className="info-section-inner">
-          <StructureVisualizer />
+          <StructureVisualizer aiidaAttributes={this.props.aiidaAttributes}/>
           <InfoBox compoundInfo={this.props.compoundInfo} />
         </div>
       </div>

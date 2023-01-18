@@ -128,7 +128,7 @@ class DetailPage extends React.Component {
             </Spinner>
           ) : (
             <>
-              <InfoSection compoundInfo={this.state.compoundInfo} />
+              <InfoSection compoundInfo={this.state.compoundInfo} aiidaAttributes={this.state.aiidaAttributes}/>
               <StructureSection aiidaAttributes={this.state.aiidaAttributes} />
               {/* <XrdSection /> */}
               <SelectionSection />

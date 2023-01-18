@@ -12,6 +12,7 @@
     "chemiscope": "^0.3.2",
     "plotly.js": "^2.6.2",
     "react": "^18.1.0",
+    "ngl": "^2.0.2",
     "react-bootstrap": "^2.6.0",
     "react-bootstrap-range-slider": "^3.0.3",
     "react-dom": "^18.1.0",
