@@ -32,6 +32,10 @@ class StructureVisualizer extends React.Component {
         comp.addRepresentation("ball+stick", { multipleBond: true });
         comp.autoView();
       });
+
+      this.stage.viewer.container.addEventListener('dblclick', () => {
+      	this.stage.toggleFullscreen();
+      });
     });
   }
   render() {
