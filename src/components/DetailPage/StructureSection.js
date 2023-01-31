@@ -4,11 +4,20 @@ import Table from "react-bootstrap/Table";
 
 import "./StructureSection.css";
 
+import eventBus from "./EventBus";
+
 class StructureSection extends React.Component {
   constructor(props) {
     super(props);
     console.log(this.props.aiidaAttributes);
   }
+
+  getAtomIndex = (e) => {
+    const index = e.target.parentNode.getAttribute('data-item');
+    console.log('This index of the atom is:', index);
+    eventBus.dispatch("getAtomIndex", { message: index });
+  }
+
   render() {
     let nDig = 4;
     return (
@@ -51,7 +60,7 @@ class StructureSection extends React.Component {
               </thead>
               <tbody>
                 {this.props.aiidaAttributes.sites.map((r, i) => (
-                  <tr key={i}>
+                  <tr key={i} data-item={i} onClick={this.getAtomIndex}>
                     <td>{r.kind_name}</td>
                     <td>{r.position[0].toFixed(nDig)}</td>
                     <td>{r.position[1].toFixed(nDig)}</td>

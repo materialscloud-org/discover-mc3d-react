@@ -2,8 +2,13 @@ import React from "react";
 
 import * as NGL from "ngl";
 
+import eventBus from "./EventBus";
+
 import "./StructureVisualizer.css";
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 class StructureVisualizer extends React.Component {
   constructor(props) {
     super(props);
@@ -28,16 +33,46 @@ class StructureVisualizer extends React.Component {
 
     window.requestAnimationFrame(() => {
       this.stage = new NGL.Stage("test-dou", { backgroundColor: 'white' });
-      this.stage.loadFile(this.pdb, { ext: "pdb" }).then(function (comp) {
+      this.stage.loadFile(this.pdb, { ext: "pdb", name: 'structure1' }).then(function (comp) {
         comp.addRepresentation("ball+stick", { multipleBond: true });
         comp.autoView();
       });
 
       this.stage.viewer.container.addEventListener('dblclick', () => {
-      	this.stage.toggleFullscreen();
+        this.stage.toggleFullscreen();
       });
     });
   }
+
+  async componentDidMount() {
+    eventBus.on("getAtomIndex", (data) => {
+      console.log('Get message:', data.message);
+      const i = data.message;
+      this.stage.getComponentsByName('structure1').forEach((element: any) => {
+        this.stage.removeComponent(element);
+      });
+      this.stage.loadFile(this.pdb, { ext: "pdb", name: 'structure1' }).then(function (comp) {
+        comp.addRepresentation("ball+stick", { multipleBond: true, sele: "@" + i });
+        comp.autoView();
+      });
+
+      sleep(1000).then(() => {
+        this.stage.getComponentsByName('structure1').forEach((element: any) => {
+          this.stage.removeComponent(element);
+        });
+
+        this.stage.loadFile(this.pdb, { ext: "pdb", name: 'structure1' }).then(function (comp) {
+          comp.addRepresentation("ball+stick", { multipleBond: true });
+          comp.autoView();
+        });
+      });
+    });
+  }
+
+  componentWillUnmount() {
+    eventBus.remove("getAtomIndex");
+  }
+
   render() {
     return <div className="structure-visualizer" id="test-dou"></div>;
   }
