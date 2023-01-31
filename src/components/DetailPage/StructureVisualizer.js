@@ -56,7 +56,7 @@ class StructureVisualizer extends React.Component {
         comp.autoView();
       });
 
-      sleep(1000).then(() => {
+      sleep(500).then(() => {
         this.stage.getComponentsByName('structure1').forEach((element: any) => {
           this.stage.removeComponent(element);
         });
