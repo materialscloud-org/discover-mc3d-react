@@ -25,6 +25,18 @@ class StructureSection extends React.Component {
     eventBus.dispatch("getAtomIndex", { message: index });
   }
 
+  componentDidMount() {
+    eventBus.on("hoverAtom", (data) => {
+      console.log('Get message:', data.message);
+      const i = data.message;
+      this.setState({ selectedRow: i });
+      });
+  }
+
+  componentWillUnmount() {
+    eventBus.remove("hoverAtom");
+  }
+
   render() {
     let nDig = 4;
     return (
