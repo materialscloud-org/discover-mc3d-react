@@ -5,3 +5,12 @@
   /* align-items: center; */
   justify-content: space-evenly;
 }
+
+.tableHover :hover {
+  color: white;
+  background-color: red;
+}
+
+.tableSelected {
+  background-color: red;
+}

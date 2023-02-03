@@ -12,9 +12,16 @@ class StructureSection extends React.Component {
     console.log(this.props.aiidaAttributes);
   }
 
-  getAtomIndex = (e) => {
+  state = {
+    selectedRow: -1
+  }
+
+  getAtomIndex = selectedRow => e => {
     const index = e.target.parentNode.getAttribute('data-item');
     console.log('This index of the atom is:', index);
+    if (selectedRow !== undefined) {
+      this.setState({ selectedRow });
+    };
     eventBus.dispatch("getAtomIndex", { message: index });
   }
 
@@ -58,9 +65,9 @@ class StructureSection extends React.Component {
                   <th>z [Å]</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="tableHover">
                 {this.props.aiidaAttributes.sites.map((r, i) => (
-                  <tr key={i} data-item={i} onClick={this.getAtomIndex}>
+                  <tr key={i} data-item={i} onClick={this.getAtomIndex(i)} className={this.state.selectedRow === i ? "tableSelected" : ""}>
                     <td>{r.kind_name}</td>
                     <td>{r.position[0].toFixed(nDig)}</td>
                     <td>{r.position[1].toFixed(nDig)}</td>
