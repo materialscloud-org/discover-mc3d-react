@@ -44,10 +44,17 @@ async function fetchCompoundData(compound, id) {
   );
   const jsonAiiDA = await responseAiiDA.json();
 
+  // 4. fetch the structure as a cif file from the AIIDA Rest API:
+  const responseAiiDACif = await fetch(
+    `${aiidaRestEndpoint}/nodes/${uuid}/download?download_format=cif&download=false`
+  );
+  const jsonAiiDACif = await responseAiiDACif.json();
+
   let loadedData = {
     compoundInfo: selectedCompoundInfo,
     aiidaAttributes: jsonAiiDA.data.attributes,
     sameFormulaStructures: { spacegrps: spacegroupsArr, ids: idsArr },
+    cifText: jsonAiiDACif.data.download.data,
   };
   return loadedData;
 }
@@ -80,6 +87,7 @@ class DetailPage extends React.Component {
       compoundInfo: null,
       aiidaAttributes: null,
       sameFormulaStructures: null,
+      cifText: null,
     };
     console.log(this.props.params);
   }
@@ -93,6 +101,7 @@ class DetailPage extends React.Component {
         compoundInfo: loadedData.compoundInfo,
         aiidaAttributes: loadedData.aiidaAttributes,
         sameFormulaStructures: loadedData.sameFormulaStructures,
+        cifText: loadedData.cifText,
       });
     });
   }
@@ -128,7 +137,7 @@ class DetailPage extends React.Component {
             </Spinner>
           ) : (
             <>
-              <InfoSection compoundInfo={this.state.compoundInfo} />
+              <InfoSection cifText={this.state.cifText} compoundInfo={this.state.compoundInfo} />
               <StructureSection aiidaAttributes={this.state.aiidaAttributes} />
               {/* <XrdSection /> */}
               <SelectionSection />

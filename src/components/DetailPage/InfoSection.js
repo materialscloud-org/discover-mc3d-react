@@ -2,7 +2,7 @@ import React from "react";
 
 import "./InfoSection.css";
 
-import StructureVisualizer from "./StructureVisualizer";
+import StructureVisualizer from "mc-react-structure-visualizer";
 
 class InfoBox extends React.Component {
   constructor(props) {
@@ -28,26 +28,32 @@ class InfoBox extends React.Component {
       <div className="info-box">
         <div>
           <b>Info</b>
-          <p>Bravais Lattice: {info["bravais_lattice"]}</p>
-          <p>Spacegroup international: {info["spacegroup_international"]}</p>
-          <p>Spacegroup number: {info["spacegroup_number"]}</p>
+          <ul className="no-bullets">
+            <li>Bravais Lattice: {info["bravais_lattice"]}</li>
+            <li>Spacegroup international: {info["spacegroup_international"]}</li>
+            <li>Spacegroup number: {info["spacegroup_number"]}</li>
+          </ul>
         </div>
         <div>
           <b>Source</b>
+          <ul className="no-bullets">
           {source.map((s) => (
-            <p key={s["source_id"]}>
+            <li key={s["source_id"]}>
               <a href={s["source_url"]} title={"Go to source data"}>
                 {s["source_database"]}
               </a>{" "}
               ID: {s["source_id"]}
-            </p>
+            </li>
           ))}
+          </ul>
         </div>
         <div>
           <b>Properties</b>
-          <p>Total energy: {tot_en_str}</p>
-          <p>Total magnetization: {tot_mag_str}</p>
-          <p>Absolute magnetization: {abs_mag_str}</p>
+          <ul className="no-bullets">
+            <li>Total energy: {tot_en_str}</li>
+            <li>Total magnetization: {tot_mag_str}</li>
+            <li>Absolute magnetization: {abs_mag_str}</li>
+          </ul>
         </div>
       </div>
     );
@@ -63,7 +69,7 @@ class InfoSection extends React.Component {
       <div className="info-section">
         <b>General info</b>
         <div className="info-section-inner">
-          <StructureVisualizer />
+          <StructureVisualizer cifText={this.props.cifText}/>
           <InfoBox compoundInfo={this.props.compoundInfo} />
         </div>
       </div>
