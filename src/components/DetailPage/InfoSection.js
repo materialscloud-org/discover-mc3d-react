@@ -30,21 +30,23 @@ class InfoBox extends React.Component {
           <b>Info</b>
           <ul className="no-bullets">
             <li>Bravais Lattice: {info["bravais_lattice"]}</li>
-            <li>Spacegroup international: {info["spacegroup_international"]}</li>
+            <li>
+              Spacegroup international: {info["spacegroup_international"]}
+            </li>
             <li>Spacegroup number: {info["spacegroup_number"]}</li>
           </ul>
         </div>
         <div>
           <b>Source</b>
           <ul className="no-bullets">
-          {source.map((s) => (
-            <li key={s["source_id"]}>
-              <a href={s["source_url"]} title={"Go to source data"}>
-                {s["source_database"]}
-              </a>{" "}
-              ID: {s["source_id"]}
-            </li>
-          ))}
+            {source.map((s) => (
+              <li key={s["source_id"]}>
+                <a href={s["source_url"]} title={"Go to source data"}>
+                  {s["source_database"]}
+                </a>{" "}
+                ID: {s["source_id"]}
+              </li>
+            ))}
           </ul>
         </div>
         <div>
@@ -67,9 +69,13 @@ class InfoSection extends React.Component {
   render() {
     return (
       <div className="info-section">
-        <b>General info</b>
         <div className="info-section-inner">
-          <StructureVisualizer cifText={this.props.cifText}/>
+          <div>
+            <b>Structure</b>
+            <br />
+            Download
+            <StructureVisualizer cifText={this.props.cifText} />
+          </div>
           <InfoBox compoundInfo={this.props.compoundInfo} />
         </div>
       </div>

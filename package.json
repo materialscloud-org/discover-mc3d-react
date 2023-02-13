@@ -10,7 +10,7 @@
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.2",
     "chemiscope": "^0.3.2",
-    "mc-react-structure-visualizer": "^0.2.0",
+    "mc-react-structure-visualizer": "^0.3.0",
     "plotly.js": "^2.6.2",
     "react": "^18.1.0",
     "react-bootstrap": "^2.6.0",
