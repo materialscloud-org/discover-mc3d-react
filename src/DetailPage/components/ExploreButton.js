@@ -18,11 +18,8 @@ export default function ExploreButton(props) {
         </Tooltip>
       }
     >
-      <a href={url} target="_blank">
-        <img
-          src="./aiida-logo-128.png"
-          style={{ height: "15px", margin: "8px 2px" }}
-        ></img>
+      <a href={url} target="_blank" className="explore-a">
+        <img src="./aiida-logo-128.png" className="aiida-logo"></img>
       </a>
     </OverlayTrigger>
   );
