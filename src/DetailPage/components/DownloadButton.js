@@ -8,9 +8,8 @@ import Popover from "react-bootstrap/Popover";
 
 import "./DownloadButton.css";
 
-export default function DownloadButton() {
-  var uuid = "a6d8b2ac-b282-45eb-a770-188ea0e5896c";
-  var dl_url = `https://aiida.materialscloud.org/mc3d/api/v4/nodes/${uuid}/download`;
+export default function DownloadButton(props) {
+  var dl_url = `https://aiida.materialscloud.org/mc3d/api/v4/nodes/${props.uuid}/download`;
   return (
     <div className="download-button">
       <OverlayTrigger

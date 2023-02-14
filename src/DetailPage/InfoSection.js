@@ -77,7 +77,7 @@ class InfoSection extends React.Component {
             <b>Structure</b>{" "}
             <ExploreButton uuid={this.props.compoundInfo.uuid_structure} />
             <StructureVisualizer cifText={this.props.cifText} />
-            <DownloadButton />
+            <DownloadButton uuid={this.props.compoundInfo.uuid_structure} />
           </div>
           <InfoBox compoundInfo={this.props.compoundInfo} />
         </div>
