@@ -3,6 +3,11 @@
   align-items: flex-end;
   justify-content: space-evenly;
   margin-bottom: 5px;
+  position: relative;
+}
+
+.structure-view-section {
+  position: relative;
 }
 
 .info-box {

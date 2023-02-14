@@ -4,6 +4,8 @@ import "./InfoSection.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
 
+import DownloadButton from "./components/DownloadButton";
+
 class InfoBox extends React.Component {
   constructor(props) {
     super(props);
@@ -70,11 +72,10 @@ class InfoSection extends React.Component {
     return (
       <div className="info-section">
         <div className="info-section-inner">
-          <div>
+          <div className="structure-view-section">
             <b>Structure</b>
-            <br />
-            Download
             <StructureVisualizer cifText={this.props.cifText} />
+            <DownloadButton />
           </div>
           <InfoBox compoundInfo={this.props.compoundInfo} />
         </div>

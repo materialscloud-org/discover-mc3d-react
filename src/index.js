@@ -1,14 +1,15 @@
-import React from 'react';
+import React from "react";
 import ReactDOM from "react-dom/client";
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
 import { Routes, Route, HashRouter } from "react-router-dom";
 
-import DetailPage from "./components/DetailPage"
+import DetailPage from "./DetailPage";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-import './index.css';
+import "./index.css";
 // import './mcloud_theme.css';
 // import './theme.css';
 
@@ -21,9 +22,12 @@ root.render(
   <React.StrictMode>
     <HashRouter>
       <Routes>
-        <Route path="/" element={<App />}/>
+        <Route path="/" element={<App />} />
         <Route path="/details/:compound" element={<DetailPage />} />
-        <Route path="/details/:compound/:id/:functional" element={<DetailPage />} />
+        <Route
+          path="/details/:compound/:id/:functional"
+          element={<DetailPage />}
+        />
       </Routes>
     </HashRouter>
   </React.StrictMode>
