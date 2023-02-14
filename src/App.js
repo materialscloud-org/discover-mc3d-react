@@ -1,13 +1,12 @@
+import React from "react";
 
-import React from 'react';
-
-import './App.css';
+import "./App.css";
 // import './mcloud_theme.css';
 // import './theme.css';
 
-import MaterialSelector from "react-ptable-materials-grid";
+import MaterialSelector from "mc-react-ptable-materials-grid";
 
-import MaterialsCloudHeader from "react-materialscloud-header";
+import MaterialsCloudHeader from "mc-react-header";
 
 /* The MaterialsSelector needs two inputs:
  1) column definitions
@@ -111,8 +110,12 @@ function App() {
       activeSection={"discover"}
       breadcrumbsPath={[
         { name: "Discover", link: "https://www.materialscloud.org/discover" },
-        { name: "Materials Cloud three-dimensional crystals database", link: null },
-      ]}>
+        {
+          name: "Materials Cloud three-dimensional crystals database",
+          link: null,
+        },
+      ]}
+    >
       <div className="App">
         <MaterialSelector columns={columns} loadData={loadDataMc3d} />
       </div>

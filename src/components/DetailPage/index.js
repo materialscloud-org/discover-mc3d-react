@@ -9,7 +9,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import Spinner from "react-bootstrap/Spinner";
 
-import MaterialsCloudHeader from "react-materialscloud-header";
+import MaterialsCloudHeader from "mc-react-header";
 
 import "./index.css";
 
@@ -137,7 +137,10 @@ class DetailPage extends React.Component {
             </Spinner>
           ) : (
             <>
-              <InfoSection cifText={this.state.cifText} compoundInfo={this.state.compoundInfo} />
+              <InfoSection
+                cifText={this.state.cifText}
+                compoundInfo={this.state.compoundInfo}
+              />
               <StructureSection aiidaAttributes={this.state.aiidaAttributes} />
               {/* <XrdSection /> */}
               <SelectionSection />
