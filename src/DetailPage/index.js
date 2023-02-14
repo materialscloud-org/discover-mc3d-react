@@ -89,7 +89,7 @@ class DetailPage extends React.Component {
       sameFormulaStructures: null,
       cifText: null,
     };
-    console.log(this.props.params);
+    console.log("props.params", this.props.params);
   }
 
   componentDidMount() {

@@ -5,13 +5,14 @@ import "./InfoSection.css";
 import StructureVisualizer from "mc-react-structure-visualizer";
 
 import DownloadButton from "./components/DownloadButton";
+import ExploreButton from "./components/ExploreButton";
 
 class InfoBox extends React.Component {
   constructor(props) {
     super(props);
   }
   render() {
-    console.log(this.props.compoundInfo);
+    console.log("compoundInfo", this.props.compoundInfo);
     let info = this.props.compoundInfo["info"];
     let source = this.props.compoundInfo["source"];
     let props = this.props.compoundInfo["properties"];
@@ -73,7 +74,8 @@ class InfoSection extends React.Component {
       <div className="info-section">
         <div className="info-section-inner">
           <div className="structure-view-section">
-            <b>Structure</b>
+            <b>Structure</b>{" "}
+            <ExploreButton uuid={this.props.compoundInfo.uuid_structure} />
             <StructureVisualizer cifText={this.props.cifText} />
             <DownloadButton />
           </div>
