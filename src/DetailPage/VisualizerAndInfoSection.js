@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./InfoSection.css";
+import "./VisualizerAndInfoSection.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
 
@@ -82,7 +82,7 @@ class InfoBox extends React.Component {
   }
 }
 
-class InfoSection extends React.Component {
+class VisualizerAndInfoSection extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -105,4 +105,4 @@ class InfoSection extends React.Component {
   }
 }
 
-export default InfoSection;
+export default VisualizerAndInfoSection;

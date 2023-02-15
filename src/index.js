@@ -23,7 +23,7 @@ root.render(
     <HashRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/details/:compound" element={<DetailPage />} />
+        {/* <Route path="/details/:compound" element={<DetailPage />} /> */}
         <Route
           path="/details/:compound/:id/:functional"
           element={<DetailPage />}

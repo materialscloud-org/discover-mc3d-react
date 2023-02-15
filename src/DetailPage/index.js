@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-import InfoSection from "./InfoSection";
+import VisualizerAndInfoSection from "./VisualizerAndInfoSection";
 import XrdSection from "./XrdSection";
 import SelectionSection from "./SelectionSection";
 import StructureSection from "./StructureSection";
@@ -79,87 +79,83 @@ function formatTitle(params) {
   );
 }
 
-class DetailPage extends React.Component {
-  constructor(props) {
-    super(props);
+function DetailPage() {
+  const [compoundInfo, setCompoundInfo] = useState(null);
+  const [aiidaAttributes, setAiidaAttributes] = useState(null);
+  const [sameFormulaStructures, setSameFormulaStructures] = useState(null);
+  const [cifText, setCifText] = useState(null);
 
-    this.state = {
-      compoundInfo: null,
-      aiidaAttributes: null,
-      sameFormulaStructures: null,
-      cifText: null,
-    };
-    console.log("props.params", this.props.params);
-  }
+  // for routing
+  const navigate = useNavigate();
+  const params = useParams();
 
-  componentDidMount() {
-    let compound = this.props.params["compound"];
-    let id = this.props.params["id"] + "/" + this.props.params["functional"];
+  console.log("route params", params);
+
+  // componentDidMount equivalent
+  useEffect(() => {
+    // Set state to null to show "loading" screen
+    // while new parameters are loaded
+    setCompoundInfo(null);
+    setAiidaAttributes(null);
+    setSameFormulaStructures(null);
+    setCifText(null);
+
+    let compound = params["compound"];
+    let id = params["id"] + "/" + params["functional"];
 
     fetchCompoundData(compound, id).then((loadedData) => {
-      this.setState({
-        compoundInfo: loadedData.compoundInfo,
-        aiidaAttributes: loadedData.aiidaAttributes,
-        sameFormulaStructures: loadedData.sameFormulaStructures,
-        cifText: loadedData.cifText,
-      });
+      setCompoundInfo(loadedData.compoundInfo);
+      setAiidaAttributes(loadedData.aiidaAttributes);
+      setSameFormulaStructures(loadedData.sameFormulaStructures);
+      setCifText(loadedData.cifText);
     });
-  }
+  }, [params.compound, params.id, params.functional]); // <- call when route params change
 
-  render() {
-    let loading = this.state.compoundInfo == null;
-    return (
-      <MaterialsCloudHeader
-        activeSection={"discover"}
-        breadcrumbsPath={[
-          { name: "Discover", link: "https://www.materialscloud.org/discover" },
-          {
-            name: "Materials Cloud three-dimensional crystals database",
-            link: "https://www.materialscloud.org/discover/mc3d",
-          },
-          { name: formatTitle(this.props.params), link: null },
-        ]}
-      >
-        <div className="detail-page">
-          <h3>{formatTitle(this.props.params)}</h3>
-          {loading ? (
-            <Spinner
-              style={{
-                padding: "20px",
-                margin: "100px",
-                background: "transparent",
-              }}
-              animation="border"
-              role="status"
-              variant="primary"
-            >
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-          ) : (
-            <>
-              <InfoSection
-                cifText={this.state.cifText}
-                compoundInfo={this.state.compoundInfo}
-              />
-              <StructureSection aiidaAttributes={this.state.aiidaAttributes} />
-              {/* <XrdSection /> */}
-              <SelectionSection />
-            </>
-          )}
-        </div>
-      </MaterialsCloudHeader>
-    );
-  }
-}
-
-/**
- * Helper function to use "useParams" and "useNavigate"
- * as they can't be called from class components
- */
-function routerHelper(Component) {
-  return (props) => (
-    <Component {...props} params={useParams()} navigate={useNavigate()} />
+  let loading = compoundInfo == null;
+  return (
+    <MaterialsCloudHeader
+      activeSection={"discover"}
+      breadcrumbsPath={[
+        { name: "Discover", link: "https://www.materialscloud.org/discover" },
+        {
+          name: "Materials Cloud three-dimensional crystals database",
+          link: "https://www.materialscloud.org/discover/mc3d",
+        },
+        { name: formatTitle(params), link: null },
+      ]}
+    >
+      <div className="detail-page">
+        <h3>{formatTitle(params)}</h3>
+        {loading ? (
+          <Spinner
+            style={{
+              padding: "20px",
+              margin: "100px",
+              background: "transparent",
+            }}
+            animation="border"
+            role="status"
+            variant="primary"
+          >
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        ) : (
+          <>
+            <SelectionSection
+              sameFormulaStructures={sameFormulaStructures}
+              currentStructure={params}
+            />
+            <VisualizerAndInfoSection
+              cifText={cifText}
+              compoundInfo={compoundInfo}
+            />
+            <StructureSection aiidaAttributes={aiidaAttributes} />
+            {/* <XrdSection /> */}
+          </>
+        )}
+      </div>
+    </MaterialsCloudHeader>
   );
 }
 
-export default routerHelper(DetailPage);
+export default DetailPage;
