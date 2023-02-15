@@ -119,7 +119,7 @@ function DetailPage() {
         { name: "Discover", link: "https://www.materialscloud.org/discover" },
         {
           name: "Materials Cloud three-dimensional crystals database",
-          link: "https://www.materialscloud.org/discover/mc3d",
+          link: `${process.env.PUBLIC_URL}`,
         },
         { name: formatTitle(params), link: null },
       ]}
