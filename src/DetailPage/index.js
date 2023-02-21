@@ -5,6 +5,8 @@ import XrdSection from "./XrdSection";
 import SelectionSection from "./SelectionSection";
 import StructureSection from "./StructureSection";
 
+import TitleAndLogo from "../common/TitleAndLogo";
+
 import { useParams, useNavigate } from "react-router-dom";
 
 import Spinner from "react-bootstrap/Spinner";
@@ -125,34 +127,37 @@ function DetailPage() {
       ]}
     >
       <div className="detail-page">
-        <h3>{formatTitle(params)}</h3>
-        {loading ? (
-          <Spinner
-            style={{
-              padding: "20px",
-              margin: "100px",
-              background: "transparent",
-            }}
-            animation="border"
-            role="status"
-            variant="primary"
-          >
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        ) : (
-          <>
-            <SelectionSection
-              sameFormulaStructures={sameFormulaStructures}
-              currentStructure={params}
-            />
-            <VisualizerAndInfoSection
-              cifText={cifText}
-              compoundInfo={compoundInfo}
-            />
-            <StructureSection aiidaAttributes={aiidaAttributes} />
-            {/* <XrdSection /> */}
-          </>
-        )}
+        <TitleAndLogo />
+        <div className="detail-page-inner">
+          <h3>{formatTitle(params)}</h3>
+          {loading ? (
+            <Spinner
+              style={{
+                padding: "20px",
+                margin: "100px",
+                background: "transparent",
+              }}
+              animation="border"
+              role="status"
+              variant="primary"
+            >
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          ) : (
+            <>
+              <SelectionSection
+                sameFormulaStructures={sameFormulaStructures}
+                currentStructure={params}
+              />
+              <VisualizerAndInfoSection
+                cifText={cifText}
+                compoundInfo={compoundInfo}
+              />
+              <StructureSection aiidaAttributes={aiidaAttributes} />
+              {/* <XrdSection /> */}
+            </>
+          )}
+        </div>
       </div>
     </MaterialsCloudHeader>
   );

@@ -1,0 +1,17 @@
+.main-page {
+  width: 950px;
+  /* background-color: rgb(243, 243, 243); */
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.description {
+  padding: 20px 60px;
+}
+
+.mc3d-tabs {
+  width: 950px;
+}
