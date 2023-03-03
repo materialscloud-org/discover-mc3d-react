@@ -15,3 +15,18 @@
 .mc3d-tabs {
   width: 950px;
 }
+
+/* overload boostrap tab style */
+
+.nav-tabs .nav-link {
+  border-top: 1px solid #ddd !important;
+  border-left: 1px solid #ddd !important;
+  border-right: 1px solid #ddd !important;
+}
+
+.nav-tabs .nav-link.active {
+  border-top: 1px solid #999 !important;
+  border-left: 1px solid #999 !important;
+  border-right: 1px solid #999 !important;
+  /* border-bottom: 1px solid #999 !important; */
+}
