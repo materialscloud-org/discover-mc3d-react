@@ -118,7 +118,7 @@ function MainPage() {
           <div className="description">Search for materials:</div>
           <MaterialSelector columns={columns} loadData={loadDataMc3d} />
         </Tab>
-        <Tab eventKey="about" title="About and Acknowledgements">
+        <Tab eventKey="about" title="About">
           <p>
             This is a curated set of relaxed three-dimensional crystal
             structures based on raw CIF data taken from the external
