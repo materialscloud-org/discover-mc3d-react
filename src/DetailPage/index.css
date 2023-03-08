@@ -6,6 +6,10 @@
   justify-content: space-evenly;
 }
 
+.detail-page > * {
+  margin: 0 auto;
+}
+
 .mc3d-title-header {
   background-color: rgb(250, 1, 1);
   border: 1px solid #d6d6d6;

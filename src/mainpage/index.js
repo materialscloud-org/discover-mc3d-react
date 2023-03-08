@@ -111,7 +111,6 @@ async function loadDataMc3d() {
 }
 
 function MainPage() {
-  console.log(columns);
   return (
     <div className="main-page">
       <TitleAndLogo />
