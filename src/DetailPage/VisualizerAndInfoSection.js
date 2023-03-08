@@ -7,6 +7,8 @@ import StructureVisualizer from "mc-react-structure-visualizer";
 import DownloadButton from "./components/DownloadButton";
 import ExploreButton from "./components/ExploreButton";
 
+import { formatSpaceGroupSymbol } from "./utils";
+
 class InfoBox extends React.Component {
   constructor(props) {
     super(props);
@@ -51,9 +53,10 @@ class InfoBox extends React.Component {
           <ul className="no-bullets">
             <li>Bravais Lattice: {info["bravais_lattice"]}</li>
             <li>
-              Spacegroup international: {info["spacegroup_international"]}
+              Space group international:{" "}
+              {formatSpaceGroupSymbol(info["spacegroup_international"])}
             </li>
-            <li>Spacegroup number: {info["spacegroup_number"]}</li>
+            <li>Space group number: {info["spacegroup_number"]}</li>
           </ul>
         </div>
         <div>
@@ -61,10 +64,13 @@ class InfoBox extends React.Component {
           <ul className="no-bullets">
             {source.map((s) => (
               <li key={s["source_id"]}>
-                <a href={s["source_url"]} title={"Go to source data"}>
-                  {s["source_database"]}
-                </a>{" "}
-                ID: {s["source_id"]}
+                <a
+                  className="source-a"
+                  href={s["source_url"]}
+                  title={"Go to source data"}
+                >
+                  {s["source_database"]} ID: {s["source_id"]}
+                </a>
               </li>
             ))}
           </ul>
@@ -96,7 +102,9 @@ class VisualizerAndInfoSection extends React.Component {
               <ExploreButton uuid={this.props.compoundInfo.uuid_structure} />
             </div>
             <StructureVisualizer cifText={this.props.cifText} />
-            <DownloadButton uuid={this.props.compoundInfo.uuid_structure} />
+            <div className="download-button-container">
+              <DownloadButton uuid={this.props.compoundInfo.uuid_structure} />
+            </div>
           </div>
           <InfoBox compoundInfo={this.props.compoundInfo} />
         </div>

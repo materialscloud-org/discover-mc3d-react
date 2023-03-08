@@ -13,6 +13,8 @@ import Spinner from "react-bootstrap/Spinner";
 
 import MaterialsCloudHeader from "mc-react-header";
 
+import { formatTitle } from "./utils";
+
 import "./index.css";
 
 const mcRestApiUrl =
@@ -59,26 +61,6 @@ async function fetchCompoundData(compound, id) {
     cifText: jsonAiiDACif.data.download.data,
   };
   return loadedData;
-}
-
-function formatChemicalFormula(formula) {
-  // split formula into array of elements and numbers
-  let f_split = formula.split(/(\d+)/);
-  return f_split.map((v, index) => {
-    if (v.match(/\d+/)) {
-      return <sub key={index}>{v}</sub>;
-    }
-    return v;
-  });
-}
-
-function formatTitle(params) {
-  return (
-    <span>
-      {formatChemicalFormula(params["compound"])} ({params["id"]}/
-      {params["functional"]})
-    </span>
-  );
 }
 
 function DetailPage() {
@@ -153,7 +135,10 @@ function DetailPage() {
                 cifText={cifText}
                 compoundInfo={compoundInfo}
               />
-              <StructureSection aiidaAttributes={aiidaAttributes} />
+              <StructureSection
+                aiidaAttributes={aiidaAttributes}
+                compoundInfo={compoundInfo}
+              />
               {/* <XrdSection /> */}
             </>
           )}

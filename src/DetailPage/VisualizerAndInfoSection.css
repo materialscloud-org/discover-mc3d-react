@@ -13,7 +13,7 @@
 .info-box {
   height: 450px;
   width: 450px;
-  background: rgb(250, 250, 250);
+  /* background: rgb(240, 240, 240); */
   text-align: left;
   border: 1px solid #d6d6d6;
   border-radius: 5px;
@@ -29,4 +29,21 @@ ul.no-bullets {
 
 ul.no-bullets li {
   margin: 10px 0px;
+}
+
+.source-a {
+  color: #303f9f;
+  text-decoration: none;
+}
+
+.source-a:hover {
+  filter: brightness(30%);
+  text-decoration: underline;
+}
+
+.download-button-container {
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  z-index: 3;
 }
