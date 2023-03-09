@@ -45,7 +45,7 @@ function ProvenanceSection(props) {
   let loading = outgoingLinks == null;
   return (
     <div className="provenance-section">
-      <b>Provenance</b>
+      <b>Provenance links</b>
       <div className="provenance-section-inner">
         {loading ? (
           <McloudSpinner />
