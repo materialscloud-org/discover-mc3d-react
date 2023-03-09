@@ -5,6 +5,8 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 import "./ExploreButton.css";
 
+import AiidaLogo from "../../images/aiida-logo-128.png";
+
 export default function ExploreButton(props) {
   var url = `https://www.materialscloud.org/explore/mc3d/details/${props.uuid}?nodeType=NODE`;
   return (
@@ -19,7 +21,7 @@ export default function ExploreButton(props) {
       }
     >
       <a href={url} target="_blank" className="explore-a">
-        <img src="./aiida-logo-128.png" className="aiida-logo"></img>
+        <img src={AiidaLogo} className="aiida-logo"></img>
       </a>
     </OverlayTrigger>
   );

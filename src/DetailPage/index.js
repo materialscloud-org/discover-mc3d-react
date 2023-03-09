@@ -113,18 +113,17 @@ function DetailPage() {
         <div className="detail-page-inner">
           <h3>{formatTitle(params)}</h3>
           {loading ? (
-            <Spinner
+            <div
               style={{
-                padding: "20px",
-                margin: "100px",
                 background: "transparent",
+                border: "none",
               }}
-              animation="border"
-              role="status"
-              variant="primary"
             >
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
+              <img
+                src={"./mcloud_spinner.svg"}
+                style={{ height: "200px", padding: "60px" }}
+              />
+            </div>
           ) : (
             <>
               <SelectionSection

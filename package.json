@@ -10,7 +10,6 @@
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.2",
     "bootstrap-icons": "^1.10.3",
-    "chemiscope": "^0.3.2",
     "mc-react-header": "^0.2.1",
     "mc-react-ptable-materials-grid": "^0.4.5",
     "mc-react-structure-visualizer": "^0.4.2",
