@@ -11,6 +11,11 @@ import Tabs from "react-bootstrap/Tabs";
 
 import { aboutText } from "./about";
 
+import {
+  spaceGroupSymbols,
+  bravaisLatticeFromSpgn,
+} from "../common/symmetryUtils";
+
 /* The MaterialsSelector needs two inputs:
  1) column definitions
  2) async function that loads data
@@ -44,6 +49,11 @@ const columns = [
     headerName: "Num. of elements",
     colType: "integer",
     hide: true,
+  },
+  {
+    field: "bravais_lat",
+    headerName: "Bravais lattice",
+    colType: "text",
   },
   {
     field: "spg_int",
@@ -85,11 +95,12 @@ function formatRows(compounds) {
       var row = {
         id: comp["id"],
         formula: i,
-        spg_int: comp["spg"],
+        spg_int: spaceGroupSymbols[comp["spgn"]],
         spg_num: comp["spgn"],
         tot_mag: "tm" in comp ? comp["tm"] : null,
         abs_mag: "am" in comp ? comp["am"] : null,
         n_elem: elemArr.length,
+        bravais_lat: bravaisLatticeFromSpgn(comp["spgn"]),
         elem_array: elemArr,
         href: `${process.env.PUBLIC_URL}/#/details/${i}/${comp["id"]}`,
       };

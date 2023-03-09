@@ -13,7 +13,7 @@ import Spinner from "react-bootstrap/Spinner";
 
 import MaterialsCloudHeader from "mc-react-header";
 
-import { formatTitle } from "./utils";
+import { formatTitle } from "../common/utils";
 
 import "./index.css";
 

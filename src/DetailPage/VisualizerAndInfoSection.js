@@ -7,7 +7,7 @@ import StructureVisualizer from "mc-react-structure-visualizer";
 import DownloadButton from "./components/DownloadButton";
 import ExploreButton from "./components/ExploreButton";
 
-import { formatSpaceGroupSymbol } from "./utils";
+import { formatSpaceGroupSymbol } from "../common/utils";
 
 class InfoBox extends React.Component {
   constructor(props) {
