@@ -37,7 +37,7 @@ ul.no-bullets li {
 }
 
 .source-a:hover {
-  filter: brightness(30%);
+  filter: brightness(80%);
   text-decoration: underline;
 }
 

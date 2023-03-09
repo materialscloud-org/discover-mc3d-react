@@ -9,6 +9,10 @@ import ExploreButton from "./components/ExploreButton";
 
 import { formatSpaceGroupSymbol } from "../common/utils";
 
+import IcsdLogo from "../images/icsd.png";
+import CodLogo from "../images/cod.png";
+import MpdsLogo from "../images/mpds.png";
+
 class InfoBox extends React.Component {
   constructor(props) {
     super(props);
@@ -62,17 +66,32 @@ class InfoBox extends React.Component {
         <div>
           <b>Source</b>
           <ul className="no-bullets">
-            {source.map((s) => (
-              <li key={s["source_id"]}>
-                <a
-                  className="source-a"
-                  href={s["source_url"]}
-                  title={"Go to source data"}
-                >
-                  {s["source_database"]} ID: {s["source_id"]}
-                </a>
-              </li>
-            ))}
+            {source.map((s) => {
+              let logo = null;
+              if (s["source_database"] == "ICSD") logo = IcsdLogo;
+              if (s["source_database"] == "COD") logo = CodLogo;
+              if (s["source_database"] == "MPDS") logo = MpdsLogo;
+              return (
+                <li key={s["source_id"]}>
+                  <a
+                    className="source-a"
+                    href={s["source_url"]}
+                    title={"Go to source data"}
+                  >
+                    <div
+                      style={{
+                        display: "inline-flex",
+                        gap: "5px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <img src={logo} style={{ height: "20px" }}></img>
+                      {s["source_database"]} ID: {s["source_id"]}
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div>
