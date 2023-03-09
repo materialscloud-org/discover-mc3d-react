@@ -38,7 +38,7 @@ export default function DownloadButton(props) {
     >
       <Button
         size="sm"
-        style={{ margin: "4px", padding: "2px 6px" }}
+        style={{ margin: "4px", padding: "2px 7px" }}
         title={"Download"}
       >
         <span className="bi bi-download" />

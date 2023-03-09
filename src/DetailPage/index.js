@@ -4,6 +4,7 @@ import VisualizerAndInfoSection from "./VisualizerAndInfoSection";
 import XrdSection from "./XrdSection";
 import SelectionSection from "./SelectionSection";
 import StructureSection from "./StructureSection";
+import ProvenanceSection from "./ProvenanceSection";
 
 import TitleAndLogo from "../common/TitleAndLogo";
 
@@ -16,6 +17,7 @@ import MaterialsCloudHeader from "mc-react-header";
 import { formatTitle } from "../common/utils";
 
 import "./index.css";
+import McloudSpinner from "../common/McloudSpinner";
 
 const mcRestApiUrl =
   "https://dev-www.materialscloud.org/mcloud/api/v2/discover/mc3d/info";
@@ -55,6 +57,7 @@ async function fetchCompoundData(compound, id) {
   const jsonAiiDACif = await responseAiiDACif.json();
 
   let loadedData = {
+    aiidaRestEndpoint: aiidaRestEndpoint,
     compoundInfo: selectedCompoundInfo,
     aiidaAttributes: jsonAiiDA.data.attributes,
     sameFormulaStructures: { spacegrps: spacegroupsArr, ids: idsArr },
@@ -64,6 +67,7 @@ async function fetchCompoundData(compound, id) {
 }
 
 function DetailPage() {
+  const [aiidaRestEndpoint, setAiidaRestEndpoint] = useState(null);
   const [compoundInfo, setCompoundInfo] = useState(null);
   const [aiidaAttributes, setAiidaAttributes] = useState(null);
   const [sameFormulaStructures, setSameFormulaStructures] = useState(null);
@@ -79,6 +83,7 @@ function DetailPage() {
   useEffect(() => {
     // Set state to null to show "loading" screen
     // while new parameters are loaded
+    setAiidaRestEndpoint(null);
     setCompoundInfo(null);
     setAiidaAttributes(null);
     setSameFormulaStructures(null);
@@ -88,6 +93,7 @@ function DetailPage() {
     let id = params["id"] + "/" + params["functional"];
 
     fetchCompoundData(compound, id).then((loadedData) => {
+      setAiidaRestEndpoint(loadedData.aiidaRestEndpoint);
       setCompoundInfo(loadedData.compoundInfo);
       setAiidaAttributes(loadedData.aiidaAttributes);
       setSameFormulaStructures(loadedData.sameFormulaStructures);
@@ -113,17 +119,7 @@ function DetailPage() {
         <div className="detail-page-inner">
           <h3>{formatTitle(params)}</h3>
           {loading ? (
-            <div
-              style={{
-                background: "transparent",
-                border: "none",
-              }}
-            >
-              <img
-                src={"./mcloud_spinner.svg"}
-                style={{ height: "200px", padding: "60px" }}
-              />
-            </div>
+            <McloudSpinner />
           ) : (
             <>
               <SelectionSection
@@ -137,6 +133,10 @@ function DetailPage() {
               <StructureSection
                 aiidaAttributes={aiidaAttributes}
                 compoundInfo={compoundInfo}
+              />
+              <ProvenanceSection
+                aiidaRestEndpoint={aiidaRestEndpoint}
+                uuid={compoundInfo.uuid_structure}
               />
               {/* <XrdSection /> */}
             </>
