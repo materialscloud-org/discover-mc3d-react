@@ -54,6 +54,7 @@ const columns = [
     field: "bravais_lat",
     headerName: "Bravais lattice",
     colType: "text",
+    width: 120,
   },
   {
     field: "spg_int",
@@ -64,6 +65,7 @@ const columns = [
     field: "spg_num",
     headerName: "Space group number",
     colType: "integer",
+    // width: 120,
   },
   {
     field: "tot_mag",
