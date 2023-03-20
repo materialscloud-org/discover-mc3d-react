@@ -65,6 +65,7 @@ const columns = [
     field: "spg_num",
     headerName: "Space group number",
     colType: "integer",
+    hide: true,
     // width: 120,
   },
   {
