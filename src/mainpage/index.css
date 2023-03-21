@@ -10,7 +10,7 @@
 }
 
 .description {
-  padding: 20px 60px;
+  padding: 20px 40px;
 }
 
 .mc3d-tabs {
@@ -22,7 +22,12 @@
   border-top: 1px solid #ddd !important;
   border-left: 1px solid #ddd !important;
   border-right: 1px solid #ddd !important;
-  color: #0000cd;
+  /* color: #0000cd; */
+  color: #3366cc;
+}
+.nav-tabs .nav-link:hover {
+  background-color: rgb(245, 245, 245);
+  color: black;
 }
 
 .nav-tabs .nav-link.active {

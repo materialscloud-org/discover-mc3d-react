@@ -10,6 +10,7 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
 import { aboutText } from "./about";
+import { restapiText } from "./restapi";
 
 import {
   spaceGroupSymbols,
@@ -141,24 +142,7 @@ function MainPage() {
           {aboutText}
         </Tab>
         <Tab eventKey="rest" title="REST API">
-          <p>Description and usage of the REST API.</p>
-
-          <p>
-            Search data: <br />
-            <a href="https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds">
-              https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds
-            </a>
-            <br />
-            Single compound data: <br />
-            <a href="https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds/Ag10Gd4Mg3">
-              https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds/Ag10Gd4Mg3
-            </a>
-            <br />
-            AiiDA REST API endpoint: <br />
-            <a href="https://aiida.materialscloud.org/mc3d/api/v4">
-              https://aiida.materialscloud.org/mc3d/api/v4
-            </a>
-          </p>
+          {restapiText}
         </Tab>
       </Tabs>
     </div>

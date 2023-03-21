@@ -1,0 +1,11 @@
+.restapi-text-container {
+  text-align: justify;
+  text-justify: auto;
+  padding: 15px 5px;
+}
+
+.restapi-h {
+  font-weight: 600;
+  font-size: 20px;
+  padding: 0px 0px 10px;
+}
