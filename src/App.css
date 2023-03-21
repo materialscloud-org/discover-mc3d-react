@@ -4,6 +4,17 @@
   align-items: center;
 }
 
+.bs-overrides a {
+  color: #1a0dab;
+  text-decoration: none;
+}
+
+.bs-overrides a:hover {
+  color: #1a0dab;
+  /* color: #3e70bb; */
+  text-decoration: underline;
+}
+
 /* .App-logo {
   height: 40vmin;
   pointer-events: none;

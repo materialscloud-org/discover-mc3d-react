@@ -1,20 +1,201 @@
+import { HashLink } from "react-router-hash-link";
+
+import "./about.css";
+
+// string keys stay in insertion order, so use this order to determine the citation number
+const references = {
+  mpds: {
+    type: "db",
+    ref: (
+      <span>
+        The Pauling File{" "}
+        <a href="http://paulingfile.com/" target="_blank">
+          http://paulingfile.com/
+        </a>{" "}
+        exposed through the Materials Platform for Data Science{" "}
+        <a href="https://mpds.io/" target="_blank">
+          https://mpds.io/
+        </a>
+        .
+      </span>
+    ),
+  },
+  cod: {
+    type: "db",
+    ref: (
+      <span>
+        S. Gražulis et al. Crystallography open database (COD): an open-access
+        collection of crystal structures and platform for world-wide
+        collaboration. Nucleic Acids Research, 40:D420-D427, 2012,{" "}
+        <a href="http://www.crystallography.net" target="_blank">
+          http://www.crystallography.net
+        </a>
+        .
+      </span>
+    ),
+  },
+  icsd: {
+    type: "db",
+    ref: (
+      <span>
+        Inorganic Crystal Structure Database,{" "}
+        <a href="http://www.fiz-karlsruhe.com/icsd.html" target="_blank">
+          http://www.fiz-karlsruhe.com/icsd.html
+        </a>
+        .
+      </span>
+    ),
+  },
+  aiida1: {
+    type: "software",
+    ref: (
+      <span>
+        S. P. Huber et al. AiiDA 1.0, a scalable computational infrastructure
+        for automated reproducible workflows and data provenance. Sci Data 7,
+        300, 2020.{" "}
+        <a href="http://www.aiida.net" target="_blank">
+          http://www.aiida.net
+        </a>
+        .
+      </span>
+    ),
+  },
+  aiida2: {
+    type: "software",
+    ref: (
+      <span>
+        G. Pizzi et al. AiiDA: Automated Interactive Infrastructure and Database
+        for Computational Science. Computational Materials Science, 111:218-230,
+        2016.
+      </span>
+    ),
+  },
+  pymatgen: {
+    type: "software",
+    ref: (
+      <span>
+        S. P. Ong et al. Python materials genomics (pymatgen): A robust,
+        open-source python library for materials analysis. Computational
+        Materials Science, 68:314-319, 2013.
+      </span>
+    ),
+  },
+  spglib: {
+    type: "software",
+    ref: (
+      <span>
+        A. Togo. Spglib.{" "}
+        <a href="https://spglib.readthedocs.io/" target="_blank">
+          https://spglib.readthedocs.io/
+        </a>
+        .
+      </span>
+    ),
+  },
+  qe: {
+    type: "software",
+    ref: (
+      <span>
+        P. Giannozzi et al. Advanced capabilities for materials modelling with
+        Quantum ESPRESSO. Journal of Physics: Condensed Matter, 29:465901, 2017.
+      </span>
+    ),
+  },
+  sirius: {
+    type: "software",
+    ref: (
+      <span>
+        SIRIUS,{" "}
+        <a
+          href="https://github.com/electronic-structure/SIRIUS"
+          target="_blank"
+        >
+          https://github.com/electronic-structure/SIRIUS
+        </a>
+        .
+      </span>
+    ),
+  },
+  cod_parser: {
+    type: "software",
+    ref: (
+      <span>
+        A. Merkys et al. COD::CIF::Parser: an error-correcting CIF parser for
+        the Perl language Journal of Applied Crystallography 49 (2016)
+      </span>
+    ),
+  },
+  sssp: {
+    type: "pseudo_protocols",
+    ref: (
+      <span>
+        G. Prandini, A. Marrazzo, I. E. Castelli, N. Mounet and N. Marzari, npj
+        Computational Materials 4, 72 (2018).{" "}
+        <a href="http://www.materialscloud.org/sssp/" target="_blank">
+          http://www.materialscloud.org/sssp/
+        </a>
+      </span>
+    ),
+  },
+  sssp_protocols: {
+    type: "pseudo_protocols",
+    ref: (
+      <span>
+        SSSP protocol for the calculation of structural and thermodynamical
+        properties of inorganic materials, Nicolas Hoermann et al., to be
+        published.
+      </span>
+    ),
+  },
+};
+
+function refNr(key) {
+  return Object.keys(references).indexOf(key) + 1;
+}
+
+function getRef(key) {
+  // the <a> ancor element doesn't work with react router, so use the HashLink instead
+  return (
+    <sup>
+      <HashLink className="cite-anchor" to={"#ref" + refNr(key)}>
+        [{refNr(key)}]
+      </HashLink>
+    </sup>
+  );
+}
+
+function renderRefs(type) {
+  return Object.keys(references).map((key) => {
+    if (references[key]["type"] != type) return;
+    let nr = refNr(key);
+    return (
+      <div id={"ref" + nr} key={nr}>
+        [{nr}] {references[key]["ref"]}
+      </div>
+    );
+  });
+}
+
 export const aboutText = (
-  <div>
+  <div className="about-text-container">
     <p>
       This is a curated set of relaxed three-dimensional crystal structures
       based on raw CIF data taken from the external experimental databases MPDS
-      [1], COD [2] and ICSD [3]. The raw CIF data have been imported, cleaned
-      [9] and parsed [5,6] into a crystal structure; their ground-state has been
-      computed using the SIRIUS-enabled [8] pw.x code of the Quantum ESPRESSO
-      [7] distribution, and tight tolerance criteria for the calculations using
-      the SSSP protocols [10, 11].
+      {getRef("mpds")}, COD{getRef("cod")} and ICSD{getRef("icsd")}. The raw CIF
+      data have been imported, cleaned{getRef("cod_parser")} and parsed
+      {getRef("pymatgen")}
+      {getRef("spglib")} into a crystal structure; their ground-state has been
+      computed using the SIRIUS-enabled{getRef("sirius")} pw.x code of the
+      Quantum ESPRESSO{getRef("qe")} distribution, and tight tolerance criteria
+      for the calculations using the SSSP protocols{getRef("sssp")}
+      {getRef("sssp_protocols")}.
     </p>
     <p>
-      This entire procedure is encoded into an AiiDA [4] workflow which
-      automates the process while keeping full data provenance. Here, since the
-      original source data of the ICSD and MPDS databases are copyrighted, only
-      the provenance of the final SCF calculation on the relaxed structures can
-      be made publicly available.
+      This entire procedure is encoded into an AiiDA{getRef("aiida1")}
+      {getRef("aiida2")} workflow which automates the process while keeping full
+      data provenance. Here, since the original source data of the ICSD and MPDS
+      databases are copyrighted, only the provenance of the final SCF
+      calculation on the relaxed structures can be made publicly available.
     </p>
     <p>
       The MC3D ID numbers come from a list of unique "parent" stoichiometric
@@ -30,46 +211,13 @@ export const aboutText = (
       mc3d-1234/pbesol have the same starting point, but have been then relaxed
       according to their respective functionals.
     </p>
+    <div className="about-h">Acknowledgements</div>
     <b>External databases of source CIF data</b>
-    <br />
-    [1] S. Gražulis et al. Crystallography open database (COD): an open-access
-    collection of crystal structures and platform for world-wide collaboration.
-    Nucleic Acids Research, 40:D420-D427, 2012, http://www.crystallography.net.
-    <br />
-    [2] Inorganic Crystal Structure Database,
-    http://www.fiz-karlsruhe.com/icsd.html.
-    <br />
-    [3] The Pauling File http://paulingfile.com/ exposed through the Materials
-    Platform for Data Science https://mpds.io/.
-    <br />
+    {renderRefs("db")}
     <b>Software</b>
-    <br />
-    [4] G. Pizzi et al. AiiDA: Automated Interactive Infrastructure and Database
-    for Computational Science. Computational Materials Science, 111:218-230,
-    2016. http://www.aiida.net.
-    <br />
-    [5] S. P. Ong et al. Python materials genomics (pymatgen): A robust,
-    open-source python library for materials analysis. Computational Materials
-    Science, 68:314 - 319, 2013.
-    <br />
-    [6] A. Togo. Spglib. http://spglib.sourceforge.net.
-    <br />
-    [7] P. Giannozzi et al. Advanced capabilities for materials modelling with
-    Quantum ESPRESSO. Journal of Physics: Condensed Matter, 29:465901, 2017.
-    <br />
-    [8] SIRIUS, https://github.com/electronic-structure/SIRIUS.
-    <br />
-    [9] A. Merkys et al. COD::CIF::Parser: an error-correcting CIF parser for
-    the Perl language Journal of Applied Crystallography 49 (2016)
-    <br />
+    {renderRefs("software")}
     <b>Pseudopotentials and protocols</b>
-    <br />
-    [10] G. Prandini, A. Marrazzo, I. E. Castelli, N. Mounet and N. Marzari, npj
-    Computational Materials 4, 72 (2018). http://www.materialscloud.org/sssp/.
-    <br />
-    [11] SSSP protocol for the calculation of structural and thermodynamical
-    properties of inorganic materials, Nicolas Hoermann et al., to be published.
-    <br />
+    {renderRefs("pseudo_protocols")}
     <b>Funding partners</b>
     <br />
     This project is made possible by support from the European Centre of

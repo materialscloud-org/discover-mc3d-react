@@ -1,0 +1,19 @@
+.about-text-container {
+  text-align: justify;
+  text-justify: auto;
+  padding: 15px 5px;
+}
+
+.cite-anchor {
+  text-decoration: none;
+}
+
+.cite-anchor:hover {
+  text-decoration: underline;
+}
+
+.about-h {
+  font-weight: 600;
+  font-size: 20px;
+  padding: 0px 0px 10px;
+}

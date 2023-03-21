@@ -18,7 +18,7 @@ function App() {
         },
       ]}
     >
-      <div className="App">
+      <div className="App bs-overrides">
         <MainPage />
       </div>
     </MaterialsCloudHeader>
