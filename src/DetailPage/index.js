@@ -20,7 +20,7 @@ import "./index.css";
 import McloudSpinner from "../common/McloudSpinner";
 
 const mcRestApiUrl =
-  "https://dev-www.materialscloud.org/mcloud/api/v2/discover/mc3d/info";
+  "https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/info";
 
 async function fetchCompoundData(compound, id) {
   // 1. fetch the urls:
