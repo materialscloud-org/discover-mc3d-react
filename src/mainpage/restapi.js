@@ -1,3 +1,5 @@
+import { REST_API_COMPOUNDS, REST_API_AIIDA } from "../common/config";
+
 import "./restapi.css";
 
 export const restapiText = (
@@ -12,29 +14,20 @@ export const restapiText = (
       <ul>
         <li>
           Index of materials:{" "}
-          <a
-            href="https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds"
-            target="_blank"
-          >
-            https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds
+          <a href={REST_API_COMPOUNDS} target="_blank">
+            {REST_API_COMPOUNDS}
           </a>
         </li>
         <li>
           Single compound data:{" "}
-          <a
-            href="https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds/Ag10Gd4Mg3"
-            target="_blank"
-          >
-            https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds/Ag10Gd4Mg3
+          <a href={REST_API_COMPOUNDS + "/Ag20Gd8Mg6"} target="_blank">
+            {REST_API_COMPOUNDS + "/Ag20Gd8Mg6"}
           </a>
         </li>
         <li>
           AiiDA REST API for properties and provenance:{" "}
-          <a
-            href="https://aiida.materialscloud.org/mc3d/api/v4"
-            target="_blank"
-          >
-            https://aiida.materialscloud.org/mc3d/api/v4
+          <a href={REST_API_AIIDA} target="_blank">
+            {REST_API_AIIDA}
           </a>
         </li>
       </ul>

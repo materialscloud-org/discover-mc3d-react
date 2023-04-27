@@ -12,10 +12,13 @@ import Tabs from "react-bootstrap/Tabs";
 import { aboutText } from "./about";
 import { restapiText } from "./restapi";
 
+import { REST_API_COMPOUNDS } from "../common/config";
+
 import {
   spaceGroupSymbols,
   bravaisLatticeFromSpgn,
 } from "../common/symmetryUtils";
+import { variationPlacements } from "@popperjs/core";
 
 /* The MaterialsSelector needs two inputs:
  1) column definitions
@@ -46,10 +49,24 @@ const columns = [
     // width: 180,
   },
   {
+    field: "exp_observed",
+    headerName: "Experim. observed",
+    colType: "text",
+    width: 120,
+  },
+  {
     field: "n_elem",
     headerName: "Num. of elements",
     colType: "integer",
     hide: true,
+    width: 120,
+  },
+  {
+    field: "n_atoms",
+    headerName: "Num. of atoms/cell",
+    colType: "integer",
+    hide: true,
+    width: 120,
   },
   {
     field: "bravais_lat",
@@ -67,7 +84,7 @@ const columns = [
     headerName: "Space group number",
     colType: "integer",
     hide: true,
-    // width: 120,
+    width: 120,
   },
   {
     field: "tot_mag",
@@ -89,24 +106,51 @@ function calcElementArray(formula) {
   return elements;
 }
 
-function formatRows(compounds) {
+function countNumberOfAtoms(formula) {
+  // split on capital letters to get element+number strings
+  var elnum = formula.split(/(?=[A-Z])/);
+  var num = 0;
+  elnum.forEach((v) => {
+    let match = v.match(/\d+/);
+    let n = match == null ? 1 : parseInt(match[0]);
+    num += n;
+  });
+  return num;
+}
+
+function formatRows(entries) {
   var rows = [];
-  //var compounds = { Ag5O4Si: compounds_["Ag5O4Si"] };
-  Object.keys(compounds).forEach((i) => {
-    Object.keys(compounds[i]).forEach((j) => {
-      var comp = compounds[i][j];
-      var elemArr = calcElementArray(i);
+
+  // var entries = {
+  //   "mc3d-10": entries["mc3d-10"],
+  //   "mc3d-228": entries["mc3d-228"],
+  //   "mc3d-10010": entries["mc3d-10010"],
+  //   "mc3d-10019": entries["mc3d-10019"],
+  //   "mc3d-10802": entries["mc3d-10802"],
+  //   "mc3d-75049": entries["mc3d-75049"],
+  // };
+
+  Object.keys(entries).forEach((i) => {
+    var comp = entries[i];
+    var elemArr = calcElementArray(comp["formula"]);
+    var exp_obs = true;
+    if ("flg" in comp && comp["flg"].includes("th")) exp_obs = false;
+
+    Object.keys(comp["xc"]).forEach((func) => {
+      var mc3d_id = `${i}/${func}`;
       var row = {
-        id: comp["id"],
-        formula: i,
-        spg_int: spaceGroupSymbols[comp["spgn"]],
-        spg_num: comp["spgn"],
-        tot_mag: "tm" in comp ? comp["tm"] : null,
-        abs_mag: "am" in comp ? comp["am"] : null,
+        id: mc3d_id,
+        formula: comp["formula"],
+        spg_num: comp["sg"],
+        spg_int: spaceGroupSymbols[comp["sg"]],
+        bravais_lat: bravaisLatticeFromSpgn(comp["sg"]),
+        tot_mag: comp["xc"][func]["tm"] ?? null,
+        abs_mag: comp["xc"][func]["am"] ?? null,
         n_elem: elemArr.length,
-        bravais_lat: bravaisLatticeFromSpgn(comp["spgn"]),
         elem_array: elemArr,
-        href: `${process.env.PUBLIC_URL}/#/details/${i}/${comp["id"]}`,
+        n_atoms: countNumberOfAtoms(comp["formula"]),
+        href: `${process.env.PUBLIC_URL}/#/details/${comp["formula"]}/${mc3d_id}`,
+        exp_observed: exp_obs,
       };
       rows.push(row);
     });
@@ -115,14 +159,11 @@ function formatRows(compounds) {
 }
 
 async function loadDataMc3d() {
-  let compounds_url =
-    "https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds";
-
-  const response = await fetch(compounds_url, { method: "get" });
+  const response = await fetch(REST_API_COMPOUNDS, { method: "get" });
   const json = await response.json();
 
   // return a Promise of the correctly formatted data
-  return formatRows(json.data.compounds);
+  return formatRows(json.data);
 }
 
 function MainPage() {

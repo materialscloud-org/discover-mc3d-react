@@ -14,23 +14,25 @@ import MaterialsCloudHeader from "mc-react-header";
 
 import { formatTitle } from "../common/utils";
 
+import { REST_API_COMPOUNDS, REST_API_AIIDA } from "../common/config";
+
 import "./index.css";
 import McloudSpinner from "../common/McloudSpinner";
 
-const mcRestApiUrl =
-  "https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/info";
-
 async function fetchCompoundData(compound, id) {
   // 1. fetch the urls:
-  const responseUrls = await fetch(mcRestApiUrl);
-  const jsonUrls = await responseUrls.json();
+  // const responseUrls = await fetch(mcRestApiUrl);
+  // const jsonUrls = await responseUrls.json();
 
-  const compoundsUrl = jsonUrls.data.compounds_url;
-  const aiidaRestEndpoint = jsonUrls.data.aiida_rest_endpoint;
+  // const compoundsUrl = jsonUrls.data.compounds_url;
+  // const aiidaRestEndpoint = jsonUrls.data.aiida_rest_endpoint;
 
   // 2. fetch the compound data from MC Rest API:
-  const responseCompound = await fetch(`${compoundsUrl}/${compound}`);
+  const responseCompound = await fetch(`${REST_API_COMPOUNDS}/${compound}`);
   const jsonCompound = await responseCompound.json();
+
+  const metadata = jsonCompound.data.metadata;
+  console.log(metadata);
 
   // this returns a list of structures with the formula.
   //We need to find the correct one with the specified id
@@ -44,22 +46,23 @@ async function fetchCompoundData(compound, id) {
 
   // 3. fetch the data from the AiiDA Rest API:
   const responseAiiDA = await fetch(
-    `${aiidaRestEndpoint}/nodes/${uuid}/contents/attributes`
+    `${REST_API_AIIDA}/nodes/${uuid}/contents/attributes`
   );
   const jsonAiiDA = await responseAiiDA.json();
 
   // 4. fetch the structure as a cif file from the AIIDA Rest API:
   const responseAiiDACif = await fetch(
-    `${aiidaRestEndpoint}/nodes/${uuid}/download?download_format=cif&download=false`
+    `${REST_API_AIIDA}/nodes/${uuid}/download?download_format=cif&download=false`
   );
   const jsonAiiDACif = await responseAiiDACif.json();
 
   let loadedData = {
-    aiidaRestEndpoint: aiidaRestEndpoint,
+    aiidaRestEndpoint: REST_API_AIIDA,
     compoundInfo: selectedCompoundInfo,
     aiidaAttributes: jsonAiiDA.data.attributes,
     sameFormulaStructures: { spacegrps: spacegroupsArr, ids: idsArr },
     cifText: jsonAiiDACif.data.download.data,
+    metadata: metadata,
   };
   return loadedData;
 }
@@ -70,12 +73,13 @@ function DetailPage() {
   const [aiidaAttributes, setAiidaAttributes] = useState(null);
   const [sameFormulaStructures, setSameFormulaStructures] = useState(null);
   const [cifText, setCifText] = useState(null);
+  const [metadata, setMetadata] = useState(null);
 
   // for routing
   const navigate = useNavigate();
   const params = useParams();
 
-  console.log("route params", params);
+  //console.log("route params", params);
 
   // componentDidMount equivalent
   useEffect(() => {
@@ -86,6 +90,7 @@ function DetailPage() {
     setAiidaAttributes(null);
     setSameFormulaStructures(null);
     setCifText(null);
+    setMetadata(null);
 
     let compound = params["compound"];
     let id = params["id"] + "/" + params["functional"];
@@ -96,6 +101,7 @@ function DetailPage() {
       setAiidaAttributes(loadedData.aiidaAttributes);
       setSameFormulaStructures(loadedData.sameFormulaStructures);
       setCifText(loadedData.cifText);
+      setMetadata(loadedData.metadata);
     });
   }, [params.compound, params.id, params.functional]); // <- call when route params change
 
@@ -127,15 +133,13 @@ function DetailPage() {
               <VisualizerAndInfoSection
                 cifText={cifText}
                 compoundInfo={compoundInfo}
+                metadata={metadata}
               />
               <StructureSection
                 aiidaAttributes={aiidaAttributes}
                 compoundInfo={compoundInfo}
               />
-              <ProvenanceSection
-                aiidaRestEndpoint={aiidaRestEndpoint}
-                uuid={compoundInfo.uuid_structure}
-              />
+              <ProvenanceSection compoundInfo={compoundInfo} />
               {/* <XrdSection /> */}
             </>
           )}

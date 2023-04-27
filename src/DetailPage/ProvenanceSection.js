@@ -30,42 +30,35 @@ async function fetchProvenanceData(uuid, aiidaRestEndpoint) {
 }
 
 function ProvenanceSection(props) {
-  const [outgoingLinks, setOutgoingLinks] = useState(null);
+  // const [outgoingLinks, setOutgoingLinks] = useState(null);
 
   // componentDidMount equivalent
-  useEffect(() => {
-    setOutgoingLinks(null);
-    fetchProvenanceData(props.uuid, props.aiidaRestEndpoint).then((loaded) => {
-      // setTimeout(() => setOutgoingLinks(loaded), 2000); // add some delay to test loading
-      setOutgoingLinks(loaded);
-    });
-  }, []);
+  // useEffect(() => {
+  //   setOutgoingLinks(null);
+  //   fetchProvenanceData(props.uuid, props.aiidaRestEndpoint).then((loaded) => {
+  //     // setTimeout(() => setOutgoingLinks(loaded), 2000); // add some delay to test loading
+  //     setOutgoingLinks(loaded);
+  //   });
+  // }, []);
 
-  console.log(outgoingLinks);
-  let loading = outgoingLinks == null;
+  //console.log(outgoingLinks);
+  // let loading = outgoingLinks == null;
+
+  console.log(props.compoundInfo["provenance_links"]);
   return (
     <div className="provenance-section">
       <b>Provenance links</b>
       <div className="provenance-section-inner">
-        {loading ? (
-          <McloudSpinner />
-        ) : (
-          <>
-            {/* <div>Calculation that created this structure: -</div> */}
-            <div>Calculations using this structure:</div>
-            <ul>
-              {outgoingLinks.data.outgoing.map((elem, i) => {
-                console.log(elem.full_type);
-                return (
-                  <li key={i}>
-                    {formatAiidaFullType(elem.full_type)}{" "}
-                    <ExploreButton uuid={elem.uuid} />
-                  </li>
-                );
-              })}
-            </ul>
-          </>
-        )}
+        <div>Related nodes in the provenance browser:</div>
+        <ul>
+          {props.compoundInfo["provenance_links"].map((e) => {
+            return (
+              <li key={e.uuid}>
+                {e.label} <ExploreButton uuid={e.uuid} />
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );

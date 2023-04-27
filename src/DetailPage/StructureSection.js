@@ -10,7 +10,7 @@ import "./StructureSection.css";
 class StructureSection extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.aiidaAttributes);
+    //console.log(this.props.aiidaAttributes);
   }
   render() {
     let nDig = 4;

@@ -13,42 +13,50 @@ import IcsdLogo from "../images/icsd.png";
 import CodLogo from "../images/cod.png";
 import MpdsLogo from "../images/mpds.png";
 
+function sourceUrl(source) {
+  if (source["database"] == "MPDS") {
+    return `https://mpds.io/#entry/${source["id"]}`;
+  }
+  if (source["database"] == "COD") {
+    return `http://www.crystallography.net/cod/${source["id"]}.html`;
+  }
+  if (source["database"] == "ICSD") {
+    return `https://www.ccdc.cam.ac.uk/structures/Search?Ccdcid=${source["id"]}&DatabaseToSearch=ICSD`;
+  }
+  return null;
+}
+
 class InfoBox extends React.Component {
   constructor(props) {
     super(props);
   }
+
+  createPropertyLine(name) {
+    console.log(this.props);
+    let pts = this.props.compoundInfo["properties"];
+    let meta = this.props.metadata["properties"][name];
+    let jsx = <span>{meta["label"]}: N/A</span>;
+    if (name in pts)
+      jsx = (
+        <span>
+          {`${meta["label"]}: ${pts[name].value} ${meta["units"]} `}
+          <ExploreButton uuid={pts[name].uuid} />
+        </span>
+      );
+    return jsx;
+  }
+
   render() {
     console.log("compoundInfo", this.props.compoundInfo);
     let info = this.props.compoundInfo["info"];
     let source = this.props.compoundInfo["source"];
-    let props = this.props.compoundInfo["properties"];
 
-    let tot_en_jsx = <span>N/A</span>;
-    if ("total_energy" in props)
-      tot_en_jsx = (
-        <span>
-          {`${props["total_energy"].value} eV/cell `}
-          <ExploreButton uuid={props["total_energy"].uuid} />
-        </span>
-      );
-
-    let tot_mag_jsx = <span>N/A</span>;
-    if ("total_magnetization" in props)
-      tot_mag_jsx = (
-        <span>
-          {`${props["total_magnetization"].value} μB/cell `}
-          <ExploreButton uuid={props["total_magnetization"].uuid} />
-        </span>
-      );
-
-    let abs_mag_jsx = <span>N/A</span>;
-    if ("absolute_magnetization" in props)
-      abs_mag_jsx = (
-        <span>
-          {`${props["absolute_magnetization"].value} μB/cell `}
-          <ExploreButton uuid={props["absolute_magnetization"].uuid} />
-        </span>
-      );
+    let propertyList = [
+      "total_energy",
+      "cell_volume",
+      "total_magnetization",
+      "absolute_magnetization",
+    ];
 
     return (
       <div className="info-box">
@@ -68,14 +76,14 @@ class InfoBox extends React.Component {
           <ul className="no-bullets">
             {source.map((s) => {
               let logo = null;
-              if (s["source_database"] == "ICSD") logo = IcsdLogo;
-              if (s["source_database"] == "COD") logo = CodLogo;
-              if (s["source_database"] == "MPDS") logo = MpdsLogo;
+              if (s["database"] == "ICSD") logo = IcsdLogo;
+              if (s["database"] == "COD") logo = CodLogo;
+              if (s["database"] == "MPDS") logo = MpdsLogo;
               return (
-                <li key={s["source_id"]}>
+                <li key={s["id"]}>
                   <a
                     className="source-a"
-                    href={s["source_url"]}
+                    href={sourceUrl(s)}
                     title={"Go to source data"}
                   >
                     <div
@@ -86,9 +94,19 @@ class InfoBox extends React.Component {
                       }}
                     >
                       <img src={logo} style={{ height: "20px" }}></img>
-                      {s["source_database"]} ID: {s["source_id"]}
+                      {s["database"]} ID: {s["id"]}
                     </div>
                   </a>
+                  <div
+                    style={{
+                      display: "block",
+                      marginLeft: "25px",
+                    }}
+                  >
+                    {s["exp_observed"]
+                      ? "(experimentally observed)"
+                      : "(not observed experimentally)"}
+                  </div>
                 </li>
               );
             })}
@@ -97,9 +115,9 @@ class InfoBox extends React.Component {
         <div>
           <b>Properties</b>
           <ul className="no-bullets">
-            <li>Total energy: {tot_en_jsx}</li>
-            <li>Total magnetization: {tot_mag_jsx}</li>
-            <li>Absolute magnetization: {abs_mag_jsx}</li>
+            {propertyList.map((name) => (
+              <li key={name}>{this.createPropertyLine(name)}</li>
+            ))}
           </ul>
         </div>
       </div>
@@ -125,7 +143,10 @@ class VisualizerAndInfoSection extends React.Component {
               <DownloadButton uuid={this.props.compoundInfo.uuid_structure} />
             </div>
           </div>
-          <InfoBox compoundInfo={this.props.compoundInfo} />
+          <InfoBox
+            compoundInfo={this.props.compoundInfo}
+            metadata={this.props.metadata}
+          />
         </div>
       </div>
     );
