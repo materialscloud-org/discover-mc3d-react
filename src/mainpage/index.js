@@ -116,7 +116,7 @@ function formatRows(compounds) {
 
 async function loadDataMc3d() {
   let compounds_url =
-    "https://dev-www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds";
+    "https://www.materialscloud.org/mcloud/api/v2/discover/mc3d/compounds";
 
   const response = await fetch(compounds_url, { method: "get" });
   const json = await response.json();

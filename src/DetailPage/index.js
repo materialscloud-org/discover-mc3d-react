@@ -10,8 +10,6 @@ import TitleAndLogo from "../common/TitleAndLogo";
 
 import { useParams, useNavigate } from "react-router-dom";
 
-import Spinner from "react-bootstrap/Spinner";
-
 import MaterialsCloudHeader from "mc-react-header";
 
 import { formatTitle } from "../common/utils";
