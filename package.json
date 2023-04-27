@@ -12,7 +12,7 @@
     "bootstrap-icons": "^1.10.3",
     "mc-react-header": "^0.2.1",
     "mc-react-ptable-materials-grid": "^0.4.6",
-    "mc-react-structure-visualizer": "^0.4.2",
+    "mc-react-structure-visualizer": "^0.4.3",
     "plotly.js": "^2.6.2",
     "react": "^18.1.0",
     "react-bootstrap": "^2.6.0",
