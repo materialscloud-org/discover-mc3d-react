@@ -150,7 +150,7 @@ function formatRows(entries) {
         elem_array: elemArr,
         n_atoms: countNumberOfAtoms(comp["formula"]),
         href: `${process.env.PUBLIC_URL}/#/details/${comp["formula"]}/${mc3d_id}`,
-        exp_observed: exp_obs,
+        exp_observed: exp_obs ? "yes" : "no",
       };
       rows.push(row);
     });

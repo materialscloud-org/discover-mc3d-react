@@ -105,7 +105,7 @@ class InfoBox extends React.Component {
                   >
                     {s["exp_observed"]
                       ? "(experimentally observed)"
-                      : "(not observed experimentally)"}
+                      : "(unknown if experimentally observed)"}
                   </div>
                 </li>
               );
