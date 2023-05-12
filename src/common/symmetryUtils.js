@@ -248,7 +248,7 @@ export function bravaisLatticeFromSpgn(spaceGroupNumber) {
   else if (spaceGroupNumber < 75) crystalSystem = "o"; // orthorhombic
   else if (spaceGroupNumber < 143) crystalSystem = "t"; // tetragonal
   else if (spaceGroupNumber < 195) crystalSystem = "h"; // hexagonal
-  else crystalSystem = "m"; // cubic
+  else crystalSystem = "c"; // cubic
 
   let centeringType = spaceGroupSymbols[spaceGroupNumber].charAt(0);
 
