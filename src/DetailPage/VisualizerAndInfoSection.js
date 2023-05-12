@@ -21,7 +21,7 @@ function sourceUrl(source) {
     return `http://www.crystallography.net/cod/${source["id"]}.html`;
   }
   if (source["database"] == "ICSD") {
-    return `https://www.ccdc.cam.ac.uk/structures/Search?Ccdcid=${source["id"]}&DatabaseToSearch=ICSD`;
+    return `https://icsd.fiz-karlsruhe.de/linkicsd.xhtml?coll_code=${source["id"]}`;
   }
   return null;
 }
