@@ -30,6 +30,21 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Materials Cloud 3D crystals database</title>
+
+    <!-- Plausible analytics -->
+    <script type="text/javascript">
+      var header = document.getElementsByTagName("head")[0];
+      var plausible = document.createElement("script");
+      var domain_name = window.location.hostname;
+      var rollup_name = "plausible-rollup.materialscloud.org";
+
+      plausible.async = "";
+      plausible.defer = "";
+      plausible.dataset["domain"] = domain_name + "," + rollup_name;
+      plausible.src = "https://plausible.io/js/plausible.js";
+      header.appendChild(plausible);
+    </script>
+    <!-- end Plausible analytics -->
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
