@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/static/css/main.0cce0e20.css",
-    "main.js": "/static/js/main.20afc708.js",
+    "main.css": "/static/css/main.9aa3f0f2.css",
+    "main.js": "/static/js/main.e1427912.js",
     "static/js/787.1214422b.chunk.js": "/static/js/787.1214422b.chunk.js",
     "static/media/mc3d.png": "/static/media/mc3d.3968e7516221715ab4e5.png",
     "static/media/fontawesome-webfont.svg?v=4.7.0": "/static/media/fontawesome-webfont.c1e38fd9e0e74ba58f7a.svg",
     "static/media/fontawesome-webfont.eot": "/static/media/fontawesome-webfont.8b43027f47b20503057d.eot",
     "static/media/fontawesome-webfont.ttf?v=4.7.0": "/static/media/fontawesome-webfont.1e59d2330b4c6deb84b3.ttf",
-    "static/media/bootstrap-icons.woff?": "/static/media/bootstrap-icons.4753c5ba57962b4d7bf8.woff",
-    "static/media/bootstrap-icons.woff2?": "/static/media/bootstrap-icons.6d63d0501e5ed7b79dab.woff2",
+    "static/media/bootstrap-icons.woff?": "/static/media/bootstrap-icons.6959d0d983ee318f8880.woff",
+    "static/media/bootstrap-icons.woff2?": "/static/media/bootstrap-icons.b2e5aab643c6f0fd2da6.woff2",
     "static/media/fontawesome-webfont.woff?v=4.7.0": "/static/media/fontawesome-webfont.f691f37e57f04c152e23.woff",
     "static/media/cod.png": "/static/media/cod.ba5247f4997cfc3f95c5.png",
     "static/media/fontawesome-webfont.woff2?v=4.7.0": "/static/media/fontawesome-webfont.20fd1704ea223900efa9.woff2",
     "static/media/icsd.png": "/static/media/icsd.4d1810e1594e46062a0b.png",
     "static/media/mpds.png": "/static/media/mpds.3f5d7560dfa61158b156.png",
     "index.html": "/index.html",
-    "main.0cce0e20.css.map": "/static/css/main.0cce0e20.css.map",
-    "main.20afc708.js.map": "/static/js/main.20afc708.js.map",
+    "main.9aa3f0f2.css.map": "/static/css/main.9aa3f0f2.css.map",
+    "main.e1427912.js.map": "/static/js/main.e1427912.js.map",
     "787.1214422b.chunk.js.map": "/static/js/787.1214422b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.0cce0e20.css",
-    "static/js/main.20afc708.js"
+    "static/css/main.9aa3f0f2.css",
+    "static/js/main.e1427912.js"
   ]
 }
