@@ -26,6 +26,13 @@ function sourceUrl(source) {
   return null;
 }
 
+const PROPERTY_LABELS = {
+  total_energy: "Total energy",
+  cell_volume: "Cell volume",
+  total_magnetization: "Total magnetization",
+  absolute_magnetization: "Absolute magnetization",
+};
+
 class InfoBox extends React.Component {
   constructor(props) {
     super(props);
@@ -34,12 +41,17 @@ class InfoBox extends React.Component {
   createPropertyLine(name) {
     console.log(this.props);
     let pts = this.props.compoundInfo["properties"];
-    let meta = this.props.metadata["properties"][name];
-    let jsx = <span>{meta["label"]}: N/A</span>;
+    let label = PROPERTY_LABELS[name];
+    let unit = "";
+    if (name in this.props.metadata) {
+      if ("units" in this.props.metadata[name])
+        unit = this.props.metadata[name]["units"];
+    }
+    let jsx = <span>{label}: N/A</span>;
     if (name in pts)
       jsx = (
         <span>
-          {`${meta["label"]}: ${pts[name].value} ${meta["units"]} `}
+          {`${label}: ${pts[name].value.toFixed(3)} ${unit} `}
           <ExploreButton uuid={pts[name].uuid} />
         </span>
       );
@@ -102,11 +114,7 @@ class InfoBox extends React.Component {
                       display: "block",
                       marginLeft: "25px",
                     }}
-                  >
-                    {s["exp_observed"]
-                      ? "(experimentally observed)"
-                      : "(unknown if experimentally observed)"}
-                  </div>
+                  ></div>
                 </li>
               );
             })}

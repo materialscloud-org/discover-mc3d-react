@@ -14,7 +14,11 @@ import MaterialsCloudHeader from "mc-react-header";
 
 import { formatTitle } from "../common/utils";
 
-import { REST_API_COMPOUNDS, REST_API_AIIDA } from "../common/config";
+import {
+  REST_API_COMPOUNDS,
+  REST_API_METADATA,
+  REST_API_AIIDA,
+} from "../common/config";
 
 import "./index.css";
 import McloudSpinner from "../common/McloudSpinner";
@@ -31,17 +35,21 @@ async function fetchCompoundData(compound, id) {
   const responseCompound = await fetch(`${REST_API_COMPOUNDS}/${compound}`);
   const jsonCompound = await responseCompound.json();
 
-  const metadata = jsonCompound.data.metadata;
+  console.log(jsonCompound);
+
+  const metadata_response = await fetch(REST_API_METADATA, { method: "get" });
+  const metadata = await metadata_response.json();
+
   console.log(metadata);
 
   // this returns a list of structures with the formula.
   //We need to find the correct one with the specified id
-  const spacegroupsArr = jsonCompound.data[compound].map(
+  const spacegroupsArr = jsonCompound.data.map(
     (stru) => stru.info.spacegroup_international
   );
-  const idsArr = jsonCompound.data[compound].map((stru) => stru.info.mc3d_id);
+  const idsArr = jsonCompound.data.map((stru) => stru.info.mc3d_id);
 
-  const selectedCompoundInfo = jsonCompound.data[compound][idsArr.indexOf(id)];
+  const selectedCompoundInfo = jsonCompound.data[idsArr.indexOf(id)];
   const uuid = selectedCompoundInfo.uuid_structure;
 
   // 3. fetch the data from the AiiDA Rest API:
