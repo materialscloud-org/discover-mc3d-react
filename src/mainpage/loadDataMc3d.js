@@ -97,12 +97,16 @@ function columns(info) {
       headerName: "Total magnetization",
       unit: info["total_magnetization"]["units"],
       colType: "float",
+      infoText:
+        "Total magnetization of the ferromagnetic solution, if it exists.",
     },
     {
       field: "abs_mag",
       headerName: "Absolute magnetization",
       unit: info["absolute_magnetization"]["units"],
       colType: "float",
+      infoText:
+        "Absolute magnetization of the ferromagnetic solution, if it exists.",
     },
   ];
 }
