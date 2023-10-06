@@ -68,7 +68,7 @@ function columns(info) {
     },
     {
       field: "is_theoretical",
-      headerName: "Is theoretical?",
+      headerName: "Is source theoretical?",
       colType: "text",
       infoText:
         "Does the source database report the structure origin as theoretical?",
@@ -76,19 +76,19 @@ function columns(info) {
     },
     {
       field: "is_high_pressure",
-      headerName: "Is high (exp.) pressure?",
+      headerName: "Is source high pressure?",
       colType: "text",
       infoText:
-        "Does the source database report the experimental pressure higher than " +
+        "Does the source database report the characterization pressure higher than " +
         `${info["high_pressure_threshold"]["value"]} ${info["high_pressure_threshold"]["units"]}?`,
       hide: true,
     },
     {
       field: "is_high_temperature",
-      headerName: "Is high (exp.) temperature?",
+      headerName: "Is source high temperature?",
       colType: "text",
       infoText:
-        "Does the source database report the experimental temperature higher than " +
+        "Does the source database report the characterization temperature higher than " +
         `${info["high_temperature_threshold"]["value"]} ${info["high_temperature_threshold"]["units"]}?`,
       hide: true,
     },
