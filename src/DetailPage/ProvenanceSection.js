@@ -44,7 +44,7 @@ function ProvenanceSection(props) {
   //console.log(outgoingLinks);
   // let loading = outgoingLinks == null;
 
-  console.log(props.compoundInfo["provenance_links"]);
+  //console.log(props.compoundInfo["provenance_links"]);
   return (
     <div className="provenance-section">
       <b>Provenance links</b>

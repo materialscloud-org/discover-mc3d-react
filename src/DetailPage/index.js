@@ -35,12 +35,9 @@ async function fetchCompoundData(compound, id) {
   const responseCompound = await fetch(`${REST_API_COMPOUNDS}/${compound}`);
   const jsonCompound = await responseCompound.json();
 
-  console.log(jsonCompound);
-
   const metadata_response = await fetch(REST_API_METADATA, { method: "get" });
-  const metadata = await metadata_response.json();
-
-  console.log(metadata);
+  const metadata_json = await metadata_response.json();
+  const metadata = metadata_json.data;
 
   // this returns a list of structures with the formula.
   //We need to find the correct one with the specified id
