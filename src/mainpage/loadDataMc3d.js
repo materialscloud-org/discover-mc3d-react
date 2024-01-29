@@ -25,13 +25,13 @@ function columns(info) {
     {
       field: "id",
       headerName: "ID",
-      colType: "text",
+      colType: "id",
       infoText: "The unique MC3D identifier of each structure.",
     },
     {
       field: "formula",
       headerName: "Formula",
-      colType: "text",
+      colType: "formula",
       // width: 180,
       infoText: "The full formula in Hill notation.",
     },
@@ -57,7 +57,7 @@ function columns(info) {
     {
       field: "spg_int",
       headerName: "Space group international",
-      colType: "text",
+      colType: "spg_symbol",
       infoText: "International short symbol for the space group.",
     },
     {
