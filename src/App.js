@@ -4,7 +4,7 @@ import "./App.css";
 
 import MaterialsCloudHeader from "mc-react-header";
 
-import MainPage from "./mainpage";
+import MainPage from "./MainPage";
 
 function App() {
   return (
