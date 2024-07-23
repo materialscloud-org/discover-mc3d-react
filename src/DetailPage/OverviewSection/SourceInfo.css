@@ -1,0 +1,9 @@
+.source-a {
+  color: #303f9f;
+  text-decoration: none;
+}
+
+.source-a:hover {
+  filter: brightness(80%);
+  text-decoration: underline;
+}

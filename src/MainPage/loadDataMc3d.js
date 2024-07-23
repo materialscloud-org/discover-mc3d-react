@@ -1,194 +1,143 @@
-import { REST_API_COMPOUNDS, REST_API_METADATA } from "../common/config";
+import { loadIndex, loadMetadata } from "../common/restApiUtils";
 
 import {
   spaceGroupSymbols,
   bravaisLatticeFromSpgn,
 } from "../common/symmetryUtils";
 
-/* The MaterialsSelector needs two inputs:
- 1) column definitions
- 2) async function that loads data
+import { countNumberOfAtoms, calcElementArray } from "../common/utils";
 
- The data needs to be an array of row objects, whereas each row needs contain
- * entries for all the columns, with the key matching the 'field' string of the column.
- * 'elem_array', which is used in the periodic table filtering.
- */
+const FRONTEND_COLUMNS = [
+  {
+    columnDef: {
+      field: "n_atoms",
+      headerName: "Num. of atoms/cell",
+      colType: "integer",
+    },
+    calcFunc: (entry) => countNumberOfAtoms(entry["formula"]),
+  },
+  {
+    columnDef: {
+      field: "bravais_lat",
+      headerName: "Bravais lattice",
+      colType: "text",
+      infoText: "Bravais lattice in Pearson notation.",
+    },
+    calcFunc: (entry) => bravaisLatticeFromSpgn(entry["sg"]),
+  },
+  {
+    columnDef: {
+      field: "spg_int",
+      headerName: "Space group international",
+      colType: "spg_symbol",
+      infoText: "International short symbol for the space group.",
+    },
+    calcFunc: (entry) => spaceGroupSymbols[entry["sg"]],
+  },
+];
 
-/* Define the columns
- some columns are special: id, formula (see the implementation)
- * colType: "text", "integer", "float" - defines formatting & filters
- * hide: true if the column is hidden initially
- any additional input is passed to ag-grid column definitions (e.g. width) 
- */
-function columns(info) {
-  return [
+function formatColumns(metadata) {
+  /*
+  The column definitions of the MaterialsSelector need to follow the format of
+  
+  {
+    field: str,        // Internal label for the column
+    headerName: str,   // Column title displayed in header
+    unit: str,         // unit displayed in header
+    colType: str,      // type that determines formatting & filtering, see below
+    infoText: str,     // info text in the header menu
+    hide: bool,        // whether to hide the column by default
+  },
+
+  Possible colTypes are the following (specific ones first, more general later):
+    * "id" - always on the left; and href to the detail page;
+    * "formula" - special formatting with subscripts
+    * "spg_symbol" - special formatting
+    * "text"
+    * "integer"
+    * "float"
+    * ...
+  */
+  let columns = [
     {
       field: "id",
       headerName: "ID",
       colType: "id",
       infoText: "The unique MC3D identifier of each structure.",
     },
-    {
-      field: "formula",
-      headerName: "Formula",
-      colType: "formula",
-      // width: 180,
-      infoText: "The full formula in Hill notation.",
-    },
-    {
-      field: "n_elem",
-      headerName: "Num. of elements",
-      colType: "integer",
-      hide: true,
-    },
-    {
-      field: "n_atoms",
-      headerName: "Num. of atoms/cell",
-      colType: "integer",
-      hide: true,
-      width: 120,
-    },
-    {
-      field: "bravais_lat",
-      headerName: "Bravais lattice",
-      colType: "text",
-      width: 120,
-    },
-    {
-      field: "spg_int",
-      headerName: "Space group international",
-      colType: "spg_symbol",
-      infoText: "International short symbol for the space group.",
-    },
-    {
-      field: "spg_num",
-      headerName: "Space group number",
-      colType: "integer",
-      hide: true,
-    },
-    {
-      field: "is_theoretical",
-      headerName: "Is source theoretical?",
-      colType: "text",
-      infoText:
-        "Does the source database report the structure origin as theoretical?",
-      hide: true,
-    },
-    {
-      field: "is_high_pressure",
-      headerName: "Is source high pressure?",
-      colType: "text",
-      infoText:
-        "Does the source database report the characterization pressure higher than " +
-        `${info["high_pressure_threshold"]["value"]} ${info["high_pressure_threshold"]["units"]}?`,
-      hide: true,
-    },
-    {
-      field: "is_high_temperature",
-      headerName: "Is source high temperature?",
-      colType: "text",
-      infoText:
-        "Does the source database report the characterization temperature higher than " +
-        `${info["high_temperature_threshold"]["value"]} ${info["high_temperature_threshold"]["units"]}?`,
-      hide: true,
-    },
-    {
-      field: "tot_mag",
-      headerName: "Total magnetization",
-      unit: info["total_magnetization"]["units"],
-      colType: "float",
-      infoText:
-        "Total magnetization of the ferromagnetic solution, if it exists.",
-    },
-    {
-      field: "abs_mag",
-      headerName: "Absolute magnetization",
-      unit: info["absolute_magnetization"]["units"],
-      colType: "float",
-      infoText:
-        "Absolute magnetization of the ferromagnetic solution, if it exists.",
-    },
   ];
-}
 
-function calcElementArray(formula) {
-  var formula_no_numbers = formula.replace(/[0-9]/g, "");
-  var elements = formula_no_numbers.split(/(?=[A-Z])/);
-  return elements;
-}
-
-function countNumberOfAtoms(formula) {
-  // split on capital letters to get element+number strings
-  var elnum = formula.split(/(?=[A-Z])/);
-  var num = 0;
-  elnum.forEach((v) => {
-    let match = v.match(/\d+/);
-    let n = match == null ? 1 : parseInt(match[0]);
-    num += n;
+  // convert the columns from metadata
+  metadata["index-columns"].forEach((col) => {
+    columns.push({
+      field: col.short_label,
+      headerName: col.name,
+      unit: col.unit || null,
+      colType: col.type || "text",
+      infoText: col.description || null,
+    });
   });
-  return num;
+
+  // Add frontend columns
+  FRONTEND_COLUMNS.forEach((frontCol) => {
+    columns.push(frontCol.columnDef);
+  });
+
+  return columns;
 }
 
-function formatRows(entries) {
+function formatRows(indexData, method) {
+  /*
+  The row data for the MaterialsSelector needs to contain
+    * key-value for each column definition (key = "field" of the column);
+    * 'href' - this link is added to the id column;
+
+  Most of the index data should already be in the correct format,
+  except for href and any frontend-calculated columns.
+  */
   let rows = [];
 
   // for testing a small subset:
-  // entries = {
-  //   "mc3d-10": entries["mc3d-10"],
-  //   "mc3d-228": entries["mc3d-228"],
-  //   "mc3d-10010": entries["mc3d-10010"],
-  //   "mc3d-10019": entries["mc3d-10019"],
-  //   "mc3d-10802": entries["mc3d-10802"],
-  //   "mc3d-75049": entries["mc3d-75049"],
-  // };
+  // indexData = indexData.slice(0, 10);
 
-  Object.keys(entries).forEach((i) => {
-    let comp = entries[i];
-    let elemArr = calcElementArray(comp["formula"]);
+  indexData.forEach((entry) => {
+    // console.log(entry);
+    let id = `${entry["id"]}/${method}`;
+    let elemArr = calcElementArray(entry["formula"]);
+    let href = `${import.meta.env.BASE_URL}/#/details/${id}`;
 
-    let is_theoretical = false;
-    let is_high_pressure = false;
-    let is_high_temperature = false;
-    if ("flg" in comp) {
-      if (comp["flg"].includes("th")) is_theoretical = true;
-      if (comp["flg"].includes("hp")) is_high_pressure = true;
-      if (comp["flg"].includes("ht")) is_high_temperature = true;
-    }
+    let modifiedKeys = {
+      id: id,
+      elem_array: elemArr,
+      href: href,
+    };
 
-    Object.keys(comp["xc"]).forEach((func) => {
-      let mc3d_id = `${i}/${func}`;
-      let row = {
-        id: mc3d_id,
-        formula: comp["formula"],
-        spg_num: comp["sg"],
-        spg_int: spaceGroupSymbols[comp["sg"]],
-        bravais_lat: bravaisLatticeFromSpgn(comp["sg"]),
-        tot_mag: comp["xc"][func]["tm"] ?? null,
-        abs_mag: comp["xc"][func]["am"] ?? null,
-        n_elem: elemArr.length,
-        elem_array: elemArr,
-        n_atoms: countNumberOfAtoms(comp["formula"]),
-        href: `${process.env.PUBLIC_URL}/#/details/${comp["formula"]}/${mc3d_id}`,
-        is_theoretical: is_theoretical ? "yes" : "no",
-        is_high_pressure: is_high_pressure ? "yes" : "no",
-        is_high_temperature: is_high_temperature ? "yes" : "no",
-      };
-      rows.push(row);
+    FRONTEND_COLUMNS.forEach((frontCol) => {
+      modifiedKeys[frontCol.columnDef.field] = frontCol.calcFunc(entry);
     });
+
+    let row = { ...entry, ...modifiedKeys };
+
+    rows.push(row);
   });
   return rows;
 }
 
 export async function loadDataMc3d() {
-  const index_response = await fetch(REST_API_COMPOUNDS, { method: "get" });
-  const index_json = await index_response.json();
+  let method = "pbe-v1";
 
-  const metadata_response = await fetch(REST_API_METADATA, { method: "get" });
-  const metadata_json = await metadata_response.json();
+  let index_data = await loadIndex(method);
+  let metadata = await loadMetadata(method);
+
+  let rows = formatRows(index_data, method);
+  let columns = formatColumns(metadata);
+
+  // console.log(rows);
+  // console.log(columns);
 
   // return a Promise of the correctly formatted data
   return {
-    columns: columns(metadata_json.data),
-    rows: formatRows(index_json.data),
+    columns: columns,
+    rows: rows,
   };
 }

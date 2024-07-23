@@ -1,5 +1,6 @@
 .main-page {
-  width: 950px;
+  /* max-width: 1200px; */
+  width: 95vw;
   /* background-color: rgb(243, 243, 243); */
   /* text-align: left; */
   /* display: flex;

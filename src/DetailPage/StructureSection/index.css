@@ -1,0 +1,11 @@
+.structure-section-inner {
+  display: flex;
+  /* align-items: center; */
+  justify-content: space-evenly;
+  padding: 0 0 14px;
+}
+
+.atomic-pos-table {
+  overflow-y: auto;
+  max-height: 250px;
+}
