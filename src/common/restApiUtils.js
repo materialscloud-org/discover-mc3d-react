@@ -6,6 +6,9 @@
 const MC_REST_API_URL =
   "https://dev-aiida.materialscloud.org/mc-rest-api/mc3d/";
 
+// delay function for testing loading animations:
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function loadIndex(method) {
   let url = `${MC_REST_API_URL}/${method}/entries`;
   try {
@@ -58,5 +61,21 @@ export async function loadAiidaCif(aiidaEndpoint, uuid) {
     return json.data.download.data;
   } catch (error) {
     console.error("Error fetching AiiDA cif:", error);
+  }
+}
+
+export async function loadXrd(method, id) {
+  // await delay(2000);
+  let url = `${MC_REST_API_URL}/${method}/xrd/${id}`;
+  try {
+    const response = await fetch(url, { method: "get" });
+    if (!response.ok) {
+      return null;
+    }
+    const json = await response.json();
+    return json.data;
+  } catch (error) {
+    console.error("Error fetching XRD:", error);
+    return null;
   }
 }

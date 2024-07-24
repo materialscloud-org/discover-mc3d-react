@@ -22,8 +22,8 @@ import {
 import OverviewSection from "./OverviewSection";
 import StructureSection from "./StructureSection";
 import ProvenanceSection from "./ProvenanceSection";
+import XrdSection from "./XrdSection";
 
-// import XrdSection from "./XrdSection";
 // import RelatedSection from "./RelatedSection";
 
 async function fetchCompoundData(method, id) {
@@ -50,14 +50,10 @@ function DetailPage() {
   const [loadedData, setLoadedData] = useState(null);
 
   const navigate = useNavigate();
-  const params = useParams();
+  const params = useParams(); // Route parameters
 
-  // componentDidMount equivalent
   useEffect(() => {
-    // Set state to null to show "loading" screen
-    // while new parameters are loaded
     setLoadedData(null);
-
     fetchCompoundData(params.method, params.id).then((loadedData) => {
       console.log(loadedData);
       setLoadedData(loadedData);
@@ -99,7 +95,7 @@ function DetailPage() {
             <OverviewSection loadedData={loadedData} />
             <StructureSection loadedData={loadedData} />
             <ProvenanceSection loadedData={loadedData} />
-            {/* <XrdSection /> */}
+            <XrdSection loadedData={loadedData} params={params} />
             {/* <RelatedSection /> */}
           </div>
         )}

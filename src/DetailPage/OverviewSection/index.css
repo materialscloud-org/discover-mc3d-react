@@ -38,16 +38,6 @@ ul.no-bullets li {
   margin: 3px 0px;
 }
 
-.source-a {
-  color: #303f9f;
-  text-decoration: none;
-}
-
-.source-a:hover {
-  filter: brightness(80%);
-  text-decoration: underline;
-}
-
 .download-button-container {
   position: absolute;
   top: 40px;
