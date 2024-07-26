@@ -6,6 +6,8 @@ import { loadXrd } from "../../common/restApiUtils";
 
 import { McloudSpinner } from "mc-react-library";
 
+import { Container, Row, Col } from "react-bootstrap";
+
 const XrdSection = (props) => {
   const [xrdData, setXrdData] = useState(null);
   const [notAvail, setNotAvail] = useState(false);
@@ -37,8 +39,12 @@ const XrdSection = (props) => {
 
   return (
     <div>
-      <div className="section-heading">X-Ray diffraction pattern</div>
-      <div className="xrd-section">{xrd}</div>
+      <div className="section-heading">X-ray diffraction pattern</div>
+      <Container fluid className="section-container">
+        <Row>
+          <div className="xrd-section">{xrd}</div>
+        </Row>
+      </Container>
     </div>
   );
 };

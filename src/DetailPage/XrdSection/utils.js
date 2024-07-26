@@ -1,21 +1,14 @@
-export function gaussian(a, b, c, x) {
-  //var x = makeArr(x_range[0], x_range[1], N);
-  var y = [];
-  for (let i = 0; i < x.length; i++) {
-    y.push(a * Math.exp(-Math.pow((x[i] - b) / c, 2) / 2));
+export function wavelengthName(wl) {
+  let result = wl.slice(0, -1);
+  if (wl.charAt(wl.length - 1) === "a") {
+    result = result.concat("\u03B1");
+  } else if (wl.charAt(wl.length - 1) === "b") {
+    result = result.concat("\u03B2");
+  } else {
+    console.log("wavelength name conversion failed!");
+    result = wl;
   }
-  return y;
-}
-
-export function lorentz(x0, gamma, k, x) {
-  //var x = makeArr(x_range[0], x_range[1], N);
-  var y = [];
-  for (let i = 0; i < x.length; i++) {
-    y.push(
-      (k * Math.pow(gamma, 2)) / (Math.pow(gamma, 2) + Math.pow(x[i] - x0, 2)),
-    );
-  }
-  return y;
+  return result;
 }
 
 export function makeArr(startValue, stopValue, cardinality) {
@@ -27,106 +20,108 @@ export function makeArr(startValue, stopValue, cardinality) {
   return arr;
 }
 
-export function do_gauss_fit(two_thetas, intensities, FWHM, x) {
-  var a_arr = [];
-  var b_arr = two_thetas.slice();
-  var c = FWHM / 2 / Math.pow(2 * Math.log(2), 0.5);
-  var gaussians = [];
-  var peaks = [];
-  var curve = [];
-  var summ = 0;
+export function gaussian(a, b, c, x) {
+  return a * Math.exp(-Math.pow((x - b) / c, 2) / 2);
+}
+
+export function lorentz(x0, gamma, k, x) {
+  return (k * Math.pow(gamma, 2)) / (Math.pow(gamma, 2) + Math.pow(x - x0, 2));
+}
+
+export function gaussianBroadening(two_thetas, intensities, FWHM, x) {
+  let bArr = two_thetas.slice();
+  let c = FWHM / 2 / Math.pow(2 * Math.log(2), 0.5);
+  let curve = new Array(x.length).fill(0);
   for (let i = 0; i < intensities.length; i++) {
-    a_arr.push(
-      (2 * intensities[i] * Math.pow(Math.log(2), 0.5)) /
-        FWHM /
-        Math.pow(Math.PI, 0.5),
-    );
-    var gauss = gaussian(a_arr[i], b_arr[i], c, x);
-    gaussians.push(gauss);
-    peaks.push(Math.max.apply(Math, gauss));
-  }
-  for (let i = 0; i < x.length; i++) {
-    summ = 0;
-    for (let j = 0; j < intensities.length; j++) {
-      summ = summ + gaussians[j][i];
+    let a =
+      (2 * intensities[i] * Math.sqrt(Math.log(2))) / FWHM / Math.sqrt(Math.PI);
+    for (let ix = 0; ix < x.length; ix++) {
+      curve[ix] += gaussian(a, bArr[i], c, x[ix]);
     }
-    curve.push(summ);
   }
-  return {
-    curve: curve,
-    peaks: peaks,
-  };
+  return curve;
 }
 
-export function do_lorentz_fit(two_thetas, intensities, FWHM, x) {
-  var x0_arr = two_thetas.slice();
-  var gamma = FWHM / 2;
-  var k_arr = [];
-  var lorentzians = [];
-  var peaks = [];
-  var summ = 0;
-  var curve = [];
+export function lorentzianBroadening(two_thetas, intensities, FWHM, x) {
+  let x0Arr = two_thetas.slice();
+  let gamma = FWHM / 2;
 
+  let curve = new Array(x.length).fill(0);
   for (let i = 0; i < intensities.length; i++) {
-    k_arr.push((intensities[i] * 2) / FWHM / Math.PI);
-    var lorentzian = lorentz(x0_arr[i], gamma, k_arr[i], x);
-    lorentzians.push(lorentzian);
-    peaks.push(Math.max.apply(Math, lorentzian));
-  }
-  for (let i = 0; i < x.length; i++) {
-    summ = 0;
-    for (let j = 0; j < intensities.length; j++) {
-      summ = summ + lorentzians[j][i];
+    let k = (intensities[i] * 2) / FWHM / Math.PI;
+
+    for (let ix = 0; ix < x.length; ix++) {
+      curve[ix] += lorentz(x0Arr[i], gamma, k, x[ix]);
     }
-    curve.push(summ);
   }
-  return {
-    curve: curve,
-    peaks: peaks,
-  };
+  return curve;
 }
 
-export function conv_wl_name(name) {
-  let result = name.slice(0, -1);
-  if (name.charAt(name.length - 1) === "a") {
-    result = result.concat("\u03B1");
-  } else if (name.charAt(name.length - 1) === "b") {
-    result = result.concat("\u03B2");
-  } else {
-    console.log("wavelength name conversion failed!");
-    result = name;
+function checkArraysEqual(arr1, arr2, eps = 0.0001) {
+  for (let i = 0; i < arr1.length; i++) {
+    if (Math.abs(arr1[i] - arr2[i]) > eps) {
+      return false;
+    }
   }
-  return result;
+  return true;
 }
 
-export function doFitting(
-  peaks_positions,
-  intensities,
-  angular_range,
-  fwhm,
-  fit_type,
-) {
-  let two_thetas = peaks_positions;
+export function doFitting(xrd, fwhm, fit_type) {
+  let two_thetas = xrd.peaks_positions;
 
-  let N = 1000;
-  let x = makeArr(angular_range[0], angular_range[1], N);
+  // have more points for very sharp peaks
+  let pointDensityGuess = Math.min(fwhm / 5, 0.1);
+  let numPoints = Math.round(
+    (xrd.angular_range[1] - xrd.angular_range[0]) / pointDensityGuess,
+  );
+  // console.log(numPoints);
+  let xArr = makeArr(xrd.angular_range[0], xrd.angular_range[1], numPoints);
 
-  let fit = null;
+  let fitCurve = null;
 
   if (fit_type === "Gaussian") {
-    fit = do_gauss_fit(two_thetas, intensities, fwhm, x);
+    fitCurve = gaussianBroadening(two_thetas, xrd.intensities, fwhm, xArr);
   } else if (fit_type === "Lorentzian") {
-    fit = do_lorentz_fit(two_thetas, intensities, fwhm, x);
+    fitCurve = lorentzianBroadening(two_thetas, xrd.intensities, fwhm, xArr);
   } else {
     console.log("Fit type not defined!");
     return null;
   }
 
-  let curve = fit.curve;
-  let peaks = fit.peaks;
   return {
-    x: x,
-    curve: curve,
-    peaks: peaks,
+    x: xArr,
+    curve: fitCurve,
   };
 }
+
+export const getFittedCurve = (xrd, fwhm, fitType) => {
+  let fit = doFitting(xrd, fwhm, fitType);
+
+  let curve_dict = {
+    x: fit.x,
+    y: fit.curve,
+    type: "scatter",
+    mode: "lines+points",
+    marker: { color: "red", size: 0.5 },
+    line: { width: 2 },
+    hoverinfo: "none",
+  };
+  // console.log(Math.max(...fit.curve));
+  return curve_dict;
+};
+
+export const getHistogram = (xrd) => {
+  let hist_dict = {
+    x: xrd.peaks_positions,
+    y: xrd.intensities,
+    text: xrd.hkls,
+    type: "bar",
+    hovertemplate: "hkl: <b>%{text}</b><extra></extra>",
+    width: 0.7,
+    marker: {
+      color: "black",
+      opacity: 0.6,
+    },
+  };
+  return hist_dict;
+};

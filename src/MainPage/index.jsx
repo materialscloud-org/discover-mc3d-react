@@ -35,7 +35,7 @@ function MainPage() {
       breadcrumbsPath={[
         { name: "Discover", link: "https://www.materialscloud.org/discover" },
         {
-          name: "Materials Cloud 3D crystals database",
+          name: "Materials Cloud three-dimensional crystals database",
           link: null,
         },
       ]}

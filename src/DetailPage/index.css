@@ -24,9 +24,16 @@
 .section-heading {
   font-size: 24px;
   margin: 10px 0px;
+  padding: 20px 0px 10px;
+  border-bottom: 1px solid #c4c4c4;
 }
 
 .subsection-heading {
   font-size: 18px;
   margin: 10px 0px;
+}
+
+.section-container {
+  /* border: 1px solid rgb(238, 238, 238); */
+  border-radius: 5px;
 }

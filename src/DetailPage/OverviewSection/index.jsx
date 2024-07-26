@@ -4,6 +4,8 @@ import "./index.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
 
+import { Container, Row, Col } from "react-bootstrap";
+
 import {
   ExploreButton,
   StructDownloadButton,
@@ -93,6 +95,23 @@ function InfoBox({ details, metadata }) {
   );
 }
 
+const StructureViewerBox = ({ uuid, structureInfo, aiidaRestEndpoint }) => {
+  return (
+    <div className="structure-view-section">
+      <div className="subsection-title-container">
+        <b>Structure</b> <ExploreButton explore_url={EXPLORE_URL} uuid={uuid} />
+      </div>
+      <StructureVisualizer
+        cifText={structureInfo.cif}
+        initSupercell={[2, 2, 2]}
+      />
+      <div className="download-button-container">
+        <StructDownloadButton aiida_rest_url={aiidaRestEndpoint} uuid={uuid} />
+      </div>
+    </div>
+  );
+};
+
 function OverviewSection(props) {
   let aiidaRestEndpoint = props.loadedData.aiidaRestEndpoint;
   let details = props.loadedData.details;
@@ -102,32 +121,22 @@ function OverviewSection(props) {
   return (
     <div>
       <div className="section-heading">General overview</div>
-      <div className="overview-section">
-        <div className="structure-view-section">
-          <div className="subsection-title-container">
-            <b>Structure</b>{" "}
-            <ExploreButton
-              explore_url={EXPLORE_URL}
+      <Container fluid className="section-container">
+        <Row>
+          <Col>
+            <StructureViewerBox
               uuid={details.general.uuid_structure}
+              structureInfo={structureInfo}
+              aiidaRestEndpoint={aiidaRestEndpoint}
             />
-          </div>
-          <StructureVisualizer
-            cifText={structureInfo.cif}
-            initSupercell={[2, 2, 2]}
-          />
-          <div className="download-button-container">
-            <StructDownloadButton
-              aiida_rest_url={aiidaRestEndpoint}
-              uuid={details.general.uuid_structure}
-            />
-          </div>
-        </div>
-        <div>
-          <div className="general-info-section">
-            <InfoBox details={details} metadata={metadata} />
-          </div>
-        </div>
-      </div>
+          </Col>
+          <Col>
+            <div className="general-info-section">
+              <InfoBox details={details} metadata={metadata} />
+            </div>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 }

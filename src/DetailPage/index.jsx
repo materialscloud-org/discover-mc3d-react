@@ -12,6 +12,8 @@ import TitleAndLogo from "../common/TitleAndLogo";
 
 import { formatTitle } from "../common/utils";
 
+import { Container, Row, Col } from "react-bootstrap";
+
 import {
   loadMetadata,
   loadDetails,
@@ -55,7 +57,7 @@ function DetailPage() {
   useEffect(() => {
     setLoadedData(null);
     fetchCompoundData(params.method, params.id).then((loadedData) => {
-      console.log(loadedData);
+      console.log("Loaded general data", loadedData);
       setLoadedData(loadedData);
     });
   }, [params.id, params.method]); // <- call when route params change
@@ -91,12 +93,14 @@ function DetailPage() {
           </div>
         ) : (
           <div className="detail-page-inner">
-            <div className="detail-page-heading">{title}</div>
-            <OverviewSection loadedData={loadedData} />
-            <StructureSection loadedData={loadedData} />
-            <ProvenanceSection loadedData={loadedData} />
-            <XrdSection loadedData={loadedData} params={params} />
-            {/* <RelatedSection /> */}
+            <Container fluid="xxl">
+              <div className="detail-page-heading">{title}</div>
+              <OverviewSection loadedData={loadedData} />
+              <StructureSection loadedData={loadedData} />
+              <ProvenanceSection loadedData={loadedData} />
+              <XrdSection loadedData={loadedData} params={params} />
+              {/* <RelatedSection /> */}
+            </Container>
           </div>
         )}
       </div>
