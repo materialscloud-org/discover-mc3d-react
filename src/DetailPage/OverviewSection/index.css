@@ -18,28 +18,6 @@
   margin: 2px 0px 6px 0px;
 }
 
-.general-info-section {
-  /* height: 450px; */
-  /* width: 450px; */
-  min-width: 400px;
-  background: rgb(240, 240, 240);
-  text-align: left;
-  border: 1px solid #d6d6d6;
-  border-radius: 5px;
-  padding: 10px;
-  /* margin: 5px; */
-}
-
-ul.no-bullets {
-  list-style-type: none;
-  padding: 0;
-  margin: 0px 10px 3px;
-}
-
-ul.no-bullets li {
-  margin: 3px 0px;
-}
-
 .download-button-container {
   position: absolute;
   top: 40px;

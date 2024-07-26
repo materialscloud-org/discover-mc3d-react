@@ -37,19 +37,17 @@ function InfoBox({ details, metadata }) {
   }
 
   return (
-    <div className="info-box">
-      <div>
-        <b>Info</b>
-        <ul className="no-bullets">
-          <li>Formula: {formatChemicalFormula(details.general.formula)}</li>
-          <li>Bravais lattice: {details.general.bravais_lattice}</li>
-          <li>
-            Space group symbol:{" "}
-            {formatSpaceGroupSymbol(details.general.spacegroup_international)}
-          </li>
-          <li>Space group number: {details.general.spacegroup_number}</li>
-        </ul>
-      </div>
+    <div className="info-section">
+      <b>Info</b>
+      <ul className="no-bullets">
+        <li>Formula: {formatChemicalFormula(details.general.formula)}</li>
+        <li>Bravais lattice: {details.general.bravais_lattice}</li>
+        <li>
+          Space group symbol:{" "}
+          {formatSpaceGroupSymbol(details.general.spacegroup_international)}
+        </li>
+        <li>Space group number: {details.general.spacegroup_number}</li>
+      </ul>
       <div>
         <b>Source</b>
         <SourceInfo sources={details.source} metadata={metadata} />
@@ -131,7 +129,7 @@ function OverviewSection(props) {
             />
           </Col>
           <Col>
-            <div className="general-info-section">
+            <div style={{ marginTop: "35px" }}>
               <InfoBox details={details} metadata={metadata} />
             </div>
           </Col>

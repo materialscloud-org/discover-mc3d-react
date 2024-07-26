@@ -18,7 +18,7 @@ function ProvenanceSection(props) {
         <Row>
           <div className="provenance-section">
             <div className="provenance-section-inner">
-              <div>Related nodes in the provenance browser:</div>
+              <div>Relevant nodes in the provenance browser:</div>
               <ul>
                 {details.provenance_links.map((e) => {
                   return (
