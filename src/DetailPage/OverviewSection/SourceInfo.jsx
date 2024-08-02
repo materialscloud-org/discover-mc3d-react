@@ -4,6 +4,8 @@ import IcsdLogo from "../../assets/icsd.png";
 import CodLogo from "../../assets/cod.png";
 import MpdsLogo from "../../assets/mpds.png";
 
+import { HelpButton } from "mc-react-library";
+
 import "./SourceInfo.css";
 
 function sourceUrl(source) {
@@ -19,9 +21,16 @@ function sourceUrl(source) {
   return null;
 }
 
-function SourceInfo({ sources, metadata }) {
-  // currently assume that only one source exists
-  const source = sources[0];
+const SourceInfoText = ({ source, metadata }) => {
+  if (!("info" in source)) {
+    console.warn("source['info'] not present.");
+    return null;
+  }
+
+  if (!("info" in metadata)) {
+    console.warn("metadata['info'] not present.");
+    return null;
+  }
 
   // determine extra info label and popup
   let infoTextList = [];
@@ -53,6 +62,10 @@ function SourceInfo({ sources, metadata }) {
     infoText = `(${infoText})`;
   }
 
+  if (infoText == "") {
+    return null;
+  }
+
   for (let i = 0; i < infoPopupList.length; i++) {
     if (i < infoPopupList.length - 1) {
       infoPopupList[i] = infoPopupList[i] + ";";
@@ -74,7 +87,32 @@ function SourceInfo({ sources, metadata }) {
     </Popover>
   );
 
-  let showInfoText = infoText != "";
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: "5px",
+        marginLeft: "10px",
+        alignItems: "center",
+      }}
+    >
+      {infoText}
+      <div
+        style={{
+          width: "20px",
+          height: "20px",
+          fontSize: "14px",
+        }}
+      >
+        <HelpButton popover={sourcePopover} placement="top" />
+      </div>
+    </div>
+  );
+};
+
+function SourceInfo({ sources, metadata }) {
+  // currently assume that only one source exists
+  const source = sources[0];
 
   return (
     <ul className="no-bullets">
@@ -101,29 +139,7 @@ function SourceInfo({ sources, metadata }) {
                 {s["database"]} ID: {s["id"]}
               </div>
             </a>
-            {showInfoText ? (
-              <div
-                style={{
-                  display: "flex",
-                  gap: "5px",
-                  marginLeft: "10px",
-                  alignItems: "center",
-                }}
-              >
-                {infoText}
-                <div
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    fontSize: "14px",
-                  }}
-                >
-                  <HelpButton popover={sourcePopover} placement="top" />
-                </div>
-              </div>
-            ) : (
-              <></>
-            )}
+            <SourceInfoText source={source} metadata={metadata} />
           </li>
         );
       })}

@@ -22,12 +22,20 @@ function MainPage() {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
 
+  const [method, setMethod] = useState("pbe-v1");
+
   useEffect(() => {
-    loadDataMc3d().then((loadedData) => {
+    loadDataMc3d(method).then((loadedData) => {
       setColumns(loadedData.columns);
       setRows(loadedData.rows);
     });
-  }, []);
+  }, [method]);
+
+  const handleMethodChange = (event) => {
+    setRows([]);
+    setColumns([]);
+    setMethod(event.target.value);
+  };
 
   return (
     <MaterialsCloudHeader
@@ -54,15 +62,16 @@ function MainPage() {
               Select a methodology:{" "}
               <Form.Select
                 size="sm"
+                value={method}
+                onChange={handleMethodChange}
                 style={{
                   width: "340px",
                   display: "inline",
                   margin: "4px 6px 2px 6px",
                 }}
               >
-                {/* <option>PBEsol-v2</option>
-                <option>PBEsol-v1</option> */}
-                <option>PBE-v1</option>
+                <option value="pbesol-v2">PBEsol-v2</option>
+                <option value="pbe-v1">PBE-v1</option>
               </Form.Select>
               <br />
               <br />

@@ -123,8 +123,8 @@ function formatRows(indexData, method) {
   return rows;
 }
 
-export async function loadDataMc3d() {
-  let method = "pbe-v1";
+export async function loadDataMc3d(method) {
+  // let method = "pbe-v1";
 
   let index_data = await loadIndex(method);
   let metadata = await loadMetadata(method);

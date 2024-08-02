@@ -34,17 +34,13 @@ async function fetchCompoundData(method, id) {
 
   let structureUuid = details.general.uuid_structure;
 
-  // the aiida endpoint should probably be included in the metadata.
-  let aiidaEndpoint = "https://aiida.materialscloud.org/mc3d/api/v4";
-
-  let aiidaAttributes = await loadAiidaAttributes(aiidaEndpoint, structureUuid);
-  let structureCif = await loadAiidaCif(aiidaEndpoint, structureUuid);
+  let aiidaAttributes = await loadAiidaAttributes(method, structureUuid);
+  let structureCif = await loadAiidaCif(method, structureUuid);
 
   return {
     metadata: metadata,
     details: details,
     structureInfo: { aiidaAttributes: aiidaAttributes, cif: structureCif },
-    aiidaEndpoint: aiidaEndpoint,
   };
 }
 
