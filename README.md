@@ -2,15 +2,13 @@
 
 Materials Cloud discover section for the Materials Cloud 3D crystals database (MC3D).
 
-Bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 ## Development
 
 For local development:
 
 ```
 > npm install
-> npm start
+> npm run dev
 ```
 
 To publish the local version to GitHub pages:
