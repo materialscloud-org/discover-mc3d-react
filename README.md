@@ -11,8 +11,23 @@ For local development:
 > npm run dev
 ```
 
-To publish the local version to GitHub pages:
+This runs the frontend with the development backend URLs.
+
+To use production backend URLs instead:
 
 ```
-> npm run deploy
+> npm run dev:be-prod
+```
+
+To build an optimized package with development or production backend, use respectively
+
+```
+> npm run build:be-dev
+> npm run build:be-prod
+```
+
+Preview either locally with
+
+```
+> npm run preview
 ```

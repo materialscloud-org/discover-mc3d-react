@@ -2,15 +2,14 @@
   "name": "discover-mc3d-react",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://mc3d.materialscloud.org",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "dev:be-prod": "VITE_PRODUCTION_BACKEND=true vite",
+    "build:be-dev": "vite build",
+    "build:be-prod": "VITE_PRODUCTION_BACKEND=true vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "predeploy": "vite build",
-    "deploy": "gh-pages -d dist"
+    "preview": "vite preview"
   },
   "dependencies": {
     "bootstrap": "^5.3.2",

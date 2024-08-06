@@ -1,14 +1,23 @@
 // ------------------------------------------------------------------------------------------------
 // REST API UTILITIES
-// This module contains the rest api calls.
-// Define the functions here and use them in the rest of the code.
+// Define all functions for api calls here.
 
-const MC_REST_API_URL =
-  "https://dev-aiida.materialscloud.org/mc-rest-api/mc3d/";
+// By default, use development API URLS
+let mcRestApiUrl = "https://dev-aiida.materialscloud.org/mc-rest-api/mc3d/";
+let aiidaRestBaseUrl = "https://dev-aiida.materialscloud.org/";
+
+// Use production backend if specified
+if (import.meta.env.VITE_PRODUCTION_BACKEND === "true") {
+  mcRestApiUrl = "https://aiida.materialscloud.org/mc-rest-api/mc3d/";
+  aiidaRestBaseUrl = "https://aiida.materialscloud.org/";
+}
+
+const MC_REST_API_URL = mcRestApiUrl;
+const AIIDA_REST_BASE_URL = aiidaRestBaseUrl;
 
 const AIIDA_API_URLS = {
-  "pbe-v1": "https://dev-aiida.materialscloud.org/mc3d/api/v4",
-  "pbesol-v2": "https://dev-aiida.materialscloud.org/mc3d-pbesol-v2/api/v4",
+  "pbe-v1": `${AIIDA_REST_BASE_URL}/mc3d/api/v4`,
+  "pbesol-v2": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v2/api/v4`,
 };
 
 // delay function for testing loading animations:
