@@ -104,7 +104,7 @@ function formatRows(indexData, method) {
     // console.log(entry);
     let id = `${entry["id"]}/${method}`;
     let elemArr = calcElementArray(entry["formula"]);
-    let href = `${import.meta.env.BASE_URL}/#/details/${id}`;
+    let href = `${import.meta.env.BASE_URL}#/details/${id}`;
 
     let modifiedKeys = {
       id: id,

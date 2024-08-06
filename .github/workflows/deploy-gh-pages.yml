@@ -28,12 +28,12 @@ jobs:
 
       - name: Set branch subpath variable (for vite)
         # This is the URL subpath where a branch is deployed.
-        # Empty for main branch (root), otherwise <branch-name>.
+        # '/' for main branch, otherwise <branch-name>.
         run: |
           if [ "${{ github.ref_name }}" == "main" ]; then
-            echo "BRANCH_SUBPATH=" >> $GITHUB_ENV
+            echo "BRANCH_SUBPATH=/" >> $GITHUB_ENV
           else
-            echo "BRANCH_SUBPATH=${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "BRANCH_SUBPATH=/${{ github.ref_name }}/" >> $GITHUB_ENV
           fi
 
       - name: Build project with development backend
