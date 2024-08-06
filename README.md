@@ -31,3 +31,14 @@ Preview either locally with
 ```
 > npm run preview
 ```
+
+## Branches and deployment
+
+The following branches are automatically deployed via Github actions in the following manner:
+
+- `main`
+  - deployed to https://mc3d.materialscloud.org
+  - and is running on the production backend.
+- `develop`
+  - deployed to https://mc3d.materialscloud.org/develop
+  - and is running on the dev backend.

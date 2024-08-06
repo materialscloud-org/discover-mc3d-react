@@ -1,0 +1,55 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Set branch subpath variable (for vite)
+        # This is the URL subpath where a branch is deployed.
+        # Empty for main branch (root), otherwise <branch-name>.
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            echo "BRANCH_SUBPATH=" >> $GITHUB_ENV
+          else
+            echo "BRANCH_SUBPATH=${{ github.ref_name }}" >> $GITHUB_ENV
+          fi
+
+      - name: Build project with development backend
+        if: github.ref_name != 'main'
+        run: npm run build:be-dev
+
+      - name: Build project with production backend
+        if: github.ref_name == 'main'
+        run: npm run build:be-prod
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./dist
+          # Deploy main branch to root, other branches to their subfolders
+          target-folder: ${{ env.BRANCH_SUBPATH }}
+          # when deploying main to root, keep `dev` folder, as other branches
+          # are deployed there
+          clean-exclude: "develop"
