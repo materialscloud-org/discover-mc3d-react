@@ -15,9 +15,11 @@ import {
 
 import { EXPLORE_URL } from "../../common/config";
 
+import { MCInfoBox } from "../../common/MCInfoBox";
+
 import SourceInfo from "./SourceInfo";
 
-function InfoBox({ details, metadata }) {
+function GeneralInfoBox({ details, metadata }) {
   function format_aiida_prop(property, metadata, prec = 3, factor = 1) {
     if (property == null) {
       return <span>N/A</span>;
@@ -37,17 +39,19 @@ function InfoBox({ details, metadata }) {
   }
 
   return (
-    <div className="info-section">
-      <b>Info</b>
-      <ul className="no-bullets">
-        <li>Formula: {formatChemicalFormula(details.general.formula)}</li>
-        <li>Bravais lattice: {details.general.bravais_lattice}</li>
-        <li>
-          Space group symbol:{" "}
-          {formatSpaceGroupSymbol(details.general.spacegroup_international)}
-        </li>
-        <li>Space group number: {details.general.spacegroup_number}</li>
-      </ul>
+    <MCInfoBox style={{ height: "450px" }}>
+      <div>
+        <b>Info</b>
+        <ul className="no-bullets">
+          <li>Formula: {formatChemicalFormula(details.general.formula)}</li>
+          <li>Bravais lattice: {details.general.bravais_lattice}</li>
+          <li>
+            Space group symbol:{" "}
+            {formatSpaceGroupSymbol(details.general.spacegroup_international)}
+          </li>
+          <li>Space group number: {details.general.spacegroup_number}</li>
+        </ul>
+      </div>
       <div>
         <b>Source</b>
         <SourceInfo sources={details.source} metadata={metadata} />
@@ -89,7 +93,7 @@ function InfoBox({ details, metadata }) {
           </li>
         </ul>
       </div>
-    </div>
+    </MCInfoBox>
   );
 }
 
@@ -130,7 +134,7 @@ function OverviewSection(props) {
           </Col>
           <Col>
             <div style={{ marginTop: "35px" }}>
-              <InfoBox details={details} metadata={metadata} />
+              <GeneralInfoBox details={details} metadata={metadata} />
             </div>
           </Col>
         </Row>

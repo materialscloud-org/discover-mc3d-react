@@ -56,7 +56,7 @@ function MainPage() {
           calculated properties. The crystal structures originate from
           experimental databases.
         </div>
-        <Tabs defaultActiveKey="use" className="mc3d-tabs">
+        <Tabs defaultActiveKey="use">
           <Tab eventKey="use" title="Use">
             <div className="description">
               Select a methodology:{" "}
@@ -65,7 +65,7 @@ function MainPage() {
                 value={method}
                 onChange={handleMethodChange}
                 style={{
-                  width: "340px",
+                  width: "260px",
                   display: "inline",
                   margin: "4px 6px 2px 6px",
                 }}

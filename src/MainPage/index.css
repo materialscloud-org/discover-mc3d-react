@@ -14,10 +14,6 @@
   padding: 20px 40px;
 }
 
-.mc3d-tabs {
-  width: 950px;
-}
-
 /* overload boostrap tab style */
 .nav-tabs .nav-link {
   border-top: 1px solid #ddd !important;
