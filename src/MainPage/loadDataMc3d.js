@@ -7,10 +7,28 @@ import {
 
 import { countNumberOfAtoms, calcElementArray } from "../common/utils";
 
+// Order the columns and define which ones to show by default
+// refer to the label/field of the column
+// columns not listed, will be not shown by default and placed at the bottom
+const COLUMN_ORDER_AND_HIDE = [
+  ["id", false],
+  ["formula", false],
+  ["num_elements", false],
+  ["num_atoms", false],
+  ["bravais_lat", true],
+  ["spacegroup_number", false],
+  ["spacegroup_int", true],
+  ["is_theoretical", false],
+  ["is_high_pressure", false],
+  ["is_high_temperature", false],
+  ["total_magnetization", false],
+  ["absolute_magnetization", true],
+];
+
 const FRONTEND_COLUMNS = [
   {
     columnDef: {
-      field: "n_atoms",
+      field: "num_atoms",
       headerName: "Num. of atoms/cell",
       colType: "integer",
     },
@@ -27,7 +45,7 @@ const FRONTEND_COLUMNS = [
   },
   {
     columnDef: {
-      field: "spg_int",
+      field: "spacegroup_int",
       headerName: "Space group international",
       colType: "spg_symbol",
       infoText: "International short symbol for the space group.",
@@ -49,7 +67,7 @@ function formatColumns(metadata) {
     hide: bool,        // whether to hide the column by default
   },
 
-  Possible colTypes are the following (specific ones first, more general later):
+  Possible colTypes:
     * "id" - always on the left; and href to the detail page;
     * "formula" - special formatting with subscripts
     * "spg_symbol" - special formatting
@@ -70,7 +88,7 @@ function formatColumns(metadata) {
   // convert the columns from metadata
   metadata["index-columns"].forEach((col) => {
     columns.push({
-      field: col.short_label,
+      field: col.label,
       headerName: col.name,
       unit: col.unit || null,
       colType: col.type || "text",
@@ -83,19 +101,45 @@ function formatColumns(metadata) {
     columns.push(frontCol.columnDef);
   });
 
-  return columns;
+  console.log(columns);
+
+  // order and hide columns
+  let orderedColumns = [];
+  COLUMN_ORDER_AND_HIDE.forEach(([field, hide]) => {
+    let colIndex = columns.findIndex((col) => col.field === field);
+    if (colIndex !== -1) {
+      let col = columns[colIndex];
+      col.hide = hide;
+      orderedColumns.push(col);
+      // Remove the column from the array
+      columns.splice(colIndex, 1);
+    }
+  });
+  columns.forEach((col) => {
+    col.hide = true;
+    orderedColumns.push(col);
+  });
+
+  return orderedColumns;
 }
 
-function formatRows(indexData, method) {
+function formatRows(indexData, metadata, method) {
   /*
   The row data for the MaterialsSelector needs to contain
     * key-value for each column definition (key = "field" of the column);
     * 'href' - this link is added to the id column;
 
-  Most of the index data should already be in the correct format,
-  except for href and any frontend-calculated columns.
+  The raw index data from the API needs:
+  * id, elem_array and href
+  * mapping the short data_label to label/field of columns
+  * calculating the frontend columns
   */
   let rows = [];
+
+  let labelMap = {};
+  metadata["index-columns"].forEach((col) => {
+    labelMap[col.data_label] = col.label;
+  });
 
   // for testing a small subset:
   // indexData = indexData.slice(0, 10);
@@ -105,6 +149,11 @@ function formatRows(indexData, method) {
     let id = `${entry["id"]}/${method}`;
     let elemArr = calcElementArray(entry["formula"]);
     let href = `${import.meta.env.BASE_URL}#/details/${id}`;
+
+    let row = {};
+    Object.entries(entry).map(([key, value]) => {
+      row[labelMap[key]] = value;
+    });
 
     let modifiedKeys = {
       id: id,
@@ -116,7 +165,7 @@ function formatRows(indexData, method) {
       modifiedKeys[frontCol.columnDef.field] = frontCol.calcFunc(entry);
     });
 
-    let row = { ...entry, ...modifiedKeys };
+    row = { ...row, ...modifiedKeys };
 
     rows.push(row);
   });
@@ -124,12 +173,21 @@ function formatRows(indexData, method) {
 }
 
 export async function loadDataMc3d(method) {
-  // let method = "pbe-v1";
+  let start = performance.now();
+  let indexData = await loadIndex(method);
+  let end = performance.now();
+  console.log(`loadIndex: ${end - start} ms`);
 
-  let index_data = await loadIndex(method);
+  start = performance.now();
   let metadata = await loadMetadata(method);
+  end = performance.now();
+  console.log(`loadMetadata: ${end - start} ms`);
 
-  let rows = formatRows(index_data, method);
+  start = performance.now();
+  let rows = formatRows(indexData, metadata, method);
+  end = performance.now();
+  console.log(`formatRows: ${end - start} ms`);
+
   let columns = formatColumns(metadata);
 
   // console.log(rows);
