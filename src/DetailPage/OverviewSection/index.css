@@ -1,26 +1,14 @@
-.overview-section {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-evenly;
-  margin-bottom: 5px;
+.structure-view-box {
   position: relative;
-}
-
-.structure-view-section {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 450px;
-}
-
-.subsection-title-container {
-  margin: 2px 0px 6px 0px;
+  min-height: 350px;
+  width: 100%;
+  flex: 1;
+  border-radius: 5px;
 }
 
 .download-button-container {
   position: absolute;
-  top: 40px;
+  top: 10px;
   right: 10px;
   z-index: 3;
 }

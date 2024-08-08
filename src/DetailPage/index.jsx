@@ -91,10 +91,10 @@ function DetailPage() {
           <div className="detail-page-inner">
             <Container fluid="xxl">
               <div className="detail-page-heading">{title}</div>
-              <OverviewSection loadedData={loadedData} />
-              <StructureSection loadedData={loadedData} />
-              <ProvenanceSection loadedData={loadedData} />
-              <XrdSection loadedData={loadedData} params={params} />
+              <OverviewSection params={params} loadedData={loadedData} />
+              <StructureSection params={params} loadedData={loadedData} />
+              <ProvenanceSection params={params} loadedData={loadedData} />
+              <XrdSection params={params} loadedData={loadedData} />
               {/* <RelatedSection /> */}
             </Container>
           </div>

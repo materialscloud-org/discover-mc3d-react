@@ -46,13 +46,13 @@ const SourceInfoText = ({ source, metadata }) => {
   if (source["info"]["is_high_pressure"]) {
     infoTextList.push("high pressure");
     infoPopupList.push(
-      `was characterized at a pressure higher than ${hpThresh["value"]} ${hpThresh["units"]}`,
+      `was characterized at a pressure higher than ${hpThresh["value"]} ${hpThresh["unit"]}`,
     );
   }
   if (source["info"]["is_high_temperature"]) {
     infoTextList.push("high temperature");
     infoPopupList.push(
-      `was characterized at a temperature higher than ${htThresh["value"]} ${htThresh["units"]}`,
+      `was characterized at a temperature higher than ${htThresh["value"]} ${htThresh["unit"]}`,
     );
   }
 

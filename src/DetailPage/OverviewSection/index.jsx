@@ -18,6 +18,7 @@ import { EXPLORE_URL } from "../../common/config";
 import { MCInfoBox } from "../../common/MCInfoBox";
 
 import SourceInfo from "./SourceInfo";
+import { getAiidaEndpoint } from "../../common/restApiUtils";
 
 function GeneralInfoBox({ details, metadata }) {
   function format_aiida_prop(property, metadata, prec = 3, factor = 1) {
@@ -99,42 +100,47 @@ function GeneralInfoBox({ details, metadata }) {
 
 const StructureViewerBox = ({ uuid, structureInfo, aiidaRestEndpoint }) => {
   return (
-    <div className="structure-view-section">
-      <div className="subsection-title-container">
-        <b>Structure</b> <ExploreButton explore_url={EXPLORE_URL} uuid={uuid} />
+    <>
+      <div className="subsection-title">
+        Structure <ExploreButton explore_url={EXPLORE_URL} uuid={uuid} />
       </div>
-      <StructureVisualizer
-        cifText={structureInfo.cif}
-        initSupercell={[2, 2, 2]}
-      />
-      <div className="download-button-container">
-        <StructDownloadButton aiida_rest_url={aiidaRestEndpoint} uuid={uuid} />
+      <div className="structure-view-box subsection-shadow">
+        <StructureVisualizer
+          cifText={structureInfo.cif}
+          initSupercell={[2, 2, 2]}
+        />
+        <div className="download-button-container">
+          <StructDownloadButton
+            aiida_rest_url={aiidaRestEndpoint}
+            uuid={uuid}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
-function OverviewSection(props) {
-  let aiidaRestEndpoint = props.loadedData.aiidaRestEndpoint;
-  let details = props.loadedData.details;
-  let metadata = props.loadedData.metadata;
-  let structureInfo = props.loadedData.structureInfo;
+function OverviewSection({ params, loadedData }) {
+  let aiidaRestEndpoint = getAiidaEndpoint(params.method);
 
   return (
     <div>
       <div className="section-heading">General overview</div>
       <Container fluid className="section-container">
         <Row>
-          <Col>
+          <Col className="flex-column">
             <StructureViewerBox
-              uuid={details.general.uuid_structure}
-              structureInfo={structureInfo}
+              uuid={loadedData.details.general.uuid_structure}
+              structureInfo={loadedData.structureInfo}
               aiidaRestEndpoint={aiidaRestEndpoint}
             />
           </Col>
-          <Col>
+          <Col className="flex-column">
             <div style={{ marginTop: "35px" }}>
-              <GeneralInfoBox details={details} metadata={metadata} />
+              <GeneralInfoBox
+                details={loadedData.details}
+                metadata={loadedData.metadata}
+              />
             </div>
           </Col>
         </Row>

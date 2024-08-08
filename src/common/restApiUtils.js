@@ -20,6 +20,10 @@ const AIIDA_API_URLS = {
   "pbesol-v2": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v2/api/v4`,
 };
 
+export function getAiidaEndpoint(method) {
+  return AIIDA_API_URLS[method];
+}
+
 // delay function for testing loading animations:
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
