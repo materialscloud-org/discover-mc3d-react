@@ -1,11 +1,5 @@
 import { formatChemicalFormula } from "mc-react-library";
 
-export function calcElementArray(formula) {
-  var formula_no_numbers = formula.replace(/[0-9]/g, "");
-  var elements = formula_no_numbers.split(/(?=[A-Z])/);
-  return elements;
-}
-
 export function countNumberOfAtoms(formula) {
   // split on capital letters to get element+number strings
   var elnum = formula.split(/(?=[A-Z])/);

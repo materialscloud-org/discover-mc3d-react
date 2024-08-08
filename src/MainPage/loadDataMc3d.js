@@ -5,7 +5,7 @@ import {
   bravaisLatticeFromSpgn,
 } from "../common/symmetryUtils";
 
-import { countNumberOfAtoms, calcElementArray } from "../common/utils";
+import { countNumberOfAtoms } from "../common/utils";
 
 // Order the columns and define which ones to show by default
 // refer to the label/field of the column
@@ -130,7 +130,7 @@ function formatRows(indexData, metadata, method) {
     * 'href' - this link is added to the id column;
 
   The raw index data from the API needs:
-  * id, elem_array and href
+  * href
   * mapping the short data_label to label/field of columns
   * calculating the frontend columns
   */
@@ -147,7 +147,6 @@ function formatRows(indexData, metadata, method) {
   indexData.forEach((entry) => {
     // console.log(entry);
     let id = `${entry["id"]}/${method}`;
-    let elemArr = calcElementArray(entry["formula"]);
     let href = `${import.meta.env.BASE_URL}#/details/${id}`;
 
     let row = {};
@@ -157,7 +156,6 @@ function formatRows(indexData, metadata, method) {
 
     let modifiedKeys = {
       id: id,
-      elem_array: elemArr,
       href: href,
     };
 
