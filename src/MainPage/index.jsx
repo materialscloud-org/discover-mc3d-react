@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import "./index.css";
 
@@ -16,12 +16,13 @@ import { restapiText } from "./restapi";
 
 import { loadDataMc3d } from "./loadDataMc3d";
 
+import { DownloadButton } from "./DownloadButton";
+
 import Form from "react-bootstrap/Form";
 
 function MainPage() {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
-
   const [method, setMethod] = useState("pbe-v1");
 
   useEffect(() => {
@@ -36,6 +37,8 @@ function MainPage() {
     setColumns([]);
     setMethod(event.target.value);
   };
+
+  const materialSelectorRef = useRef(null);
 
   return (
     <MaterialsCloudHeader
@@ -78,7 +81,15 @@ function MainPage() {
               Search for materials by filtering based on the periodic table and
               the columns of the table below:
             </div>
-            <MaterialSelector columns={columns} rows={rows} />
+            <MaterialSelector
+              ref={materialSelectorRef}
+              columns={columns}
+              rows={rows}
+            />
+            <DownloadButton
+              materialSelectorRef={materialSelectorRef}
+              disabled={rows.length == 0}
+            />
           </Tab>
           <Tab eventKey="about" title="About">
             {aboutText}

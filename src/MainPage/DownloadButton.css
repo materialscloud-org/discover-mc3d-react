@@ -1,0 +1,22 @@
+.aggrid-style-button {
+  padding: 10px;
+  background-color: #f8f8f8;
+  color: #000000;
+  font-family: var(--ag-font-family);
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #babfc7;
+  cursor: pointer;
+  margin-bottom: 3px;
+  margin-top: 2px;
+}
+
+.aggrid-style-button:hover {
+  background-color: #dbdbdb;
+}
+
+.aggrid-style-button-disabled {
+  opacity: 0.4;
+  cursor: none;
+  pointer-events: none;
+}

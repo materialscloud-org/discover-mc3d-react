@@ -151,7 +151,9 @@ function formatRows(indexData, metadata, method) {
 
     let row = {};
     Object.entries(entry).map(([key, value]) => {
-      row[labelMap[key]] = value;
+      if (key in labelMap) {
+        row[labelMap[key]] = value;
+      }
     });
 
     let modifiedKeys = {

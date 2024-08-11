@@ -14,9 +14,10 @@
   "dependencies": {
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.10.3",
+    "file-saver": "^2.0.5",
     "mc-react-header": "^0.3.1",
     "mc-react-library": "^0.3.1",
-    "mc-react-ptable-materials-grid": "^0.7.3",
+    "mc-react-ptable-materials-grid": "^0.8.0",
     "mc-react-structure-visualizer": "^0.7.2",
     "plotly.js": "^2.6.2",
     "react": "^18.1.0",
