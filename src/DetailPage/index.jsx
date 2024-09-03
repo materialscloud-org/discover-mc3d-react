@@ -81,25 +81,23 @@ function DetailPage() {
         { name: breadcrumbTitle, link: null },
       ]}
     >
-      <div className="detail-page">
+      <Container fluid="xxl">
         <TitleAndLogo />
         {loading ? (
           <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
             <McloudSpinner />
           </div>
         ) : (
-          <div className="detail-page-inner">
-            <Container fluid="xxl">
-              <div className="detail-page-heading">{title}</div>
-              <OverviewSection params={params} loadedData={loadedData} />
-              <StructureSection params={params} loadedData={loadedData} />
-              <ProvenanceSection params={params} loadedData={loadedData} />
-              <XrdSection params={params} loadedData={loadedData} />
-              {/* <RelatedSection /> */}
-            </Container>
-          </div>
+          <>
+            <div className="detail-page-heading">{title}</div>
+            <OverviewSection params={params} loadedData={loadedData} />
+            <StructureSection params={params} loadedData={loadedData} />
+            <ProvenanceSection params={params} loadedData={loadedData} />
+            <XrdSection params={params} loadedData={loadedData} />
+            {/* <RelatedSection /> */}
+          </>
         )}
-      </div>
+      </Container>
     </MaterialsCloudHeader>
   );
 }

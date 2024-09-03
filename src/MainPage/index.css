@@ -1,15 +1,3 @@
-.main-page {
-  /* max-width: 1200px; */
-  width: 95vw;
-  /* background-color: rgb(243, 243, 243); */
-  /* text-align: left; */
-  /* display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; */
-  margin: 0 auto;
-}
-
 .description {
   padding: 20px 40px;
 }

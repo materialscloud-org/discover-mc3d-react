@@ -16,12 +16,12 @@ export const DownloadButton = ({ materialSelectorRef, disabled }) => {
   const handleDownload = () => {
     if (materialSelectorRef.current) {
       const data = materialSelectorRef.current.getFilteredRows();
-      // href currently just contains the url subpath to the detail page
+      // href currently just contains the url subpath to the details page
       // replace it with a better name and full url
       let modData = data.map((entry) => {
         let modEntry = {
           ...entry,
-          detail_link: `${window.location.origin}${entry.href}`,
+          details_link: `${window.location.origin}${entry.href}`,
         };
         delete modEntry.href;
         return modEntry;

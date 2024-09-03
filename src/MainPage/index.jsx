@@ -8,8 +8,7 @@ import MaterialSelector from "mc-react-ptable-materials-grid";
 
 import TitleAndLogo from "../common/TitleAndLogo";
 
-import Tab from "react-bootstrap/Tab";
-import Tabs from "react-bootstrap/Tabs";
+import { Container, Tab, Tabs, Form } from "react-bootstrap";
 
 import { aboutText } from "./about";
 import { restapiText } from "./restapi";
@@ -17,8 +16,6 @@ import { restapiText } from "./restapi";
 import { loadDataMc3d } from "./loadDataMc3d";
 
 import { DownloadButton } from "./DownloadButton";
-
-import Form from "react-bootstrap/Form";
 
 function MainPage() {
   const [columns, setColumns] = useState([]);
@@ -51,7 +48,7 @@ function MainPage() {
         },
       ]}
     >
-      <div className="main-page">
+      <Container fluid="xxl">
         <TitleAndLogo />
         <div className="description">
           Materials Cloud three-dimensional crystals database is a curated set
@@ -98,7 +95,7 @@ function MainPage() {
             {restapiText}
           </Tab>
         </Tabs>
-      </div>
+      </Container>
     </MaterialsCloudHeader>
   );
 }
