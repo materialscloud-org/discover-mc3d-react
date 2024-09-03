@@ -16,9 +16,19 @@ export const DownloadButton = ({ materialSelectorRef, disabled }) => {
   const handleDownload = () => {
     if (materialSelectorRef.current) {
       const data = materialSelectorRef.current.getFilteredRows();
-      const json = JSON.stringify(data, null, 2);
+      // href currently just contains the url subpath to the detail page
+      // replace it with a better name and full url
+      let modData = data.map((entry) => {
+        let modEntry = {
+          ...entry,
+          detail_link: `${window.location.origin}${entry.href}`,
+        };
+        delete modEntry.href;
+        return modEntry;
+      });
+      const json = JSON.stringify(modData, null, 2);
       const blob = new Blob([json], { type: "application/json" });
-      const filename = `mc3d_index_data_n${data.length}.json`;
+      const filename = `mc3d_index_data_n${modData.length}.json`;
       saveAs(blob, filename);
     }
   };
