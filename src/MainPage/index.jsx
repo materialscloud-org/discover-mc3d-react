@@ -17,6 +17,8 @@ import { loadDataMc3d } from "./loadDataMc3d";
 
 import { DownloadButton } from "./DownloadButton";
 
+import { MethodSelectionBox } from "./MethodSelectionBox";
+
 function MainPage() {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
@@ -58,25 +60,13 @@ function MainPage() {
         </div>
         <Tabs defaultActiveKey="use">
           <Tab eventKey="use" title="Use">
+            <MethodSelectionBox
+              method={method}
+              handleMethodChange={handleMethodChange}
+            />
             <div className="description">
-              Select a methodology:{" "}
-              <Form.Select
-                size="sm"
-                value={method}
-                onChange={handleMethodChange}
-                style={{
-                  width: "260px",
-                  display: "inline",
-                  margin: "4px 6px 2px 6px",
-                }}
-              >
-                <option value="pbesol-v2">PBEsol-v2</option>
-                <option value="pbe-v1">PBE-v1</option>
-              </Form.Select>
-              <br />
-              <br />
-              Search for materials by filtering based on the periodic table and
-              the columns of the table below:
+              Search for materials in the selected subdatabase by filtering
+              based on the periodic table and the columns of the table below:
             </div>
             <MaterialSelector
               ref={materialSelectorRef}

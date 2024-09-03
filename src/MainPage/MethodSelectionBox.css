@@ -1,0 +1,23 @@
+.method-selection-box-outer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.method-selection-box {
+  border: 1px solid #babfc7;
+  border-radius: 3px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 38px;
+  background-color: #f8f8f8;
+  margin: 10px 0px 0px;
+  gap: 10px;
+}
+
+.method-selection-box p {
+  font-weight: 600;
+  margin: 0px;
+}
