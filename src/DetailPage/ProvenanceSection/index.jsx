@@ -4,7 +4,7 @@ import "./index.css";
 
 import { ExploreButton } from "mc-react-library";
 
-import { EXPLORE_URL } from "../../common/config";
+import { EXPLORE_URLS } from "../../common/restApiUtils";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -25,8 +25,8 @@ function ProvenanceSection(props) {
                     <li key={e.uuid}>
                       {e.label}{" "}
                       <ExploreButton
-                        explore_url={EXPLORE_URL}
-                        uuid={details.general.uuid_structure}
+                        explore_url={EXPLORE_URLS[props.params.method]}
+                        uuid={e.uuid}
                       />
                     </li>
                   );

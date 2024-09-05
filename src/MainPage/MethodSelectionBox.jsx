@@ -37,9 +37,9 @@ export const MethodSelectionBox = (props) => {
             minWidth: "max-content",
           }}
         >
-          <option value="pbe-v1">PBE-v1</option>
+          {/* <option value="pbesol-v2">PBEsol-v2</option> */}
           <option value="pbesol-v1">PBEsol-v1</option>
-          <option value="pbesol-v2">PBEsol-v2</option>
+          <option value="pbe-v1">PBE-v1</option>
         </Form.Select>
         <HelpButton popover={popover} placement="bottom" />
       </div>

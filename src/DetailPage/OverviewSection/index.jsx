@@ -13,14 +13,13 @@ import {
   formatSpaceGroupSymbol,
 } from "mc-react-library";
 
-import { EXPLORE_URL } from "../../common/config";
-
 import { MCInfoBox } from "../../common/MCInfoBox";
 
 import SourceInfo from "./SourceInfo";
-import { getAiidaEndpoint } from "../../common/restApiUtils";
 
-function GeneralInfoBox({ details, metadata }) {
+import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/restApiUtils";
+
+function GeneralInfoBox({ details, metadata, methodLabel }) {
   function format_aiida_prop(property, metadata, prec = 3, factor = 1) {
     if (property == null) {
       return <span>N/A</span>;
@@ -34,7 +33,10 @@ function GeneralInfoBox({ details, metadata }) {
     return (
       <span>
         {valStr}{" "}
-        <ExploreButton explore_url={EXPLORE_URL} uuid={property.uuid ?? null} />
+        <ExploreButton
+          explore_url={EXPLORE_URLS[methodLabel]}
+          uuid={property.uuid ?? null}
+        />
       </span>
     );
   }
@@ -98,11 +100,12 @@ function GeneralInfoBox({ details, metadata }) {
   );
 }
 
-const StructureViewerBox = ({ uuid, structureInfo, aiidaRestEndpoint }) => {
+const StructureViewerBox = ({ uuid, structureInfo, methodLabel }) => {
   return (
     <>
       <div className="subsection-title">
-        Structure <ExploreButton explore_url={EXPLORE_URL} uuid={uuid} />
+        Structure{" "}
+        <ExploreButton explore_url={EXPLORE_URLS[methodLabel]} uuid={uuid} />
       </div>
       <div className="structure-view-box subsection-shadow">
         <StructureVisualizer
@@ -111,7 +114,7 @@ const StructureViewerBox = ({ uuid, structureInfo, aiidaRestEndpoint }) => {
         />
         <div className="download-button-container">
           <StructDownloadButton
-            aiida_rest_url={aiidaRestEndpoint}
+            aiida_rest_url={AIIDA_API_URLS[methodLabel]}
             uuid={uuid}
           />
         </div>
@@ -121,8 +124,6 @@ const StructureViewerBox = ({ uuid, structureInfo, aiidaRestEndpoint }) => {
 };
 
 function OverviewSection({ params, loadedData }) {
-  let aiidaRestEndpoint = getAiidaEndpoint(params.method);
-
   return (
     <div>
       <div className="section-heading">General overview</div>
@@ -132,7 +133,7 @@ function OverviewSection({ params, loadedData }) {
             <StructureViewerBox
               uuid={loadedData.details.general.uuid_structure}
               structureInfo={loadedData.structureInfo}
-              aiidaRestEndpoint={aiidaRestEndpoint}
+              methodLabel={params.method}
             />
           </Col>
           <Col className="flex-column">
@@ -140,6 +141,7 @@ function OverviewSection({ params, loadedData }) {
               <GeneralInfoBox
                 details={loadedData.details}
                 metadata={loadedData.metadata}
+                methodLabel={params.method}
               />
             </div>
           </Col>

@@ -4,31 +4,37 @@
 
 // By default, use development API URLS
 let mcRestApiUrl = "https://dev-aiida.materialscloud.org/mc-rest-api/mc3d/";
-let aiidaRestBaseUrl = "https://dev-aiida.materialscloud.org/";
+let aiidaRestBaseUrl = "https://dev-aiida.materialscloud.org";
+let exploreBaseUrl = "https://dev-www.materialscloud.org/explore/";
 
 // Use production backend if specified
 if (import.meta.env.VITE_PRODUCTION_BACKEND === "true") {
   mcRestApiUrl = "https://aiida.materialscloud.org/mc-rest-api/mc3d/";
-  aiidaRestBaseUrl = "https://aiida.materialscloud.org/";
+  aiidaRestBaseUrl = "https://aiida.materialscloud.org";
+  exploreBaseUrl = "https://www.materialscloud.org/explore/";
 }
 
-const MC_REST_API_URL = mcRestApiUrl;
+export const MC_REST_API_URL = mcRestApiUrl;
 const AIIDA_REST_BASE_URL = aiidaRestBaseUrl;
+const EXPLORE_BASE_URL = exploreBaseUrl;
 
-const AIIDA_API_URLS = {
+export const AIIDA_API_URLS = {
   "pbe-v1": `${AIIDA_REST_BASE_URL}/mc3d/api/v4`,
+  "pbesol-v1": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1/api/v4`,
   "pbesol-v2": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v2/api/v4`,
 };
 
-export function getAiidaEndpoint(method) {
-  return AIIDA_API_URLS[method];
-}
+export const EXPLORE_URLS = {
+  "pbe-v1": `${EXPLORE_BASE_URL}/mc3d`,
+  "pbesol-v1": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1`,
+  "pbesol-v2": `${EXPLORE_BASE_URL}/mc3d-pbesol-v2`,
+};
 
 // delay function for testing loading animations:
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function loadIndex(method) {
-  await delay(2000);
+  // await delay(2000);
   let endpoint = `${MC_REST_API_URL}/${method}/entries`;
   try {
     const response = await fetch(endpoint, { method: "get" });

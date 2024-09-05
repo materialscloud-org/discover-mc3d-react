@@ -2,18 +2,14 @@ import React from "react";
 
 import { ExploreButton, StructDownloadButton } from "mc-react-library";
 
-import { EXPLORE_URL } from "../../common/config";
-
 import { Container, Row, Col } from "react-bootstrap";
 
 import { MCTable } from "../../common/MCTable";
 import { MCInfoBox } from "../../common/MCInfoBox";
 
-import { getAiidaEndpoint } from "../../common/restApiUtils";
+import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/restApiUtils";
 
 const StructureSection = ({ params, loadedData }) => {
-  let aiidaRestEndpoint = getAiidaEndpoint(params.method);
-
   let details = loadedData.details;
   let structureInfo = loadedData.structureInfo;
 
@@ -30,14 +26,14 @@ const StructureSection = ({ params, loadedData }) => {
                   <li>
                     Explore provenance{" "}
                     <ExploreButton
-                      explore_url={EXPLORE_URL}
+                      explore_url={EXPLORE_URLS[params.method]}
                       uuid={details.general.uuid_structure}
                     />
                   </li>
                   <li>
                     Download structure
                     <StructDownloadButton
-                      aiida_rest_url={aiidaRestEndpoint}
+                      aiida_rest_url={AIIDA_API_URLS[params.method]}
                       uuid={details.general.uuid_structure}
                     />
                   </li>

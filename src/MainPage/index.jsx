@@ -22,7 +22,7 @@ import { MethodSelectionBox } from "./MethodSelectionBox";
 function MainPage() {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
-  const [method, setMethod] = useState("pbe-v1");
+  const [method, setMethod] = useState("pbesol-v1");
 
   useEffect(() => {
     loadDataMc3d(method).then((loadedData) => {
