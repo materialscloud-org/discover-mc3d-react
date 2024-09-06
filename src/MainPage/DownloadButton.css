@@ -21,3 +21,9 @@
   cursor: none;
   pointer-events: none;
 }
+
+.download-button-outer-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

@@ -76,6 +76,7 @@ function MainPage() {
             <DownloadButton
               materialSelectorRef={materialSelectorRef}
               disabled={rows.length == 0}
+              methodLabel={method}
             />
           </Tab>
           <Tab eventKey="about" title="About">
