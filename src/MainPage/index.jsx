@@ -64,10 +64,10 @@ function MainPage() {
               method={method}
               handleMethodChange={handleMethodChange}
             />
-            <div className="description">
+            {/* <div className="description">
               Search for materials in the selected subdatabase by filtering
               based on the periodic table and the columns of the table below:
-            </div>
+            </div> */}
             <MaterialSelector
               ref={materialSelectorRef}
               columns={columns}
