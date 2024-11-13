@@ -46,7 +46,13 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
       <div>
         <b>Info</b>
         <ul className="no-bullets">
-          <li>Formula: {formatChemicalFormula(details.general.formula)}</li>
+          <li>
+            Formula (IUPAC): {formatChemicalFormula(details.general.formula)}
+          </li>
+          <li>
+            Hill formula (full):{" "}
+            {formatChemicalFormula(details.general.formula_hill)}
+          </li>
           <li>Bravais lattice: {details.general.bravais_lattice}</li>
           <li>
             Space group symbol:{" "}
@@ -131,7 +137,7 @@ function OverviewSection({ params, loadedData }) {
         <Row>
           <Col className="flex-column">
             <StructureViewerBox
-              uuid={loadedData.details.general.uuid_structure}
+              uuid={loadedData.details.general.structure_uuid}
               structureInfo={loadedData.structureInfo}
               methodLabel={params.method}
             />

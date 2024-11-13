@@ -5,24 +5,27 @@ import {
   bravaisLatticeFromSpgn,
 } from "../common/symmetryUtils";
 
-import { countNumberOfAtoms } from "../common/utils";
+import { countNumberOfAtoms, countNumberOfElements } from "../common/utils";
 
 // Order the columns and define which ones to show by default
 // refer to the label/field of the column
 // columns not listed, will be not shown by default and placed at the bottom
-const COLUMN_ORDER_AND_HIDE = [
-  ["id", false],
-  ["formula", false],
-  ["num_elements", false],
-  ["num_atoms", false],
-  ["bravais_lat", true],
-  ["spacegroup_number", false],
-  ["spacegroup_int", true],
-  ["is_theoretical", false],
-  ["is_high_pressure", false],
-  ["is_high_temperature", false],
-  ["total_magnetization", false],
-  ["absolute_magnetization", true],
+const COLUMN_ORDER_AND_SETTINGS = [
+  { field: "id", hide: false, width: 165, minWidth: 160 },
+  { field: "formula", hide: false },
+  { field: "formula_hill", hide: true },
+  { field: "num_elements", hide: false },
+  { field: "num_atoms", hide: false },
+  { field: "bravais_lat", hide: true },
+  { field: "spacegroup_number", hide: true },
+  { field: "spacegroup_int", hide: false },
+  { field: "source_db", hide: true },
+  { field: "source_db_id", hide: true },
+  { field: "is_theoretical", hide: false },
+  { field: "is_high_pressure", hide: false, minWidth: 125 },
+  { field: "is_high_temperature", hide: false, minWidth: 125 },
+  { field: "total_magnetization", hide: false },
+  { field: "absolute_magnetization", hide: true },
 ];
 
 const FRONTEND_COLUMNS = [
@@ -32,7 +35,15 @@ const FRONTEND_COLUMNS = [
       headerName: "Num. of atoms/cell",
       colType: "integer",
     },
-    calcFunc: (entry) => countNumberOfAtoms(entry["formula"]),
+    calcFunc: (entry) => countNumberOfAtoms(entry["formula_h"]),
+  },
+  {
+    columnDef: {
+      field: "num_elements",
+      headerName: "Number of elements",
+      colType: "integer",
+    },
+    calcFunc: (entry) => countNumberOfElements(entry["formula_h"]),
   },
   {
     columnDef: {
@@ -96,20 +107,27 @@ function formatColumns(metadata) {
     });
   });
 
-  // Add frontend columns
+  // Add frontend columns (if they don't already exist)
   FRONTEND_COLUMNS.forEach((frontCol) => {
-    columns.push(frontCol.columnDef);
+    if (!columns.some((col) => col.field === frontCol.columnDef.field)) {
+      columns.push(frontCol.columnDef);
+    }
   });
 
   console.log(columns);
 
   // order and hide columns
   let orderedColumns = [];
-  COLUMN_ORDER_AND_HIDE.forEach(([field, hide]) => {
-    let colIndex = columns.findIndex((col) => col.field === field);
+  COLUMN_ORDER_AND_SETTINGS.forEach((set) => {
+    let colIndex = columns.findIndex((col) => col.field === set.field);
     if (colIndex !== -1) {
       let col = columns[colIndex];
-      col.hide = hide;
+      col.hide = set.hide;
+      ["width", "minWidth"].forEach((prop) => {
+        if (prop in set) {
+          col[prop] = set[prop];
+        }
+      });
       orderedColumns.push(col);
       // Remove the column from the array
       columns.splice(colIndex, 1);
@@ -162,7 +180,9 @@ function formatRows(indexData, metadata, method) {
     };
 
     FRONTEND_COLUMNS.forEach((frontCol) => {
-      modifiedKeys[frontCol.columnDef.field] = frontCol.calcFunc(entry);
+      if (!(frontCol.columnDef.field in modifiedKeys)) {
+        modifiedKeys[frontCol.columnDef.field] = frontCol.calcFunc(entry);
+      }
     });
 
     row = { ...row, ...modifiedKeys };

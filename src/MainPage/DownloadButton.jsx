@@ -3,6 +3,8 @@ import { saveAs } from "file-saver";
 import { HelpButton } from "mc-react-library";
 import { Popover } from "react-bootstrap";
 
+import { loadStructureUuids, AIIDA_API_URLS } from "../common/restApiUtils";
+
 import "./DownloadButton.css";
 
 const getCurrentDateString = () => {
@@ -27,44 +29,54 @@ const popover = (
         the Materials Grid. The data is downloaded in JSON format, as an array.
         The array contains a JSON object for each material entry, with key-value
         pairs corresponding to the column properties. Additionally, each entry
-        includes a link to the corresponding detail page.
+        includes a link to the corresponding detail page and a link to download
+        the file in CIF format. <br />
+        <br />
+        Note, to download all of the CIF files directly, see the corresponding
+        Materials Cloud Archive entry.
       </p>
     </Popover.Body>
   </Popover>
 );
+import React, { useState } from "react";
+import { Spinner } from "react-bootstrap";
 
 export const DownloadButton = ({
   materialSelectorRef,
   disabled,
   methodLabel,
 }) => {
-  /*
-    Note: the plan is to potentially also include direct download links (via the AiiDA rest api)
-    to each of the materials in the downloaded file, but currently the index page doesn't have
-    the structure UUIDs. Including them in the default index download is not great, as they would
-    increase the initial download size considerably, while not really needed for the table.
-    
-    Therefore, it probably might make sense to implement an additional endpoint, e.g. pbe-v1/uuids
-    that is only called when this download button is clicked.
-  */
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (materialSelectorRef.current) {
-      const data = materialSelectorRef.current.getFilteredRows();
-      // href currently just contains the url subpath to the details page
-      // replace it with a better name and full url
-      let modData = data.map((entry) => {
-        let modEntry = {
-          ...entry,
-          details_link: `${window.location.origin}${entry.href}`,
-        };
-        delete modEntry.href;
-        return modEntry;
-      });
-      const json = JSON.stringify(modData, null, 2);
-      const blob = new Blob([json], { type: "application/json" });
-      const filename = `mc3d_filtered_entries_${methodLabel}_${getCurrentDateString()}.json`;
-      saveAs(blob, filename);
+      setIsLoading(true);
+      try {
+        const structureUuids = await loadStructureUuids(methodLabel);
+        const data = materialSelectorRef.current.getFilteredRows();
+
+        let modData = data.map((entry) => {
+          let id_wo_method = entry.id.split("/")[0];
+          let uuid = structureUuids[id_wo_method];
+          let downloadLink = `${AIIDA_API_URLS[methodLabel]}/nodes/${uuid}/download?download_format=cif`;
+          let modEntry = {
+            ...entry,
+            details_link: `${window.location.origin}${entry.href}`,
+            download_cif: downloadLink,
+          };
+          delete modEntry.href;
+          return modEntry;
+        });
+
+        const json = JSON.stringify(modData, null, 2);
+        const blob = new Blob([json], { type: "application/json" });
+        const filename = `mc3d_filtered_entries_${methodLabel}_${getCurrentDateString()}.json`;
+        saveAs(blob, filename);
+      } catch (error) {
+        console.error("Error downloading data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -72,11 +84,21 @@ export const DownloadButton = ({
     <div className="download-button-outer-container">
       <button
         onClick={handleDownload}
-        disabled={disabled}
-        className={`aggrid-style-button ${disabled ? "aggrid-style-button-disabled" : ""}`}
+        disabled={disabled || isLoading}
+        className={`aggrid-style-button ${disabled || isLoading ? "aggrid-style-button-disabled" : ""}`}
         style={{ marginTop: "5px" }}
       >
-        Download filtered entries
+        {isLoading ? (
+          <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+        ) : (
+          "Download filtered entries"
+        )}
       </button>
       <HelpButton popover={popover} />
     </div>

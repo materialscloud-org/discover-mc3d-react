@@ -12,6 +12,10 @@ export function countNumberOfAtoms(formula) {
   return num;
 }
 
+export function countNumberOfElements(formula) {
+  return formula.split(/(?=[A-Z])/).length;
+}
+
 export function formatTitle(formulaStr, id, method) {
   return (
     <span>

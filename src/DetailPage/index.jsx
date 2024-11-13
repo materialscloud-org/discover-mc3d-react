@@ -32,7 +32,7 @@ async function fetchCompoundData(method, id) {
   let metadata = await loadMetadata(method, id);
   let details = await loadDetails(method, id);
 
-  let structureUuid = details.general.uuid_structure;
+  let structureUuid = details.general.structure_uuid;
 
   let aiidaAttributes = await loadAiidaAttributes(method, structureUuid);
   let structureCif = await loadAiidaCif(method, structureUuid);

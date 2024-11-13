@@ -35,7 +35,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function loadIndex(method) {
   // await delay(2000);
-  let endpoint = `${MC_REST_API_URL}/${method}/entries`;
+  let endpoint = `${MC_REST_API_URL}/${method}/overview`;
   try {
     const response = await fetch(endpoint, { method: "get" });
     const json = await response.json();
@@ -57,7 +57,7 @@ export async function loadMetadata(method) {
 }
 
 export async function loadDetails(method, id) {
-  let endpoint = `${MC_REST_API_URL}/${method}/entries/${id}`;
+  let endpoint = `${MC_REST_API_URL}/${method}/base/${id}`;
   try {
     const response = await fetch(endpoint, { method: "get" });
     const json = await response.json();
@@ -103,6 +103,21 @@ export async function loadXrd(method, id) {
     return json.data;
   } catch (error) {
     console.error("Error fetching XRD:", error);
+    return null;
+  }
+}
+
+export async function loadStructureUuids(method) {
+  let endpoint = `${MC_REST_API_URL}/${method}/structure-uuids`;
+  try {
+    const response = await fetch(endpoint, { method: "get" });
+    if (!response.ok) {
+      return null;
+    }
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error("Error fetching structure-uuids:", error);
     return null;
   }
 }
