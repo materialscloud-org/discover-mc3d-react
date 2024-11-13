@@ -3,18 +3,19 @@
 // Define all functions for api calls here.
 
 // By default, use development API URLS
-let mcRestApiUrl = "https://dev-aiida.materialscloud.org/mc-rest-api/mc3d/";
+let mcRestApiUrl = "https://dev-aiida.materialscloud.org/mc-rest-api/";
 let aiidaRestBaseUrl = "https://dev-aiida.materialscloud.org";
 let exploreBaseUrl = "https://dev-www.materialscloud.org/explore/";
 
 // Use production backend if specified
 if (import.meta.env.VITE_PRODUCTION_BACKEND === "true") {
-  mcRestApiUrl = "https://aiida.materialscloud.org/mc-rest-api/mc3d/";
+  mcRestApiUrl = "https://aiida.materialscloud.org/mc-rest-api/";
   aiidaRestBaseUrl = "https://aiida.materialscloud.org";
   exploreBaseUrl = "https://www.materialscloud.org/explore/";
 }
 
-export const MC_REST_API_URL = mcRestApiUrl;
+export const MC_REST_API_URL_BASE = mcRestApiUrl;
+export const MC_REST_API_URL = `${mcRestApiUrl}mc3d/`;
 const AIIDA_REST_BASE_URL = aiidaRestBaseUrl;
 const EXPLORE_BASE_URL = exploreBaseUrl;
 
