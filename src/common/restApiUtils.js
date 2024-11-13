@@ -121,3 +121,15 @@ export async function loadStructureUuids(method) {
     return null;
   }
 }
+
+export async function loadGeneralInfo() {
+  // await delay(2000);
+  let endpoint = `${MC_REST_API_URL}/info`;
+  try {
+    const response = await fetch(endpoint, { method: "get" });
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error("Error fetching info:", error);
+  }
+}

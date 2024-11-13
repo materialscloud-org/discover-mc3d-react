@@ -18,11 +18,20 @@ import { loadDataMc3d } from "./loadDataMc3d";
 import { DownloadButton } from "./DownloadButton";
 
 import { MethodSelectionBox } from "./MethodSelectionBox";
+import { loadGeneralInfo } from "../common/restApiUtils";
 
 function MainPage() {
+  const [genInfo, setGenInfo] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [method, setMethod] = useState("pbesol-v1");
+
+  useEffect(() => {
+    loadGeneralInfo().then((loadedData) => {
+      setGenInfo(loadedData);
+      console.log(loadedData);
+    });
+  }, []);
 
   useEffect(() => {
     loadDataMc3d(method).then((loadedData) => {
@@ -61,6 +70,7 @@ function MainPage() {
         <Tabs defaultActiveKey="use">
           <Tab eventKey="use" title="Use">
             <MethodSelectionBox
+              genInfo={genInfo}
               method={method}
               handleMethodChange={handleMethodChange}
             />

@@ -22,6 +22,10 @@ const popover = (
 );
 
 export const MethodSelectionBox = (props) => {
+  let options = {
+    "pbesol-v1": `PBEsol-v1 (${props.genInfo?.["method-counts"]?.["pbesol-v1"]})`,
+    "pbe-v1": `PBE-v1 (${props.genInfo?.["method-counts"]?.["pbe-v1"]})`,
+  };
   return (
     <div className="method-selection-box-outer">
       <div className="method-selection-box">
@@ -37,9 +41,11 @@ export const MethodSelectionBox = (props) => {
             minWidth: "max-content",
           }}
         >
-          {/* <option value="pbesol-v2">PBEsol-v2</option> */}
-          <option value="pbesol-v1">PBEsol-v1</option>
-          <option value="pbe-v1">PBE-v1</option>
+          {Object.entries(options).map(([key, value]) => (
+            <option key={key} value={key}>
+              {value}
+            </option>
+          ))}
         </Form.Select>
         <HelpButton popover={popover} placement="bottom" />
       </div>
