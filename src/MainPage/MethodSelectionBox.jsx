@@ -23,9 +23,14 @@ const popover = (
 
 export const MethodSelectionBox = (props) => {
   let options = {
-    "pbesol-v1": `PBEsol-v1 (${props.genInfo?.["method-counts"]?.["pbesol-v1"]})`,
-    "pbe-v1": `PBE-v1 (${props.genInfo?.["method-counts"]?.["pbe-v1"]})`,
+    "pbesol-v1": `PBEsol-v1`,
+    "pbe-v1": `PBE-v1`,
   };
+  Object.entries(options).forEach(([key, value]) => {
+    if (props.genInfo?.["method-counts"]?.[key] != null) {
+      options[key] += ` (${props.genInfo["method-counts"][key]})`;
+    }
+  });
   return (
     <div className="method-selection-box-outer">
       <div className="method-selection-box">
