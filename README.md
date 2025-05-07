@@ -32,7 +32,6 @@ Preview either locally with
 > npm run preview
 ```
 
-
 ## Branches and deployment
 
 The following branches are automatically deployed via Github actions in the following manner:
