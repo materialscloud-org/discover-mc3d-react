@@ -10,12 +10,16 @@ import { MCTable } from "../../common/MCTable";
 import { MCInfoBox } from "../../common/MCInfoBox";
 
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/restApiUtils";
+import { format_aiida_prop } from "../../common/utils";
 
-const StructureSection = ({ params, loadedData, metadata }) => {
+const StructureSection = ({ params, loadedData }) => {
   let details = loadedData.details;
   let structureInfo = loadedData.structureInfo;
 
   const vol = details.properties.cell_volume;
+  console.log(loadedData);
+  const metadata = loadedData.metadata;
+  const methodLabel = params.method;
 
   return (
     <div>
@@ -27,7 +31,14 @@ const StructureSection = ({ params, loadedData, metadata }) => {
               <div className="subsection-title">General</div>
               <MCInfoBox title="General">
                 <ul className="no-bullets">
-                  <li>
+                  <li style={{ marginTop: "-5px", marginBottom: "-4px" }}>
+                    Download structure
+                    <StructDownloadButton
+                      aiida_rest_url={AIIDA_API_URLS[params.method]}
+                      uuid={details.general.structure_uuid}
+                    />
+                  </li>
+                  <li style={{ marginBottom: "9px" }}>
                     Explore provenance{" "}
                     <ExploreButton
                       explore_url={EXPLORE_URLS[params.method]}
@@ -35,18 +46,13 @@ const StructureSection = ({ params, loadedData, metadata }) => {
                     />
                   </li>
                   <li>
-                    <span>
-                      {`Cell volume: ${details.properties.cell_volume.value.toFixed(2)}`}{" "}
-                      Å<sup>3</sup>
-                    </span>
-                  </li>
-
-                  <li>
-                    Download structure
-                    <StructDownloadButton
-                      aiida_rest_url={AIIDA_API_URLS[params.method]}
-                      uuid={details.general.structure_uuid}
-                    />
+                    Cell volume:{" "}
+                    {format_aiida_prop(
+                      details.properties.cell_volume,
+                      metadata.info.properties.cell_volume,
+                      methodLabel,
+                      2,
+                    )}
                   </li>
                 </ul>
               </MCInfoBox>
@@ -67,7 +73,7 @@ const StructureSection = ({ params, loadedData, metadata }) => {
                   s.position[1],
                   s.position[2],
                 ])}
-                style={{ maxHeight: "340px" }} // Currently hand-picked
+                style={{ maxHeight: "332px" }} // Currently hand-picked
               />
             </div>
           </Col>

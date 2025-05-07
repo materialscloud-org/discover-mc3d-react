@@ -126,7 +126,7 @@ export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
               contents={[["Lengths [Å]", ...current.lengths]]}
             />
             <MCTable // angles render
-              headerRow={["", "alpha", "beta", "gamma"]}
+              headerRow={["", "α", "β", "γ"]}
               contents={[["Angles [°]", ...current.angles]]}
             />
           </div>
