@@ -2,16 +2,18 @@ import React, { useState } from "react";
 
 import { ToggleSwitch } from "mc-react-library";
 
-import { MatrixUtils } from "mc-react-library";
+import { matrix, getPrimToConvMatrix } from "mc-react-library";
 
 import { MCTable } from "../../common/MCTable";
 
-export function bundleLatticeData({ baseMatrix, transform_matrix = null }) {
+function bundleLatticeData({ baseMatrix, transform_matrix = null }) {
+  // function to bundle the lattice data to make
+  // switch condition logic more readible
   const finalMatrix = transform_matrix
-    ? MatrixUtils.multiplyMatrices(transform_matrix, baseMatrix)
+    ? matrix.multiplyMatrices(transform_matrix, baseMatrix)
     : baseMatrix;
 
-  const par = MatrixUtils.getMatrixParams(finalMatrix);
+  const par = matrix.getMatrixParams(finalMatrix);
 
   return {
     matrix: finalMatrix,
@@ -29,7 +31,8 @@ export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
   const [latticeTypeState, setLatticeTypeState] = useState(false);
 
   const primitive_matrix = structureInfo.aiidaAttributes.cell;
-  const transform_matrix = MatrixUtils.getPrimToConvMatrix(spacegroup_symbol);
+  const transform_matrix = getPrimToConvMatrix(spacegroup_symbol);
+  console.log(transform_matrix);
 
   // bundle matrices
   const prim_bundled = bundleLatticeData({ baseMatrix: primitive_matrix });
