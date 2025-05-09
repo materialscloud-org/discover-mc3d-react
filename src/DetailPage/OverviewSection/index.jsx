@@ -6,6 +6,8 @@ import StructureVisualizer from "mc-react-structure-visualizer";
 
 import { Container, Row, Col } from "react-bootstrap";
 
+import { formula } from "mc-react-library";
+
 import {
   ExploreButton,
   StructDownloadButton,
@@ -75,6 +77,14 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
               metadata.info.properties.total_energy,
               2,
             )}
+          </li>
+          <li>
+            Density:{" "}
+            {formula.calculateDensity(
+              details.general.formula_hill,
+              details.properties.cell_volume,
+            )}{" "}
+            kg/m<sup>3</sup>
           </li>
           <li>
             Cell volume:{" "}
