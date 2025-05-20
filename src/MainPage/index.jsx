@@ -62,12 +62,12 @@ function MainPage() {
       <Container fluid="xxl">
         <TitleAndLogo />
         <div className="description">
-          The Materials Cloud three-dimensional database is a curated dataset of
-          unique, stoichiometric, experimentally known inorganic compounds, and
-          of their calculated properties. Structures have obtained with
-          fully-relaxed density-functional theory calculations, starting from
-          experimental ones imported, cleaned and parsed from the MPDS, COD and
-          ICSD databases.
+          The Materials Cloud three-dimensional crystals database is a curated
+          dataset of unique, stoichiometric, experimentally known inorganic
+          compounds, and of their calculated properties. Structures have
+          obtained with fully-relaxed density-functional theory calculations,
+          starting from experimental ones imported, cleaned and parsed from the
+          MPDS, COD and ICSD databases.
         </div>
         <Tabs defaultActiveKey="use">
           <Tab eventKey="use" title="Use">
