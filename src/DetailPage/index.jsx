@@ -75,7 +75,7 @@ function DetailPage() {
       breadcrumbsPath={[
         { name: "Discover", link: "https://www.materialscloud.org/discover" },
         {
-          name: "Materials Cloud three-dimensional crystals database",
+          name: "Materials Cloud Three-Dimensional Structure Database",
           link: `${import.meta.env.BASE_URL}`,
         },
         { name: breadcrumbTitle, link: null },

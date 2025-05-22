@@ -11,7 +11,7 @@ export default function TitleAndLogo() {
     <div className="title-and-logo">
       <div className="title-and-doi">
         <span className="title-span">
-          Materials Cloud three-dimensional crystals database (MC3D)
+          Materials Cloud Three-Dimensional Structure Database (MC3D)
         </span>
         <div style={{ marginLeft: "4px" }}>
           <DoiBadge doi_id="rw-t0" />

@@ -54,7 +54,7 @@ function MainPage() {
       breadcrumbsPath={[
         { name: "Discover", link: "https://www.materialscloud.org/discover" },
         {
-          name: "Materials Cloud three-dimensional crystals database",
+          name: "Materials Cloud Three-Dimensional Structure Database",
           link: null,
         },
       ]}
@@ -62,7 +62,7 @@ function MainPage() {
       <Container fluid="xxl">
         <TitleAndLogo />
         <div className="description">
-          The Materials Cloud three-dimensional crystals database is a curated
+          The Materials Cloud Three-Dimensional Structure Database is a curated
           dataset of unique, stoichiometric, experimentally known inorganic
           compounds, and of their calculated properties. Structures have
           obtained with fully-relaxed density-functional theory calculations,
