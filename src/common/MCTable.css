@@ -2,3 +2,15 @@
   overflow-y: scroll;
   max-height: 305px;
 }
+
+.mc-data-table-container table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.mc-data-table-container th,
+.mc-data-table-container td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

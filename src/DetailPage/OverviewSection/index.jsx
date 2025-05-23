@@ -15,6 +15,7 @@ import {
   formatSpaceGroupSymbol,
 } from "mc-react-library";
 
+import { format_aiida_prop } from "../../common/utils";
 import { MCInfoBox } from "../../common/MCInfoBox";
 
 import SourceInfo from "./SourceInfo";
@@ -22,27 +23,6 @@ import SourceInfo from "./SourceInfo";
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/restApiUtils";
 
 function GeneralInfoBox({ details, metadata, methodLabel }) {
-  function format_aiida_prop(property, metadata, prec = 3, factor = 1) {
-    if (property == null) {
-      return <span>N/A</span>;
-    }
-    let val = property.value ?? 0.0;
-    val *= factor;
-    let valStr = val.toFixed(prec);
-    if (metadata.unit) {
-      valStr += ` ${metadata.unit}`;
-    }
-    return (
-      <span>
-        {valStr}{" "}
-        <ExploreButton
-          explore_url={EXPLORE_URLS[methodLabel]}
-          uuid={property.uuid ?? null}
-        />
-      </span>
-    );
-  }
-
   return (
     <MCInfoBox style={{ height: "450px" }}>
       <div>
@@ -75,6 +55,7 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
             {format_aiida_prop(
               details.properties.total_energy,
               metadata.info.properties.total_energy,
+              methodLabel,
               2,
             )}
           </li>
@@ -91,6 +72,7 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
             {format_aiida_prop(
               details.properties.cell_volume,
               metadata.info.properties.cell_volume,
+              methodLabel,
               2,
             )}
           </li>
@@ -99,6 +81,7 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
             {format_aiida_prop(
               details.properties.total_magnetization,
               metadata.info.properties.total_magnetization,
+              methodLabel,
               2,
             )}
           </li>
@@ -107,6 +90,7 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
             {format_aiida_prop(
               details.properties.absolute_magnetization,
               metadata.info.properties.absolute_magnetization,
+              methodLabel,
               2,
             )}
           </li>
