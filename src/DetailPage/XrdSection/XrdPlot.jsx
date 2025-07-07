@@ -3,6 +3,8 @@ import Plot from "react-plotly.js";
 import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
 
+import { DataDownloadButton } from "./DataDownloadButton";
+
 import { Container, Row, Col } from "react-bootstrap";
 
 import { wavelengthName, getFittedCurve, getHistogram } from "./utils.js";
@@ -91,6 +93,13 @@ const XrdPlot = (props) => {
               id={`inline-checkbox-2`}
             />
           </Form>
+          <div>
+            Download X-ray data
+            <DataDownloadButton
+              data={props.xrdData}
+              filename={"XRDdata.json"}
+            />
+          </div>
         </Col>
         <Col>
           <Plot
