@@ -1,0 +1,74 @@
+.floating-container {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  font-size: 0.9rem;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  transition:
+    width 0.3s ease,
+    left 0.3s ease,
+    height 0.3s ease;
+  z-index: 1000;
+  overflow-wrap: break-word;
+  transition:
+    width 0.3s ease,
+    left 0.3s ease,
+    height 0.3s ease;
+}
+
+.floating-container.collapsed {
+  width: 40px !important; /* force width on collapse */
+  overflow: visible;
+  cursor: pointer;
+  padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  height: 20px; /* fix height to match button size */
+}
+
+.floating-heading {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+  flex-shrink: 1;
+  transition:
+    opacity 0.3s ease,
+    width 0.3s ease,
+    margin 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 40px); /* leave room for toggle button */
+}
+
+.floating-container.collapsed .floating-heading {
+  opacity: 0;
+  max-width: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 40px;
+  line-height: 1;
+}
+
+.floating-content {
+  margin-top: 0.75rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 180px);
+}

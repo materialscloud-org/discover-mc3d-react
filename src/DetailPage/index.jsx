@@ -14,6 +14,9 @@ import { formatTitle } from "../common/utils";
 
 import { Container, Row, Col } from "react-bootstrap";
 
+import FloatingContainer from "./FloatingContainer";
+import TableOfContents from "./TableOfContents";
+
 import {
   loadMetadata,
   loadDetails,
@@ -81,10 +84,17 @@ function DetailPage() {
         { name: breadcrumbTitle, link: null },
       ]}
     >
+      <FloatingContainer
+        heading="Contents"
+        expandedStyle={{ top: 150, left: 20, width: 225 }}
+        minimizedStyle={{ top: 150, left: 20, width: 40 }}
+      >
+        <TableOfContents loadedData={!!loadedData} />
+      </FloatingContainer>
       <Container fluid="xxl">
         <TitleAndLogo />
         {loading ? (
-          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+          <div style={{ width: "175px", padding: "40px", margin: "0 auto" }}>
             <McloudSpinner />
           </div>
         ) : (

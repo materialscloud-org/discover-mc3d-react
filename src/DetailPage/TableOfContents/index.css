@@ -1,0 +1,100 @@
+/* Wrapper: fixed position sidebar */
+.toc-wrapper {
+  position: fixed;
+  top: 150px;
+  left: 20px;
+  width: 220px;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  font-size: 0.9rem;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  transition: width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Collapsed wrapper: shrink width to just the button */
+.toc-wrapper.collapsed {
+  width: 40px;
+  overflow: hidden;
+  padding: 0.5rem 0.25rem;
+}
+
+/* Header: flex row with space between */
+.toc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  transition: justify-content 0.3s ease;
+}
+
+/* Header centered when collapsed */
+.toc-header.collapsed {
+  justify-content: center;
+}
+
+/* Title text */
+.toc-title {
+  transition: opacity 0.3s ease;
+}
+
+/* Hide title when collapsed */
+.toc-header.collapsed .toc-title {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Toggle button */
+.toc-toggle {
+  font-size: 1.2rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TOC list container */
+.toc {
+  display: flex;
+  flex-direction: column;
+}
+
+/* List styling */
+.toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toc li {
+  margin-bottom: 0.4rem;
+}
+
+.toc a {
+  color: #333;
+  text-decoration: none;
+  border-radius: 4px;
+  padding: 2px 4px;
+  display: block;
+  transition: background-color 0.2s;
+}
+
+.toc a:hover {
+  background-color: #e6e6e6;
+}
