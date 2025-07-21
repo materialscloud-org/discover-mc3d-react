@@ -12,9 +12,8 @@ import TitleAndLogo from "../common/TitleAndLogo";
 
 import { formatTitle } from "../common/utils";
 
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Tab } from "react-bootstrap";
 
-import FloatingContainer from "./FloatingContainer";
 import TableOfContents from "./TableOfContents";
 
 import {
@@ -84,30 +83,32 @@ function DetailPage() {
         { name: breadcrumbTitle, link: null },
       ]}
     >
-      <FloatingContainer
-        heading="Contents"
-        expandedStyle={{ top: 150, left: 20, width: 225 }}
-        minimizedStyle={{ top: 150, left: 20, width: 40 }}
-      >
-        <TableOfContents loadedData={!!loadedData} />
-      </FloatingContainer>
-      <Container fluid="xxl">
-        <TitleAndLogo />
-        {loading ? (
-          <div style={{ width: "175px", padding: "40px", margin: "0 auto" }}>
-            <McloudSpinner />
+      <Row>
+        <Col lg={2} className="d-none d-lg-flex justify-content-center">
+          <div className="toc-sticky-container">
+            <TableOfContents loadedData={loadedData} />
           </div>
-        ) : (
-          <>
-            <div className="detail-page-heading">{title}</div>
-            <OverviewSection params={params} loadedData={loadedData} />
-            <StructureSection params={params} loadedData={loadedData} />
-            <ProvenanceSection params={params} loadedData={loadedData} />
-            <XrdSection params={params} loadedData={loadedData} />
-            {/* <RelatedSection /> */}
-          </>
-        )}
-      </Container>
+        </Col>
+
+        <Col lg={8}>
+          <TitleAndLogo />
+          {loading ? (
+            <div style={{ width: "175px", padding: "40px", margin: "0 auto" }}>
+              <McloudSpinner />
+            </div>
+          ) : (
+            <>
+              <div className="detail-page-heading">{title}</div>
+              <OverviewSection params={params} loadedData={loadedData} />
+              <StructureSection params={params} loadedData={loadedData} />
+              <ProvenanceSection params={params} loadedData={loadedData} />
+              <XrdSection params={params} loadedData={loadedData} />
+              {/* <RelatedSection /> */}
+            </>
+          )}
+        </Col>
+        <Col lg={2} className="d-none d-lg-flex justify-content-end"></Col>
+      </Row>
     </MaterialsCloudHeader>
   );
 }
