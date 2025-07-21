@@ -20,11 +20,73 @@ import { DownloadButton } from "./DownloadButton";
 import { MethodSelectionBox } from "./MethodSelectionBox";
 import { loadGeneralInfo } from "../common/restApiUtils";
 
+// Define presets here.
+const PRESETS = {
+  MinTable: {
+    sort: "num_atoms:desc,num_elements:desc",
+    hiddenColumns: ["spacegroup_number", "id", "formula"],
+  },
+};
+
+function getMethodFromUrl(urlSearchParams) {
+  const urlMethod = urlSearchParams.get("method");
+  return urlMethod;
+}
+
+// urlColumnConfig.js
+function getColumnConfigFromUrl(urlSearchParams, presets) {
+  const sortParam = urlSearchParams.get("sort");
+  const hideParam = urlSearchParams.get("hide");
+  const presetParam = urlSearchParams.get("preset");
+
+  let sortEntries = [];
+  let hiddenFields = [];
+
+  if (presetParam && presets[presetParam]) {
+    const preset = presets[presetParam];
+    sortEntries = preset.sort
+      ? preset.sort.split(",").map((entry, idx) => {
+          const [field, dir] = entry.split(":");
+          return { field, sort: dir, sortIndex: idx };
+        })
+      : [];
+    hiddenFields = preset.hiddenColumns || [];
+  } else {
+    sortEntries = sortParam
+      ? sortParam.split(",").map((entry, idx) => {
+          const [field, dir] = entry.split(":");
+          return { field, sort: dir, sortIndex: idx };
+        })
+      : [];
+    hiddenFields = hideParam ? hideParam.split(",") : [];
+  }
+
+  return { sortEntries, hiddenFields };
+}
+
+function applyColumnStateFromUrl(columns, sortEntries, hiddenFields) {
+  return columns.map((col) => {
+    const updatedCol = { ...col };
+    const match = sortEntries.find((s) => s.field === col.field);
+    if (match) {
+      updatedCol.sort = match.sort;
+      updatedCol.sortIndex = match.sortIndex;
+    }
+    if (hiddenFields.includes(col.field)) {
+      updatedCol.hide = true;
+    }
+    return updatedCol;
+  });
+}
+
 function MainPage() {
   const [genInfo, setGenInfo] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
-  const [method, setMethod] = useState("pbesol-v1");
+
+  // default method defined here.
+  const DEFAULT_METHOD = "pbesol-v1";
+  const [method, setMethod] = useState(DEFAULT_METHOD);
 
   useEffect(() => {
     loadGeneralInfo().then((loadedData) => {
@@ -33,16 +95,38 @@ function MainPage() {
     });
   }, []);
 
+  // on page load: get method + initial columns config from URL
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlMethod = urlParams.get("method") || DEFAULT_METHOD;
+    setMethod(urlMethod);
+
+    const { sortEntries, hiddenFields } = getColumnConfigFromUrl(
+      urlParams,
+      PRESETS,
+    );
+
+    loadDataMc3d(urlMethod).then((loadedData) => {
+      const sortedColumns = applyColumnStateFromUrl(
+        loadedData.columns,
+        sortEntries,
+        hiddenFields,
+      );
+      setColumns(sortedColumns);
+      setRows(loadedData.rows);
+    });
+  }, []);
+
+  // when method changes: only reload rows, keep existing columns
+  useEffect(() => {
+    if (!method) return;
     loadDataMc3d(method).then((loadedData) => {
-      setColumns(loadedData.columns);
       setRows(loadedData.rows);
     });
   }, [method]);
 
   const handleMethodChange = (event) => {
     setRows([]);
-    setColumns([]);
     setMethod(event.target.value);
   };
 
