@@ -20,13 +20,13 @@ const AIIDA_REST_BASE_URL = aiidaRestBaseUrl;
 const EXPLORE_BASE_URL = exploreBaseUrl;
 
 export const AIIDA_API_URLS = {
-  "pbe-v1": `${AIIDA_REST_BASE_URL}/mc3d/api/v4`,
+  "pbe-v1": `${AIIDA_REST_BASE_URL}/mc3d-pbe-v1/api/v4`,
   "pbesol-v1": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1/api/v4`,
   "pbesol-v2": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v2/api/v4`,
 };
 
 export const EXPLORE_URLS = {
-  "pbe-v1": `${EXPLORE_BASE_URL}/mc3d`,
+  "pbe-v1": `${EXPLORE_BASE_URL}/mc3d-pbe-v1`,
   "pbesol-v1": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1`,
   "pbesol-v2": `${EXPLORE_BASE_URL}/mc3d-pbesol-v2`,
 };
