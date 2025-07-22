@@ -25,6 +25,9 @@ import OverviewSection from "./OverviewSection";
 import StructureSection from "./StructureSection";
 import ProvenanceSection from "./ProvenanceSection";
 import XrdSection from "./XrdSection";
+import SuperConductivity from "./Superconductivity";
+
+// contributed sections
 
 // import RelatedSection from "./RelatedSection";
 
@@ -94,6 +97,7 @@ function DetailPage() {
             <StructureSection params={params} loadedData={loadedData} />
             <ProvenanceSection params={params} loadedData={loadedData} />
             <XrdSection params={params} loadedData={loadedData} />
+            <SuperConductivity params={params} loadedData={loadedData} />
             {/* <RelatedSection /> */}
           </>
         )}

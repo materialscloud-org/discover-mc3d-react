@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "bands-visualiser": "^0.0.1",
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.10.3",
     "file-saver": "^2.0.5",

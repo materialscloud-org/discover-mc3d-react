@@ -92,6 +92,23 @@ export async function loadAiidaCif(method, uuid) {
   }
 }
 
+export async function loadAiidaBands() {
+  // await delay(2000);
+
+  const HARDCODED_ENDPOINT =
+    "https://aiida.dev.materialscloud.org/mc2d/api/v4/nodes/356c0dd4-2caf-4281-88ca-9c9c8b9f856a/download?download_format=json";
+  let endpoint = HARDCODED_ENDPOINT;
+
+  console.log("endpoint:", HARDCODED_ENDPOINT);
+  try {
+    const response = await fetch(endpoint, { method: "get" });
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error("Error fetching AiiDA bands:", error);
+  }
+}
+
 export async function loadXrd(method, id) {
   // await delay(2000);
   let endpoint = `${MC_REST_API_URL}/${method}/xrd/${id}`;
