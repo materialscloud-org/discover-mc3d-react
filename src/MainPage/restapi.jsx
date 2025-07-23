@@ -7,8 +7,8 @@ import {
 import "./restapi.css";
 
 const DOCS_URL = `${MC_REST_API_URL_BASE}docs`;
-const INDEX_URL = `${MC_REST_API_URL}pbe-v1/overview`;
-const SINGLE_ENTRY_URL = `${MC_REST_API_URL}pbe-v1/base/mc3d-10`;
+const INDEX_URL = `${MC_REST_API_URL}/pbe-v1/overview`;
+const SINGLE_ENTRY_URL = `${MC_REST_API_URL}/pbe-v1/base/mc3d-10`;
 
 export const restapiText = (
   <div className="restapi-text-container">
