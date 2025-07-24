@@ -1,9 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { BandsVisualiser, splitBandsData } from "bands-visualiser";
-import { bandsExist, computeBandShift, formatBandsData } from "./bandUtils"; // make sure to import utilities
-
-import { loadAiidaBands } from "../restApiUtils";
-import { McloudSpinner, ExploreButton } from "mc-react-library";
 
 import { CONFIG_MAP } from "./configs";
 

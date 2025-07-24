@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -30,6 +30,7 @@ function SuperConductivity({ params, loadedData }) {
 
   const [loading, setLoading] = useState(true);
 
+  // just return empty div instantly if no data.
   if (!supercon) {
     return <div className="empty-supercon-div"></div>;
   }
@@ -60,16 +61,15 @@ function SuperConductivity({ params, loadedData }) {
       key: "Coarse Fermi Energy?",
       value: `${safeRound(supercon.fermi_energy_coarse)} eV`,
     },
-
-    { key: "a2f_uuid", value: supercon.a2f_uuid },
-    { key: "aniso_retrieved_uuid", value: supercon.aniso_retrieved_uuid },
-
-    { key: "pw_retrieved_uuid", value: supercon.pw_retrieved_uuid },
-
     {
       key: "Highest Phonon Frequency?",
       value: `${safeRound(supercon.highest_phonon_frequency)} eV`,
     },
+
+    { key: "a2f_uuid?", value: supercon.a2f_uuid },
+    { key: "aniso_retrieved_uuid?", value: supercon.aniso_retrieved_uuid },
+
+    { key: "pw_retrieved_uuid?", value: supercon.pw_retrieved_uuid },
   ];
 
   useEffect(() => {
@@ -82,23 +82,24 @@ function SuperConductivity({ params, loadedData }) {
           loadAiidaBands(params.method, supercon.epw_ph_band_structure_uuid),
         ]);
 
-        // array the raw data
+        // group raw data
         const rawElectronicBands = [qeBands, epwBands];
         const rawPhononBands = [phBands];
 
-        // format and seteBands
+        // format and set eBands
         const electronicBandsArray = prepareSuperConBands(
           rawElectronicBands,
           true,
           -supercon.fermi_energy_coarse,
+          "supercon-bands-wannier",
         );
         setBandsDataArray(electronicBandsArray);
 
-        // format phonon bands array
+        // format and set pBands
         const phononBandsArray = prepareSuperConBands(
           rawPhononBands,
           true,
-          -supercon.fermi_energy_coarse,
+          0,
           "supercon-phonon-wannier",
         );
         setPhononBandsArray(phononBandsArray);
@@ -117,12 +118,6 @@ function SuperConductivity({ params, loadedData }) {
   }, [params.method, supercon]);
 
   // === RETURNS BELOW === //
-
-  // if no supercon just return an empty div
-  if (!supercon) {
-    return <div className="empty-supercon-div"></div>;
-  }
-
   if (loading) {
     return <span>Loading...</span>;
   }
@@ -130,13 +125,18 @@ function SuperConductivity({ params, loadedData }) {
   return (
     <div>
       <div className="section-heading">Contribution: Superconductivity</div>
-      <div class="alert alert-warning" role="alert">
+      <div style={{ padding: "20px 20px" }}>
         Superconduction properities have been been provided by $AUTHOR_CITE, for
         details on methodology see $HYPERLINK. If using any of the data in this
         section be sure to cite $CITATION.
         <DoiBadge doi_id="TEMP URL" />
       </div>
-      <div class="alert alert-warning" role="alert">
+
+      <div
+        class="alert alert-warning"
+        style={{ margin: "20px 20px" }}
+        role="alert"
+      >
         The methodology for this section re-relaxes the structure under a
         differing pseudopotential. To see the relaxed structure of this section
         explore the provinence.{" "}

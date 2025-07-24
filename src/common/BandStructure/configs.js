@@ -1,5 +1,4 @@
-// simple configuration files used to format trace and layout for complex band data.
-
+// simple configuration files used to prettify trace and layout for complex band data.
 const SUPERCON_BANDS_TRACE_CONFIG = [
   {
     label: "DFT",
