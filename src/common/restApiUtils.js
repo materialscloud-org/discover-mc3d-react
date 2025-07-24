@@ -92,14 +92,11 @@ export async function loadAiidaCif(method, uuid) {
   }
 }
 
-export async function loadAiidaBands() {
+export async function loadAiidaBands(method, uuid) {
   // await delay(2000);
+  let aiidaUrl = AIIDA_API_URLS[method];
+  const endpoint = `${aiidaUrl}/nodes/${uuid}/download?download_format=json`;
 
-  const HARDCODED_ENDPOINT =
-    "https://aiida.dev.materialscloud.org/mc2d/api/v4/nodes/356c0dd4-2caf-4281-88ca-9c9c8b9f856a/download?download_format=json";
-  let endpoint = HARDCODED_ENDPOINT;
-
-  console.log("endpoint:", HARDCODED_ENDPOINT);
   try {
     const response = await fetch(endpoint, { method: "get" });
     const json = await response.json();
