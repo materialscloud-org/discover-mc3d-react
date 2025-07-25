@@ -53,13 +53,15 @@ function MainPage() {
 
   // On first load: get columns config & data
   useEffect(() => {
-    const { sortEntries, hiddenFields } = getInitialColumnConfigFromUrl();
+    const { sortEntries, hiddenFields, showFields } =
+      getInitialColumnConfigFromUrl();
 
     loadDataMc3d(method).then((loadedData) => {
       const sortedColumns = applyColumnStateFromUrl(
         loadedData.columns,
         sortEntries,
         hiddenFields,
+        showFields,
       );
       setColumns(sortedColumns);
       setRows(loadedData.rows);
