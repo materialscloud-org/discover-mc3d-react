@@ -1,12 +1,12 @@
 // simple configuration files used to prettify trace and layout for complex band data.
 const SUPERCON_BANDS_TRACE_CONFIG = [
   {
-    label: "DFT",
+    label: "Wannier",
     colors: ["#1f77b4", "#6baed6"], // Down, Up
     dash: "solid",
   },
   {
-    label: "Wannier",
+    label: "DFT",
     colors: ["#d62728", "#ff9896"],
     dash: "dash",
   },

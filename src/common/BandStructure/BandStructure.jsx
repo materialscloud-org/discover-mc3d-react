@@ -141,8 +141,6 @@ export function BandStructure({
   const visualiserRef = useRef(null);
 
   let settings = CONFIG_MAP[config].layout;
-  console.log(settings);
-  console.log(config);
 
   useEffect(() => {
     if (!containerRef.current || !bandsDataArray) return;

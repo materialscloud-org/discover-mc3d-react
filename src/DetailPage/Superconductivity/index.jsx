@@ -15,6 +15,19 @@ import { DoiBadge, ExploreButton } from "mc-react-library";
 
 import { loadAiidaBands } from "../../common/restApiUtils";
 
+import { Placeholder, Card } from "react-bootstrap";
+
+function SquarePlaceholder({ text = "" }) {
+  return (
+    <Card style={{ width: "450px", height: "450px" }} className="text-center">
+      <Placeholder as={Card.Body} animation="glow">
+        <Placeholder xs={12} style={{ height: "80%" }} />
+        <Card.Text className="mt-3">{text}</Card.Text>
+      </Placeholder>
+    </Card>
+  );
+}
+
 // helper function to round a float from loadedData.
 function safeRound(value, decimals = 3) {
   if (typeof value === "number" && !isNaN(value)) {
@@ -76,17 +89,32 @@ function SuperConductivity({ params, loadedData }) {
     async function fetchAndPrepBands() {
       setLoading(true);
       try {
+        // Build promises only if the UUID exists
+        const epwBandsPromise = supercon.epw_el_band_structure_uuid
+          ? loadAiidaBands(params.method, supercon.epw_el_band_structure_uuid)
+          : Promise.resolve(null);
+
+        const qeBandsPromise = supercon.qe_el_band_structure_uuid
+          ? loadAiidaBands(params.method, supercon.qe_el_band_structure_uuid)
+          : Promise.resolve(null);
+
+        const phBandsPromise = supercon.epw_ph_band_structure_uuid
+          ? loadAiidaBands(params.method, supercon.epw_ph_band_structure_uuid)
+          : Promise.resolve(null);
+
         const [epwBands, qeBands, phBands] = await Promise.all([
-          loadAiidaBands(params.method, supercon.epw_el_band_structure_uuid),
-          loadAiidaBands(params.method, supercon.qe_el_band_structure_uuid),
-          loadAiidaBands(params.method, supercon.epw_ph_band_structure_uuid),
+          epwBandsPromise,
+          qeBandsPromise,
+          phBandsPromise,
         ]);
 
-        // group raw data
-        const rawElectronicBands = [qeBands, epwBands];
-        const rawPhononBands = [phBands];
+        // Log loaded or missing data
+        console.log("Loaded bands:", { epwBands, qeBands, phBands });
 
-        // format and set eBands
+        // group raw data (skip nulls)
+        const rawElectronicBands = [qeBands, epwBands].filter(Boolean);
+        const rawPhononBands = [phBands].filter(Boolean);
+
         const electronicBandsArray = prepareSuperConBands(
           rawElectronicBands,
           true,
@@ -95,7 +123,6 @@ function SuperConductivity({ params, loadedData }) {
         );
         setBandsDataArray(electronicBandsArray);
 
-        // format and set pBands
         const phononBandsArray = prepareSuperConBands(
           rawPhononBands,
           true,
@@ -103,12 +130,10 @@ function SuperConductivity({ params, loadedData }) {
           "supercon-phonon-wannier",
         );
         setPhononBandsArray(phononBandsArray);
-
-        // error handling and clean up.
       } catch (err) {
         console.error("Failed to load bands:", err);
-        setElectronicBands([]);
-        setPhononBands(null);
+        setBandsDataArray([]);
+        setPhononBandsArray([]);
       } finally {
         setLoading(false);
       }
@@ -133,7 +158,7 @@ function SuperConductivity({ params, loadedData }) {
       </div>
 
       <div
-        class="alert alert-warning"
+        className="alert alert-warning"
         style={{ margin: "20px 20px" }}
         role="alert"
       >
@@ -179,6 +204,7 @@ function SuperConductivity({ params, loadedData }) {
         <Row>
           <Col>
             <div className="subsection-title">2x1 Phonon bands</div>
+            <div>Note - Replace with interactive Phonon later?</div>
             <BandStructure
               bandsDataArray={phononBandsArray}
               loading={loading}
@@ -186,6 +212,16 @@ function SuperConductivity({ params, loadedData }) {
             />
           </Col>
           <Col></Col>
+          <Row>
+            <Col>
+              <SquarePlaceholder
+                text={"Phonon Dos and Bands [w/custom trace]"}
+              />
+            </Col>
+            <Col>
+              <SquarePlaceholder text={"Generic 2D plot (from matdyn?)"} />
+            </Col>
+          </Row>
         </Row>
       </Container>
     </div>
