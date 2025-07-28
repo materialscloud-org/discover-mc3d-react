@@ -84,6 +84,8 @@ export function prepareSuperConBands(
     // step through the array
     const traceFormat = trace_config[datasetIndex % trace_config.length];
 
+    console.log("bands Object", bandsObject);
+
     const [primaryColor, secondaryColor] = traceFormat.colors;
     const dash = traceFormat.dash;
 

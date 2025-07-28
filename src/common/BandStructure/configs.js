@@ -1,12 +1,12 @@
-// simple configuration files used to prettify trace and layout for complex band data.
+// configuration files used to hack the BS visualiser defaults.
 const SUPERCON_BANDS_TRACE_CONFIG = [
   {
-    label: "Wannier",
+    label: "DFT",
     colors: ["#1f77b4", "#6baed6"], // Down, Up
     dash: "solid",
   },
   {
-    label: "DFT",
+    label: "Wannier",
     colors: ["#d62728", "#ff9896"],
     dash: "dash",
   },
@@ -49,16 +49,29 @@ const SUPERCON_BANDS_LAYOUT_CONFIG = {
 
     font: { size: 14, color: "#333" },
 
-    bgcolor: "rgba(250, 250, 250, 0.8)",
-    alpha: 0.4,
+    bgcolor: "rgba(250, 250, 250, 1.0)",
     bordercolor: "#ccc",
     borderwidth: 1,
   },
+  shapes: [
+    // the default border is a bit too thick
+    {
+      type: "rect",
+      xref: "paper",
+      yref: "paper",
+      x0: 0,
+      y0: 0,
+      x1: 1,
+      y1: 1,
+      line: { color: "black", width: 1.0 },
+      layer: "above",
+    },
+  ],
 };
 
 const SUPERCON_PHONON_TRACE_CONFIG = [
   {
-    label: "Wannier Phonons",
+    label: "DFT Phonons",
     colors: ["#1f77b4", "#6baed6"], // Down, Up
     dash: "solid",
   },
@@ -95,6 +108,20 @@ const SUPERCON_PHONON_LAYOUT_CONFIG = {
     bordercolor: "#ccc",
     borderwidth: 1,
   },
+  shapes: [
+    // the default border is a bit too thick
+    {
+      type: "rect",
+      xref: "paper",
+      yref: "paper",
+      x0: 0,
+      y0: 0,
+      x1: 1,
+      y1: 1,
+      line: { color: "black", width: 1.0 },
+      layer: "above",
+    },
+  ],
 };
 
 export const CONFIG_MAP = {
