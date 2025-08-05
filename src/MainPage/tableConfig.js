@@ -1,21 +1,18 @@
 // Helper file for table configuration from urls.
 
-// Define presets here.
+// Define presets here - these toggle evertying else off by default
+// Allows applying a method, but this can be overwritten with &method=...
 export const PRESETS = {
-  MinTable: {
-    sort: "num_atoms:desc,num_elements:desc",
-    hiddenColumns: ["spacegroup_number", "id", "formula"],
-  },
   superconductivity: {
     sort: "isotropic_tc:desc",
-    hiddenColumns: [
-      "is_high_pressure",
-      "is_theoretical",
-      "num_elements",
-      "total_magnetization",
-      "is_high_temperature",
+    method: "pbe-v1",
+    showColumns: [
+      "id",
+      "formula",
+      "num_atoms",
+      "isotropic_tc",
+      "highest_phonon_frequency",
     ],
-    showColumns: ["isotropic_tc", "highest_phonon_frequency"],
   },
 };
 
@@ -25,65 +22,81 @@ into a format that the AGgrid api can deal with
 
 example URL strings:
  ?sort=num_atoms:desc,num_elements:asc&hide=id,formula
- ?preset=MinTable
-
+ ?preset=superconductivity
  */
 export function getColumnConfigFromUrl(urlSearchParams, presets) {
   const sortParam = urlSearchParams.get("sort");
-  const hideParam = urlSearchParams.get("hide");
   const showParam = urlSearchParams.get("show");
+  const hideParam = urlSearchParams.get("hide");
   const presetParam = urlSearchParams.get("preset");
 
   let sortEntries = [];
-  let hiddenFields = [];
   let showFields = [];
+  let hiddenFields = [];
 
+  // If preset exists, apply it and ignore show/hide params
   if (presetParam && presets[presetParam]) {
     const preset = presets[presetParam];
-    sortEntries = preset.sort
-      ? preset.sort.split(",").map((entry, idx) => {
-          const [field, dir] = entry.split(":");
-          return { field, sort: dir, sortIndex: idx };
-        })
-      : [];
-    hiddenFields = preset.hiddenColumns || [];
+    sortEntries = parseSortParam(preset.sort);
     showFields = preset.showColumns || [];
+    // By convention: hide everything not in showColumns
+    hiddenFields = null; // signal to hide all except showFields
   } else {
-    sortEntries = sortParam
-      ? sortParam.split(",").map((entry, idx) => {
-          const [field, dir] = entry.split(":");
-          return { field, sort: dir, sortIndex: idx };
-        })
-      : [];
-    hiddenFields = hideParam ? hideParam.split(",") : [];
-    showFields = showParam ? showParam.split(",") : [];
+    // Use explicit show/hide
+    if (showParam) {
+      showFields = showParam.split(",");
+    }
+    if (hideParam) {
+      hiddenFields = hideParam.split(",");
+    }
+    sortEntries = parseSortParam(sortParam);
   }
 
-  return { sortEntries, hiddenFields, showFields };
+  return { sortEntries, showFields, hiddenFields };
 }
 
-// applies the column state to a given set of columns
+function parseSortParam(sortStr) {
+  if (!sortStr) return [];
+  return sortStr.split(",").map((entry, idx) => {
+    const [field, dir] = entry.split(":");
+    return {
+      field,
+      sort: dir || "asc",
+      sortIndex: idx,
+    };
+  });
+}
+
+// Applies the column state to a given set of columns
 export function applyColumnStateFromUrl(
   columns,
   sortEntries,
   hiddenFields,
   showFields,
 ) {
-  console.log(showFields);
+  const isPresetMode = hiddenFields === null;
+
   return columns.map((col) => {
     const updatedCol = { ...col };
+
+    // Apply sorting
     const match = sortEntries.find((s) => s.field === col.field);
     if (match) {
       updatedCol.sort = match.sort;
       updatedCol.sortIndex = match.sortIndex;
     }
 
-    if (hiddenFields.includes(col.field)) {
-      console.log("hiding", col);
-      updatedCol.hide = true;
-    } else if (showFields.includes(col.field)) {
-      console.log("showing", col);
-      updatedCol.hide = false;
+    // Preset mode: hide everything not in showFields
+    if (isPresetMode) {
+      updatedCol.hide = !showFields.includes(col.field);
+    } else {
+      // Manual override mode: hide/show explicitly
+      if (hiddenFields.includes(col.field)) {
+        updatedCol.hide = true;
+      } else if (showFields.includes(col.field)) {
+        updatedCol.hide = false;
+      }
+      // else: keep current `hide` value
     }
 
     return updatedCol;

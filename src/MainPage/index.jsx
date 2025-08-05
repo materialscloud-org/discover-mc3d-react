@@ -30,7 +30,22 @@ const DEFAULT_METHOD = "pbesol-v1";
 
 function getInitialMethodFromUrl() {
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get("method") || DEFAULT_METHOD;
+
+  // Get method from URL
+  const methodFromUrl = urlParams.get("method");
+
+  if (methodFromUrl) {
+    return methodFromUrl;
+  }
+
+  // If no method in URL, check preset from URL
+  const presetName = urlParams.get("preset");
+  if (presetName && PRESETS[presetName] && PRESETS[presetName].method) {
+    return PRESETS[presetName].method;
+  }
+
+  // fallback default method
+  return "pbesol-v1";
 }
 
 function getInitialColumnConfigFromUrl() {
