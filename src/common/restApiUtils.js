@@ -23,12 +23,14 @@ export const AIIDA_API_URLS = {
   "pbe-v1": `${AIIDA_REST_BASE_URL}/mc3d-pbe-v1/api/v4`,
   "pbesol-v1": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1/api/v4`,
   "pbesol-v2": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v2/api/v4`,
+  "pbesol-v1-supercon": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1-supercon/api/v4`,
 };
 
 export const EXPLORE_URLS = {
   "pbe-v1": `${EXPLORE_BASE_URL}/mc3d-pbe-v1`,
   "pbesol-v1": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1`,
   "pbesol-v2": `${EXPLORE_BASE_URL}/mc3d-pbesol-v2`,
+  "pbesol-v1-supercon": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1-supercon/api/v4`,
 };
 
 // delay function for testing loading animations:
@@ -92,9 +94,23 @@ export async function loadAiidaCif(method, uuid) {
   }
 }
 
-export async function loadAiidaBands(method, uuid) {
+export async function loadAiidaBands(aiidaProfile, uuid) {
   // await delay(2000);
-  let aiidaUrl = AIIDA_API_URLS[method];
+  let aiidaUrl = AIIDA_API_URLS[aiidaProfile];
+  const endpoint = `${aiidaUrl}/nodes/${uuid}/download?download_format=json`;
+
+  try {
+    const response = await fetch(endpoint, { method: "get" });
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error("Error fetching AiiDA bands:", error);
+  }
+}
+
+export async function loadXY(aiidaProfile, uuid) {
+  // await delay(2000);
+  let aiidaUrl = AIIDA_API_URLS[aiidaProfile];
   const endpoint = `${aiidaUrl}/nodes/${uuid}/download?download_format=json`;
 
   try {

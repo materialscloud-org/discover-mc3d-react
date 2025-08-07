@@ -21,6 +21,7 @@
     "mc-react-ptable-materials-grid": "^0.8.4",
     "mc-react-structure-visualizer": "^0.7.2",
     "plotly.js": "^2.6.2",
+    "plotly.js-dist-min": "^3.0.3",
     "react": "^18.1.0",
     "react-bootstrap": "^2.6.0",
     "react-dom": "^18.1.0",

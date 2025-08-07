@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+import A2FPlot from "./A2FPlot";
+
 import { Container, Row, Col } from "react-bootstrap";
 
 import "./index.css";
@@ -13,7 +15,7 @@ import { MCInfoBox } from "../../common/MCInfoBox";
 
 import { DoiBadge, ExploreButton } from "mc-react-library";
 
-import { loadAiidaBands } from "../../common/restApiUtils";
+import { loadAiidaBands, loadXY } from "../../common/restApiUtils";
 
 import { Placeholder, Card } from "react-bootstrap";
 
@@ -40,6 +42,7 @@ function SuperConductivity({ params, loadedData }) {
   const supercon = loadedData.details.supercon;
   const [bandsDataArray, setBandsDataArray] = useState([]);
   const [phononBandsArray, setPhononBandsArray] = useState([]);
+  const [a2fData, setA2fData] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -80,26 +83,63 @@ function SuperConductivity({ params, loadedData }) {
     },
 
     { key: "a2f_uuid?", value: supercon.a2f_uuid },
-    { key: "aniso_retrieved_uuid?", value: supercon.aniso_retrieved_uuid },
+    {
+      key: "aniso_retrieved_uuid: Folder Data - needs Backend Formatting?",
+      value: supercon.aniso_retrieved_uuid,
+    },
 
-    { key: "pw_retrieved_uuid?", value: supercon.pw_retrieved_uuid },
+    {
+      key: "pw_retrieved_uuid: Folder Data - needs Backend Formatting?",
+      value: supercon.pw_retrieved_uuid,
+    },
   ];
 
+  // a2f plotData
+  useEffect(() => {
+    async function fetchA2F() {
+      setLoading(true);
+      try {
+        const method = `${params.method}-supercon`;
+
+        const data = supercon.a2f_uuid
+          ? await loadXY(method, supercon.a2f_uuid)
+          : null;
+
+        if (data) {
+          setA2fData(data);
+        } else {
+          console.warn("No A2F data available for UUID:", supercon.a2f_uuid);
+          setA2fData(null);
+        }
+      } catch (err) {
+        console.error("Failed to load A2F data:", err);
+        setA2fData(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchA2F();
+  }, [params.method, supercon.a2f_uuid]);
+
+  // bands plotData
   useEffect(() => {
     async function fetchAndPrepBands() {
       setLoading(true);
       try {
+        // we fetch supercon method here.
+        const method = params.method + "-supercon";
         // Build promises only if the UUID exists
         const epwBandsPromise = supercon.epw_el_band_structure_uuid
-          ? loadAiidaBands(params.method, supercon.epw_el_band_structure_uuid)
+          ? loadAiidaBands(method, supercon.epw_el_band_structure_uuid)
           : Promise.resolve(null);
 
         const qeBandsPromise = supercon.qe_el_band_structure_uuid
-          ? loadAiidaBands(params.method, supercon.qe_el_band_structure_uuid)
+          ? loadAiidaBands(method, supercon.qe_el_band_structure_uuid)
           : Promise.resolve(null);
 
         const phBandsPromise = supercon.epw_ph_band_structure_uuid
-          ? loadAiidaBands(params.method, supercon.epw_ph_band_structure_uuid)
+          ? loadAiidaBands(method, supercon.epw_ph_band_structure_uuid)
           : Promise.resolve(null);
 
         const [epwBands, qeBands, phBands] = await Promise.all([
@@ -164,7 +204,7 @@ function SuperConductivity({ params, loadedData }) {
       >
         The methodology for this section re-relaxes the structure under a
         differing pseudopotential. To see the relaxed structure of this section
-        explore the provinence.{" "}
+        explore the provenance.
         <ExploreButton explore_url={"TEMP"} uuid="TEMP" />
       </div>
       <Container fluid className="section-container">
@@ -200,11 +240,9 @@ function SuperConductivity({ params, loadedData }) {
             </MCInfoBox>
           </Col>
         </Row>
-
         <Row>
-          <Col>
-            <div className="subsection-title">2x1 Phonon bands</div>
-            <div>Note - Replace with interactive Phonon later?</div>
+          <div className="subsection-title">Wannier vs DFT BandsData...</div>
+          <Col className="flex-column">
             <BandStructure
               bandsDataArray={phononBandsArray}
               loading={loading}
@@ -212,16 +250,23 @@ function SuperConductivity({ params, loadedData }) {
             />
           </Col>
           <Col></Col>
-          <Row>
-            <Col>
-              <SquarePlaceholder
-                text={"Phonon Dos and Bands [w/custom trace]"}
-              />
-            </Col>
-            <Col>
-              <SquarePlaceholder text={"Generic 2D plot (from matdyn?)"} />
-            </Col>
-          </Row>
+        </Row>
+        <Row>
+          <div className="subsection-title">Spectral Function plot.</div>
+          {a2fData &&
+            a2fData.a2f &&
+            a2fData.frequency &&
+            a2fData.degaussq &&
+            a2fData.lambda && (
+              <Col>
+                <A2FPlot
+                  a2f={a2fData.a2f}
+                  frequency={a2fData.frequency}
+                  degaussq={a2fData.degaussq}
+                  lambda={a2fData.lambda}
+                />
+              </Col>
+            )}
         </Row>
       </Container>
     </div>
