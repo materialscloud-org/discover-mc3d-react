@@ -5,11 +5,12 @@
 export const PRESETS = {
   superconductivity: {
     sort: "isotropic_tc:desc",
-    method: "pbe-v1",
+    method: "pbesol-v1",
     showColumns: [
       "id",
       "formula",
       "num_atoms",
+      "spacegroup_int",
       "isotropic_tc",
       "highest_phonon_frequency",
     ],

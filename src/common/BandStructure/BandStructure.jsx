@@ -15,7 +15,6 @@ function shiftBands(bandsData, shift) {
 }
 
 // stretches bandData arrays so that they share a global xMin and global xMax.
-
 function normalizeBandsData(bandsObjects) {
   // Step 1: find global x-range
   let globalMin = Infinity;
@@ -84,10 +83,11 @@ export function prepareSuperConBands(
     // step through the array
     const traceFormat = trace_config[datasetIndex % trace_config.length];
 
-    console.log("bands Object", bandsObject);
-
     const [primaryColor, secondaryColor] = traceFormat.colors;
     const dash = traceFormat.dash;
+    const width = traceFormat.width;
+    const opacity = traceFormat.opacity;
+    const units = traceFormat.units;
 
     if (seperate_spins && bandsObject.paths[0].two_band_types) {
       const [downBands, upBands] = splitBandsData(bandsObject, 2);
@@ -99,9 +99,13 @@ export function prepareSuperConBands(
             label: `${traceFormat.label} ↓`,
             name: traceFormat.label,
 
-            hovertemplate:
-              "<b>${traceFormat.label} Down Spin</b>: %{y:.3f} eV<br><extra></extra>",
-            line: { color: primaryColor, dash: traceFormat.dash, width: 1.6 },
+            hovertemplate: `<b>${traceFormat.label} Down Spin</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
+            line: {
+              color: primaryColor,
+              dash: traceFormat.dash,
+              width: width,
+              opacity: opacity,
+            },
           },
         },
         {
@@ -109,8 +113,13 @@ export function prepareSuperConBands(
           traceFormat: {
             label: `${traceFormat.label} ↑`,
             name: traceFormat.label,
-            hovertemplate: `<b>${traceFormat.label} Up Spin</b>: %{y:.3f} eV<br><extra></extra>`,
-            line: { color: secondaryColor, dash: traceFormat.dash, width: 1.6 },
+            hovertemplate: `<b>${traceFormat.label} Up Spin</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
+            line: {
+              color: secondaryColor,
+              dash: traceFormat.dash,
+              width: width,
+            },
+            opacity: opacity,
           },
         },
       );
@@ -120,8 +129,13 @@ export function prepareSuperConBands(
         traceFormat: {
           label: traceFormat.label,
           name: traceFormat.label,
-          hovertemplate: `<b>${traceFormat.label}</b>: %{y:.3f} eV<br><extra></extra>`,
-          line: { color: primaryColor, dash: traceFormat.dash, width: 1.6 },
+          hovertemplate: `<b>${traceFormat.label}</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
+          line: {
+            color: primaryColor,
+            dash: traceFormat.dash,
+            width: width,
+          },
+          opacity: opacity,
         },
       });
     }
@@ -138,11 +152,26 @@ export function BandStructure({
   bandsDataArray,
   loading,
   config = "supercon-bands-wannier",
+  maxYval = null,
 }) {
   const containerRef = useRef(null);
   const visualiserRef = useRef(null);
 
-  let settings = CONFIG_MAP[config].layout;
+  let baseLayout = CONFIG_MAP[config].layout || {};
+
+  // for a2f + phonon soft sync of range.
+  let settings;
+  if (maxYval) {
+    settings = {
+      ...baseLayout,
+      yaxis: {
+        ...(baseLayout.yaxis || {}),
+        range: [0, maxYval],
+      },
+    };
+  } else {
+    settings = baseLayout;
+  }
 
   useEffect(() => {
     if (!containerRef.current || !bandsDataArray) return;
@@ -170,7 +199,7 @@ export function BandStructure({
     return (
       <div
         className="placeholder-wave d-flex align-items-center justify-content-center rounded bg-secondary"
-        style={{ height: "450px", width: "100%" }}
+        style={{ height: "500px", width: "100%" }}
       >
         <span> ... Malformed Bands/DOS Data? ... </span>
       </div>
