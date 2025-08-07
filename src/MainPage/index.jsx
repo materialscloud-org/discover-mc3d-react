@@ -20,33 +20,81 @@ import { DownloadButton } from "./DownloadButton";
 import { MethodSelectionBox } from "./MethodSelectionBox";
 import { loadGeneralInfo } from "../common/restApiUtils";
 
+import {
+  PRESETS,
+  getColumnConfigFromUrl,
+  applyColumnStateFromUrl,
+} from "./tableConfig";
+
+const DEFAULT_METHOD = "pbesol-v1";
+
+function getInitialMethodFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // Get method from URL
+  const methodFromUrl = urlParams.get("method");
+
+  if (methodFromUrl) {
+    return methodFromUrl;
+  }
+
+  // If no method in URL, check preset from URL
+  const presetName = urlParams.get("preset");
+  if (presetName && PRESETS[presetName] && PRESETS[presetName].method) {
+    return PRESETS[presetName].method;
+  }
+
+  // fallback default method
+  return "pbesol-v1";
+}
+
+function getInitialColumnConfigFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return getColumnConfigFromUrl(urlParams, PRESETS);
+}
+
+// MC3D Landing page React component.
 function MainPage() {
   const [genInfo, setGenInfo] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
-  const [method, setMethod] = useState("pbesol-v1");
+  const [method, setMethod] = useState(getInitialMethodFromUrl());
+
+  const materialSelectorRef = useRef(null);
 
   useEffect(() => {
-    loadGeneralInfo().then((loadedData) => {
-      setGenInfo(loadedData);
-      console.log(loadedData);
+    loadGeneralInfo().then(setGenInfo);
+  }, []);
+
+  // On first load: get columns config & data
+  useEffect(() => {
+    const { sortEntries, hiddenFields, showFields } =
+      getInitialColumnConfigFromUrl();
+
+    loadDataMc3d(method).then((loadedData) => {
+      const sortedColumns = applyColumnStateFromUrl(
+        loadedData.columns,
+        sortEntries,
+        hiddenFields,
+        showFields,
+      );
+      setColumns(sortedColumns);
+      setRows(loadedData.rows);
     });
   }, []);
 
+  // when method changes: only reload rows, keep existing columns
   useEffect(() => {
+    if (!method) return;
     loadDataMc3d(method).then((loadedData) => {
-      setColumns(loadedData.columns);
       setRows(loadedData.rows);
     });
   }, [method]);
 
   const handleMethodChange = (event) => {
     setRows([]);
-    setColumns([]);
     setMethod(event.target.value);
   };
-
-  const materialSelectorRef = useRef(null);
 
   return (
     <MaterialsCloudHeader
@@ -64,7 +112,7 @@ function MainPage() {
         <div className="description">
           The Materials Cloud Three-Dimensional Structure Database is a curated
           dataset of unique, stoichiometric, experimentally known inorganic
-          compounds, and of their calculated properties. Structures have
+          compounds, and of their calculated properties. Structures have been
           obtained with fully-relaxed density-functional theory calculations,
           starting from experimental ones imported, cleaned and parsed from the
           MPDS, COD and ICSD databases.
