@@ -12,8 +12,8 @@ import { countNumberOfAtoms, countNumberOfElements } from "../common/utils";
 // columns not listed, will be not shown by default and placed at the bottom
 const COLUMN_ORDER_AND_SETTINGS = [
   { field: "id", hide: false, width: 165, minWidth: 160 },
-  { field: "formula", hide: false },
-  { field: "formula_hill", hide: true },
+  { field: "formula", hide: false, width: 165, minWidth: 160 },
+  { field: "formula_hill", hide: true, width: 165, minWidth: 160 },
   { field: "num_elements", hide: false },
   { field: "num_atoms", hide: false },
   { field: "bravais_lat", hide: true },
