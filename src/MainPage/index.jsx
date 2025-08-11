@@ -96,6 +96,8 @@ function MainPage() {
     setMethod(event.target.value);
   };
 
+  console.log("Loaded Columns", columns);
+
   return (
     <MaterialsCloudHeader
       activeSection={"discover"}

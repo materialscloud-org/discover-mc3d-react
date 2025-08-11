@@ -98,12 +98,23 @@ function formatColumns(metadata) {
 
   // convert the columns from metadata
   metadata["index-columns"].forEach((col) => {
+    const baseCharWidth = 4; // px per character
+    const padding = 28; // padding
+
+    const estimatedWidth = Math.min(
+      Math.max(col.name.length * baseCharWidth + padding, 80), // min width 80
+      300, // max width 300
+    );
+
     columns.push({
       field: col.label,
       headerName: col.name,
       unit: col.unit || null,
       colType: col.type || "text",
       infoText: col.description || null,
+      autoHeaderHeight: true, // expand if wrapping is allowed
+      minWidth: estimatedWidth,
+      width: estimatedWidth,
     });
   });
 

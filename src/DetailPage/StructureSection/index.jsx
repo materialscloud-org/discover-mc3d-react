@@ -16,8 +16,6 @@ const StructureSection = ({ params, loadedData }) => {
   let details = loadedData.details;
   let structureInfo = loadedData.structureInfo;
 
-  const vol = details.properties.cell_volume;
-  console.log(loadedData);
   const metadata = loadedData.metadata;
   const methodLabel = params.method;
 
