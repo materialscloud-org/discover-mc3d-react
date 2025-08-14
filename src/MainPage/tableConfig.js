@@ -12,6 +12,8 @@ export const PRESETS = {
       "num_atoms",
       "spacegroup_int",
       "isotropic_tc",
+      "anisotropic_tc",
+      "allen_dynes_tc",
       "highest_phonon_frequency",
     ],
   },
@@ -40,6 +42,7 @@ export function getColumnConfigFromUrl(urlSearchParams, presets) {
     const preset = presets[presetParam];
     sortEntries = parseSortParam(preset.sort);
     showFields = preset.showColumns || [];
+    console.log("showFields", showFields);
     // By convention: hide everything not in showColumns
     hiddenFields = null; // signal to hide all except showFields
   } else {

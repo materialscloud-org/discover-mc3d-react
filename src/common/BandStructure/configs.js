@@ -1,4 +1,62 @@
-// configuration files used to hack the BS visualiser defaults.
+// trace Configurations for supercon data.
+export const traceConfigs = {
+  electronicEPW: {
+    label: "EPW",
+    colors: ["#d62728"],
+    dash: "4px",
+    width: 1.75,
+    opacity: 1,
+    units: "eV",
+    mode: "markers",
+    marker: { size: 3, color: "red" },
+  },
+  electronicQE: {
+    label: "QE",
+    colors: ["#6baed6"],
+    dash: "solid",
+    width: 2.25,
+    opacity: 0.95,
+    units: "eV",
+    mode: "markers",
+    marker: { size: 3, color: "blue" },
+  },
+  phononEPW: {
+    label: "EPW Phonons",
+    colors: ["#d62728"],
+    dash: "4px",
+    width: 1.75,
+    opacity: 1,
+    units: "eV",
+    mode: "markers",
+    marker: { size: 3, color: "red" },
+  },
+
+  unknownEntry: {
+    label: "Unknown Data 1",
+    colors: ["#2ca02c", "#98df8a"],
+    dash: "dot",
+    units: "eV",
+  },
+};
+
+export const SUPERCON_EEPW_TRACE_CONFIG = {
+  label: "EPW",
+  colors: ["#d62728", "#ff9896"],
+  dash: "4px",
+  width: 1.75,
+  opacity: 1,
+  units: "eV",
+};
+
+export const SUPERCON_EQE_TRACE_CONFIG = {
+  label: "QE",
+  colors: ["#1f77b4", "#6baed6"], // Down, Up
+  dash: "solid",
+  width: 2.25,
+  opacity: 0.95,
+  units: "eV",
+};
+
 const SUPERCON_BANDS_TRACE_CONFIG = [
   {
     label: "QE",
@@ -30,13 +88,7 @@ const SUPERCON_BANDS_TRACE_CONFIG = [
   },
 ];
 
-const SUPERCON_BANDS_LAYOUT_CONFIG = {
-  xaxis: {
-    showticklabels: false,
-    ticks: "",
-    showline: false,
-    showgrid: false,
-  },
+export const SUPERCON_BANDS_LAYOUT_CONFIG = {
   yaxis: {
     showline: false,
     showgrid: false,
@@ -50,11 +102,6 @@ const SUPERCON_BANDS_LAYOUT_CONFIG = {
     y: 0.975,
     x: 0.975,
     xanchor: "right",
-
-    title: {
-      font: { size: 14, color: "#333" },
-    },
-
     font: { size: 14, color: "#333" },
 
     bgcolor: "rgba(250, 250, 250, 1.0)",
@@ -71,7 +118,7 @@ const SUPERCON_BANDS_LAYOUT_CONFIG = {
       y0: 0,
       x1: 1,
       y1: 1,
-      line: { color: "black", width: 1.0 },
+      line: { color: "black", width: 1.25 },
       layer: "above",
     },
   ],
@@ -87,15 +134,7 @@ const SUPERCON_PHONON_TRACE_CONFIG = [
 ];
 
 const SUPERCON_PHONON_LAYOUT_CONFIG = {
-  xaxis: {
-    showticklabels: false,
-    ticks: "",
-    showline: false,
-    showgrid: false,
-    zeroline: false,
-  },
   margin: { t: 10, b: 50, l: 52, r: 0 },
-
   yaxis: {
     zeroline: false,
     showline: false,

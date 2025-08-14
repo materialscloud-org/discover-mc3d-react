@@ -1,7 +1,13 @@
 import { useEffect, useRef } from "react";
 import { BandsVisualiser, splitBandsData } from "bands-visualiser";
 
-import { CONFIG_MAP } from "./configs";
+import {
+  CONFIG_MAP,
+  SUPERCON_EQE_TRACE_CONFIG,
+  SUPERCON_EEPW_TRACE_CONFIG,
+  SUPERCON_BANDS_LAYOUT_CONFIG,
+  traceConfigs,
+} from "./configs";
 
 // Helper
 function shiftBands(bandsData, shift) {
@@ -14,164 +20,63 @@ function shiftBands(bandsData, shift) {
   });
 }
 
-// stretches bandData arrays so that they share a global xMin and global xMax.
-function normalizeBandsData(bandsObjects) {
-  // Step 1: find global x-range
-  let globalMin = Infinity;
-  let globalMax = -Infinity;
-
-  bandsObjects.forEach((bandObj) => {
-    bandObj.paths.forEach((path) => {
-      if (!path.x || path.x.length === 0) return;
-      globalMin = Math.min(globalMin, path.x[0]);
-      globalMax = Math.max(globalMax, path.x[path.x.length - 1]);
-    });
-  });
-
-  // helper: scale array to new range
-  function rescaleArray(arr, newMin, newMax) {
-    const oldMin = arr[0];
-    const oldMax = arr[arr.length - 1];
-    if (oldMax === oldMin) return arr.map(() => newMin); // avoid div by 0
-    const scale = (newMax - newMin) / (oldMax - oldMin);
-    return arr.map((x) => newMin + (x - oldMin) * scale);
-  }
-
-  // Step 2: produce new objects with rescaled x
-  const newBandsObjects = bandsObjects.map((bandObj) => {
-    const newPaths = bandObj.paths.map((path) => {
-      const scaledX = rescaleArray(path.x, globalMin, globalMax);
-      return {
-        ...path,
-        x: scaledX,
-      };
-    });
-    return {
-      ...bandObj,
-      paths: newPaths,
-    };
-  });
-
-  return newBandsObjects;
-}
-
-// helper function to merge supercon wannier + supercon dft into one singular bands array
-// this is fairly flexible and maybe usable for other general purpose data.
-export function prepareSuperConBands(
-  bandsObjects,
-  seperate_spins = true,
-  shiftValue = 0,
-  config = "supercon-bands-wannier",
+// supercon data set is not spin polarised
+// only use the first color in colors
+// and dont try to spin split.
+export function prepareSuperConBand(
+  bandObject,
+  shiftVal = 0,
+  config = "unknownEntry",
 ) {
-  // shift each bandobject to the singular fermilevel.
-  for (const bandsObject of bandsObjects) {
-    shiftBands(bandsObject, shiftValue);
-  }
+  // shift bandobject to fermiLevel
+  shiftBands(bandObject, shiftVal);
 
-  let trace_config = CONFIG_MAP[config].traces;
+  let traceFormat = traceConfigs[config];
+  const width = traceFormat.width;
+  const opacity = traceFormat.opacity;
 
-  // WARNING
-  // super con data has non-equivalent x-step sizes.
-  // I have written a normalizedBandsData method to handle this.
-  const normalizedbandsObjects = normalizeBandsData(bandsObjects);
+  const bandsDataArrayObj = {
+    bandsData: bandObject,
+    traceFormat: {
+      label: `${traceFormat.label}`,
+      name: traceFormat.label,
 
-  // We dont expect spin resolved calcs but we handle them just in case.
-  let spinSeparatedArray = [];
+      hovertemplate: `<b>${traceFormat.label}</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
+      mode: traceFormat.mode,
+      marker: traceFormat.marker,
+      // line: {
+      //   color: traceFormat.colors[0],
+      //   dash: traceFormat.dash,
+      //   width: traceFormat.width,
+      //   opacity: traceFormat.opacity,
+      // },
+    },
+  };
 
-  let datasetIndex = 0;
-  normalizedbandsObjects.forEach((bandsObject) => {
-    // step through the array
-    const traceFormat = trace_config[datasetIndex % trace_config.length];
-
-    const [primaryColor, secondaryColor] = traceFormat.colors;
-    const dash = traceFormat.dash;
-    const width = traceFormat.width;
-    const opacity = traceFormat.opacity;
-    const units = traceFormat.units;
-
-    if (seperate_spins && bandsObject.paths[0].two_band_types) {
-      const [downBands, upBands] = splitBandsData(bandsObject, 2);
-
-      spinSeparatedArray.push(
-        {
-          bandsData: downBands,
-          traceFormat: {
-            label: `${traceFormat.label} ↓`,
-            name: traceFormat.label,
-
-            hovertemplate: `<b>${traceFormat.label} Down Spin</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
-            line: {
-              color: primaryColor,
-              dash: traceFormat.dash,
-              width: width,
-              opacity: opacity,
-            },
-          },
-        },
-        {
-          bandsData: upBands,
-          traceFormat: {
-            label: `${traceFormat.label} ↑`,
-            name: traceFormat.label,
-            hovertemplate: `<b>${traceFormat.label} Up Spin</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
-            line: {
-              color: secondaryColor,
-              dash: traceFormat.dash,
-              width: width,
-            },
-            opacity: opacity,
-          },
-        },
-      );
-    } else {
-      spinSeparatedArray.push({
-        bandsData: bandsObject,
-        traceFormat: {
-          label: traceFormat.label,
-          name: traceFormat.label,
-          hovertemplate: `<b>${traceFormat.label}</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
-          line: {
-            color: primaryColor,
-            dash: traceFormat.dash,
-            width: width,
-          },
-          opacity: opacity,
-        },
-      });
-    }
-
-    datasetIndex += 1;
-  });
-
-  return spinSeparatedArray;
+  return bandsDataArrayObj;
 }
 
-// Standalone visualiser component,
-// wraps the js BandsVisualiser in a ref
+// Standalone visualiser component
+// expects the bandsDataArray to contain already traceFormatted entries.
 export function BandStructure({
   bandsDataArray,
   loading,
-  config = "supercon-bands-wannier",
-  maxYval = null,
+  maxYval = null, // incase you want to force Yvals.
+  minYval = null,
 }) {
   const containerRef = useRef(null);
   const visualiserRef = useRef(null);
 
-  let baseLayout = CONFIG_MAP[config].layout || {};
+  const plotSettings = SUPERCON_BANDS_LAYOUT_CONFIG;
 
-  // for a2f + phonon soft sync of range.
-  let settings;
-  if (maxYval) {
-    settings = {
-      ...baseLayout,
-      yaxis: {
-        ...(baseLayout.yaxis || {}),
-        range: [0, maxYval],
-      },
-    };
-  } else {
-    settings = baseLayout;
-  }
+  // deep merge Yvals
+  const settings = {
+    ...plotSettings,
+    yaxis: {
+      ...(plotSettings.yaxis || {}),
+      range: [minYval, maxYval],
+    },
+  };
 
   useEffect(() => {
     if (!containerRef.current || !bandsDataArray) return;

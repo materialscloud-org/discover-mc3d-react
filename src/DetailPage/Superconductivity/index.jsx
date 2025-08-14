@@ -2,281 +2,302 @@ import { useState, useEffect } from "react";
 
 import A2FPlot from "./A2FPlot";
 
+import { SuperConInfo } from "./SuperconInfo";
+
 import { Container, Row, Col } from "react-bootstrap";
 
-import "./index.css";
+import { McloudSpinner } from "mc-react-library";
 
 import {
   BandStructure,
-  prepareSuperConBands,
+  prepareSuperConBand,
 } from "../../common/BandStructure/BandStructure";
+
+import { normalizeBandsData } from "../../common/BandStructure/bandUtils";
+
+import PhononVisualizer from "mc-react-phonon-visualizer";
 
 import { EXPLORE_URLS } from "../../common/restApiUtils";
 
-import { MCInfoBox } from "../../common/MCInfoBox";
-
-import { DoiBadge, ExploreButton } from "mc-react-library";
-
-import { loadAiidaBands, loadXY } from "../../common/restApiUtils";
-
-const omegaLogLabel = (
-  <span>
-    ω<sub>log</sub>
-  </span>
-);
-
-// helper function to round a float from loadedData.
-
-function safeRound(value, decimals = 3) {
-  if (typeof value === "number" && !isNaN(value)) {
-    return value.toFixed(decimals);
-  }
-  return undefined;
-}
+import {
+  loadAiidaBands,
+  loadXY,
+  loadSuperConPhononVis,
+} from "../../common/restApiUtils";
+import { SuperconHeader } from "./SuperconHeader";
 
 function SuperConductivity({ params, loadedData }) {
-  console.log("loadedData", loadedData);
-  const supercon = loadedData.details.supercon;
-  const [bandsDataArray, setBandsDataArray] = useState([]);
-  const [phononBandsArray, setPhononBandsArray] = useState([]);
-  const [a2fData, setA2fData] = useState(null);
-
-  const [loading, setLoading] = useState(true);
-
-  // just return empty div instantly if no data.
-  if (!supercon) {
-    return <div className="empty-supercon-div"></div>;
+  function safePrepareBands(bands, fermi, configName) {
+    if (!bands || typeof fermi !== "number") return null;
+    return prepareSuperConBand(bands, -fermi, configName);
   }
 
-  // key value mapping for table entries.
-  const generalEntries = [
-    {
-      key: "Allen-Dynes Tc",
-      value: `${safeRound(supercon.allen_dynes_tc)} K`,
-    },
-    {
-      key: omegaLogLabel,
-      value: `${safeRound(supercon.omega_log)} meV`,
-    },
-    {
-      key: "λ",
-      value: `${safeRound(supercon.lambda)}`,
-    },
-    {
-      key: "Coarse Fermi Energy",
-      value: `${safeRound(supercon.fermi_energy_coarse)} eV`,
-    },
-    {
-      key: "Highest Phonon Frequency",
-      value: `${safeRound(supercon.highest_phonon_frequency)} meV`,
-    },
-  ].filter((entry) => entry.value !== undefined);
+  const supercon = loadedData.details.supercon;
 
-  const superConEntries = [
-    {
-      key: "Isotropic Tc",
-      value: `${safeRound(supercon.iso_tc)} K`,
-    },
-    { key: "Anisotropic Tc", value: `${safeRound(supercon.aniso_gap_0)} K` },
+  // loading and data useStates
+  const [bandsDataArray, setBandsDataArray] = useState([]);
+  const [bandsLoading, setBandsLoading] = useState(false);
 
-    // { key: "a2f_uuid?", value: supercon.a2f_uuid },
-    // {
-    //   key: "aniso_retrieved_uuid: Folder Data - needs Backend Formatting?",
-    //   value: supercon.aniso_retrieved_uuid,
-    // },
+  const [phononBandsArray, setPhononBandsArray] = useState([]);
+  const [phononBandsLoading, setPhononBandsLoading] = useState(false);
 
-    // {
-    //   key: "pw_retrieved_uuid: Folder Data - needs Backend Formatting?",
-    //   value: supercon.pw_retrieved_uuid,
-    // },
-  ];
+  const [a2fData, setA2fData] = useState(null);
+  const [a2fLoading, setA2fLoading] = useState(false);
 
-  // a2f plotData
+  const [phononVisData, setPhononVisData] = useState(null);
+  const [phononVisLoading, setPhononVisLoading] = useState(false);
+
+  if (!supercon) return <div className="empty-supercon-div"></div>;
+
+  // --- Fetch A2F Data ---
   useEffect(() => {
     async function fetchA2F() {
-      setLoading(true);
+      if (!supercon.a2f_uuid) {
+        console.warn("No A2F data available for UUID:", supercon.a2f_uuid);
+        setA2fData(null);
+        return;
+      }
+
+      setA2fLoading(true);
       try {
         const method = `${params.method}-supercon`;
-
-        const data = supercon.a2f_uuid
-          ? await loadXY(method, supercon.a2f_uuid)
-          : null;
-
-        if (data) {
-          setA2fData(data);
-        } else {
-          console.warn("No A2F data available for UUID:", supercon.a2f_uuid);
-          setA2fData(null);
-        }
+        const data = await loadXY(method, supercon.a2f_uuid);
+        setA2fData(data || null);
       } catch (err) {
         console.error("Failed to load A2F data:", err);
         setA2fData(null);
       } finally {
-        setLoading(false);
+        setA2fLoading(false);
       }
     }
-
     fetchA2F();
   }, [params.method, supercon.a2f_uuid]);
 
-  // bands plotData
+  // --- Fetch Phonon Visualiser ---
   useEffect(() => {
-    async function fetchAndPrepBands() {
-      setLoading(true);
+    if (!loadedData?.details?.id) return;
+
+    async function fetchPhononVis() {
+      setPhononVisLoading(true);
       try {
-        // we fetch supercon method here.
-        const method = params.method + "-supercon";
-        // Build promises only if the UUID exists
-        const epwBandsPromise = supercon.epw_el_band_structure_uuid
-          ? loadAiidaBands(method, supercon.epw_el_band_structure_uuid)
-          : Promise.resolve(null);
+        const data = await loadSuperConPhononVis(loadedData.details.id);
+        setPhononVisData(data);
+      } catch (err) {
+        console.error("Failed to load phonon visualiser:", err);
+        setPhononVisData(null);
+      } finally {
+        setPhononVisLoading(false);
+      }
+    }
+    fetchPhononVis();
+  }, [loadedData]);
 
-        const qeBandsPromise = supercon.qe_el_band_structure_uuid
-          ? loadAiidaBands(method, supercon.qe_el_band_structure_uuid)
-          : Promise.resolve(null);
+  // --- Fetch Bands Data ---
+  useEffect(() => {
+    async function fetchBands() {
+      setBandsLoading(true);
+      setPhononBandsLoading(true);
 
-        const phBandsPromise = supercon.epw_ph_band_structure_uuid
-          ? loadAiidaBands(method, supercon.epw_ph_band_structure_uuid)
-          : Promise.resolve(null);
+      try {
+        const method = `${params.method}-supercon`;
 
-        const [epwBands, qeBands, phBands] = await Promise.all([
-          epwBandsPromise,
-          qeBandsPromise,
-          phBandsPromise,
-        ]);
+        const epwBands = supercon.epw_el_band_structure_uuid
+          ? await loadAiidaBands(method, supercon.epw_el_band_structure_uuid)
+          : null;
 
-        // Log loaded or missing data
+        const qeBands = supercon.qe_el_band_structure_uuid
+          ? await loadAiidaBands(method, supercon.qe_el_band_structure_uuid)
+          : null;
+
+        const phBands = supercon.epw_ph_band_structure_uuid
+          ? await loadAiidaBands(method, supercon.epw_ph_band_structure_uuid)
+          : null;
+
+        const preppedEPW = safePrepareBands(
+          epwBands,
+          supercon.fermi_energy_coarse,
+          "electronicEPW",
+        );
+        const preppedQE = safePrepareBands(
+          qeBands,
+          supercon.fermi_energy_coarse,
+          "electronicQE",
+        );
+
+        // WARNING BANDS DATA IS UNALIGNED WE NORMALISE IT HERE (DANGEROUSLY)
+        // const rescaledFilteredBDArray = normalizeBandsData(
+        //   [preppedQE, preppedEPW].filter(Boolean),
+        // );
+
+        const rescaledFilteredBDArray = [preppedQE, preppedEPW].filter(Boolean);
+
+        const preppedPh = safePrepareBands(phBands, 0, "phononEPW");
+
         console.log("Loaded bands:", { epwBands, qeBands, phBands });
 
-        // group raw data (skip nulls)
-        const rawElectronicBands = [qeBands, epwBands].filter(Boolean);
-        const rawPhononBands = [phBands].filter(Boolean);
-
-        const electronicBandsArray = prepareSuperConBands(
-          rawElectronicBands,
-          true,
-          -supercon.fermi_energy_coarse,
-          "supercon-bands-wannier",
-        );
-        setBandsDataArray(electronicBandsArray);
-
-        const phononBandsArray = prepareSuperConBands(
-          rawPhononBands,
-          true,
-          0,
-          "supercon-phonon-wannier",
-        );
-        setPhononBandsArray(phononBandsArray);
+        setBandsDataArray(rescaledFilteredBDArray);
+        setPhononBandsArray(preppedPh ? [preppedPh] : []);
       } catch (err) {
         console.error("Failed to load bands:", err);
         setBandsDataArray([]);
         setPhononBandsArray([]);
       } finally {
-        setLoading(false);
+        setBandsLoading(false);
+        setPhononBandsLoading(false);
       }
     }
-
-    fetchAndPrepBands();
+    fetchBands();
   }, [params.method, supercon]);
 
-  // === RETURNS BELOW === //
-  if (loading) {
-    return <span>Loading...</span>;
-  }
+  // Rendered sections below. //
+  const sections = [
+    {
+      title: "",
+      columns: [
+        {
+          width: 6,
+          subTitle: "Electronic Bands",
+          showTitleOnFallback: true,
+          render: () => (
+            <BandStructure
+              bandsDataArray={bandsDataArray}
+              loading={bandsLoading}
+              config="supercon-bands-wannier"
+            />
+          ),
+          condition: bandsDataArray?.length > 0,
+          loading: bandsLoading,
+          fallback: () => (
+            <div className="text-gray-400 text-center">No bands data</div>
+          ),
+        },
+        {
+          width: 6,
+          render: () => <SuperConInfo superconData={supercon} />,
+          condition: supercon != null,
+          loading: false,
+        },
+      ],
+    },
+    {
+      title: "",
+      columns: [
+        {
+          width: 6,
+          subTitle: "Phonon Bands",
+          showTitleOnFallback: true,
+          render: () => (
+            <BandStructure
+              bandsDataArray={phononBandsArray}
+              loading={phononBandsLoading}
+              config="supercon-phonon-wannier"
+              maxYval={supercon.highest_phonon_frequency + 2}
+              minYval={0}
+            />
+          ),
+          condition:
+            phononBandsArray.length > 0 &&
+            supercon?.highest_phonon_frequency != null,
+          loading: phononBandsLoading,
+          fallback: () => (
+            <div className="text-gray-400 text-center">No bands data</div>
+          ),
+        },
+        {
+          width: 6,
+          subTitle: "Spectral Function",
+          showTitleOnFallback: false,
+          render: () => (
+            <A2FPlot
+              a2f={a2fData?.a2f}
+              frequency={a2fData?.frequency}
+              degaussq={a2fData?.degaussq}
+              lambda={a2fData?.lambda}
+              maxYval={supercon.highest_phonon_frequency + 2}
+            />
+          ),
+          condition: a2fData?.a2f && a2fData?.frequency,
+          loading: a2fLoading,
+          fallback: () => (
+            <div className="text-gray-400 text-center">No spectral data</div>
+          ),
+        },
+      ],
+    },
+    {
+      title: "Interactive Phonon Visualiser",
+      showTitleOnFallback: false,
+      columns: [
+        {
+          width: 12,
+          render: () => (
+            <PhononVisualizer
+              props={{ title: "Phonon visualizer", ...phononVisData }}
+            />
+          ),
+          condition: phononVisData != null,
+          loading: phononVisLoading,
+        },
+      ],
+    },
+  ];
 
   return (
     <div>
-      <div className="section-heading">Contribution: Superconductivity</div>
-      <div style={{ padding: "10px 10px" }}>
-        Superconduction properities have been been provided by $AUTHORLIST, for
-        details on methodology see $HYPERLINK. If using any of the data in this
-        section be sure to cite: <br></br>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-          <a
-            style={{
-              textDecoration: "none",
-              color: "rgb(48, 63, 159)",
-              fontWeight: "500",
-            }}
-            href="https://arxiv.org/abs/2503.10943"
-            target="_blank"
-          >
-            Charting the landscape of BCS superconductors (arXiv:2503.10943)
-          </a>
-          <DoiBadge doi_id="9w-az" />
-        </div>
-      </div>
-      <div
-        className="alert alert-warning"
-        style={{ margin: "20px 10px" }}
-        role="alert"
-      >
-        The methodology for this section re-relaxes the structure using a
-        different pseudopotential. To see the relaxed structure of this section,
-        you can explore the provenance.{" "}
-        <ExploreButton
-          explore_url={EXPLORE_URLS[params.method] + "-supercon"}
-          uuid={supercon.a2f_uuid}
-        />{" "}
-      </div>
-      <Container fluid className="section-container">
-        <Row>
-          <div className="subsection-title">EPW vs QE bands</div>
-          <Col md={6} className="flex-column">
-            <BandStructure
-              bandsDataArray={bandsDataArray}
-              loading={loading}
-              config={"supercon-bands-wannier"}
-            />
-          </Col>
-          <Col md={6}>
-            <MCInfoBox style={{ margin: "10px 0px 0px 0px" }}>
-              <div>
-                <b>General Properties</b>
-                <ul className="no-bullets">
-                  {generalEntries.map((item, idx) => (
-                    <li key={idx}>
-                      {item.key}: {item.value}
-                    </li>
-                  ))}
-                </ul>
-                <b>Superconducting Properties</b>
-                <ul className="no-bullets">
-                  {superConEntries.map((item, idx) => (
-                    <li key={idx}>
-                      {item.key}: {item.value}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </MCInfoBox>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={6} className="flex-column">
-            <div className="subsection-title">Phonon Bands Data</div>
-            <BandStructure
-              bandsDataArray={phononBandsArray}
-              loading={loading}
-              config={"supercon-phonon-wannier"}
-              maxYval={supercon.highest_phonon_frequency + 2}
-            />
-          </Col>
+      <SuperconHeader params={params} superconData={supercon} />
 
-          <Col md={6} className="flex-column">
-            <div className="subsection-title">Spectral Function Data</div>
-            <A2FPlot
-              a2f={a2fData.a2f}
-              frequency={a2fData.frequency}
-              degaussq={a2fData.degaussq}
-              lambda={a2fData.lambda}
-              maxYval={supercon.highest_phonon_frequency + 2}
-            />
-          </Col>
-        </Row>
+      <Container fluid className="section-container">
+        {sections.map((section, i) => {
+          const hasAnyContent = section.columns.some(
+            (col) => col.condition || col.loading,
+          );
+
+          return (
+            <Row key={i} className="mb-4 g-4">
+              {section.title && (
+                <div className="subsection-title w-100 mb-0">
+                  {section.title || "\u00A0"}
+                </div>
+              )}
+
+              {section.columns.map((col, j) => {
+                const showTitle =
+                  col.subTitle && (col.condition || col.showTitleOnFallback);
+
+                return (
+                  <Col key={j} md={col.width} className="flex-column">
+                    {showTitle && (
+                      <div className="subsection-title w-100 mb-2">
+                        {showTitle ? col.subTitle : "\u00A0"}
+                      </div>
+                    )}
+
+                    {col.loading ? (
+                      <div className="flex justify-center items-center w-100">
+                        <div style={{ maxWidth: "70px", width: "100%" }}>
+                          <McloudSpinner />
+                        </div>
+                      </div>
+                    ) : col.condition ? (
+                      col.render()
+                    ) : col.fallback ? (
+                      col.fallback()
+                    ) : (
+                      <div className="flex items-center justify-center h-100 text-gray-400 border border-dashed rounded p-3">
+                        No data
+                      </div>
+                    )}
+                  </Col>
+                );
+              })}
+            </Row>
+          );
+        })}
       </Container>
     </div>
   );
 }
+
+// === RENDER ===
 
 export default SuperConductivity;

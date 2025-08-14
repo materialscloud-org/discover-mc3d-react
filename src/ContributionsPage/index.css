@@ -1,0 +1,59 @@
+/* pad each entry */
+.markdown-entry {
+  padding-top: 0.25rem;
+  padding-left: 0.25rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
+}
+/* eq .detail-page-heading */
+.markdown-entry h1 {
+  padding-top: 1rem;
+  padding-bottom: 0.25rem;
+  font-size: 30px;
+  font-weight: 400;
+}
+
+/* eq .section-heading  */
+.markdown-entry h2 {
+  font-size: 24px;
+  font-weight: 400;
+  margin: 10px 0px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #c4c4c4;
+}
+
+/* .subsection-title  */
+.markdown-entry h3 {
+  font-weight: bold;
+  font-size: 16px;
+  padding-left: 1rem;
+}
+
+.markdown-entry p {
+  padding-left: 1rem;
+  padding-top: 0.25rem;
+}
+
+.footnotes {
+  margin-top: 2rem;
+  padding-left: 1rem;
+  font-size: 0.875rem; /* 14px */
+  color: #555;
+}
+
+.footnotes ol {
+  padding-left: 1.25rem;
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.footnotes li {
+  margin-bottom: 0.25rem;
+  line-height: 0.25;
+  padding-left: 0;
+}
+
+.data-footnote-backref {
+  display: none !important;
+}

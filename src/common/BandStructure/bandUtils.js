@@ -68,3 +68,49 @@ export function formatBandsData(bands) {
     },
   ];
 }
+
+// stretches bandData arrays so that they share a global xMin and global xMax.
+export function normalizeBandsData(bandsObjects) {
+  // Step 1: compute cumulative length of each bands entry
+  const cumulativeLengths = bandsObjects.map((bandObj) => {
+    const paths = bandObj.bandsData?.paths;
+    if (!paths) return 0;
+
+    return paths.reduce((sum, path) => {
+      if (!path.x || path.x.length === 0) return sum;
+      return sum + (path.x[path.x.length - 1] - path.x[0]);
+    }, 0);
+  });
+
+  // Step 2: find the maximum cumulative length
+  const globalMaxLength = Math.max(...cumulativeLengths);
+
+  // Step 3: scale each dataset to match globalMaxLength
+  const newBandsObjects = bandsObjects.map((bandObj, idx) => {
+    const paths = bandObj.bandsData?.paths;
+    if (!paths) return bandObj;
+
+    const localLength = cumulativeLengths[idx];
+    if (localLength === 0) return bandObj;
+
+    const scale = globalMaxLength / localLength;
+
+    const newPaths = paths.map((path) => {
+      if (!path.x || path.x.length === 0) return path;
+      return {
+        ...path,
+        x: path.x.map((x) => x * scale),
+      };
+    });
+
+    return {
+      ...bandObj,
+      bandsData: {
+        ...bandObj.bandsData,
+        paths: newPaths,
+      },
+    };
+  });
+
+  return newBandsObjects;
+}

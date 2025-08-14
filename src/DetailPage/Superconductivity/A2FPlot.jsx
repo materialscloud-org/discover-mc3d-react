@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import Plotly from "plotly.js-dist-min";
 
 const A2F_TRACE_CONFIG = {
-  color: "#1f77b4",
+  color: "#d62728",
   dash: "solid",
   label: "A2F data",
   lineWidth: 1.75,
@@ -19,10 +19,10 @@ const A2F_CUMULATIVE_CONFIG = {
 const A2F_LAYOUT_CONFIG = {
   xaxis: {
     title: {
-      text: "a2f",
+      text: "α²F [ω]",
       font: { size: 18, color: "#111" },
     },
-    tickfont: { size: 18 },
+    tickfont: { size: 20 },
     showgrid: false,
     zeroline: false,
     showline: false,
@@ -33,7 +33,7 @@ const A2F_LAYOUT_CONFIG = {
       text: "",
       font: { size: 18, color: "#111" },
     },
-    tickfont: { size: 18 },
+    tickfont: { size: 20 },
     showgrid: false,
     zeroline: false,
     showline: false,
