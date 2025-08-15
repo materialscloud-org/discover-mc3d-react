@@ -19,6 +19,8 @@ import PhononVisualizer from "mc-react-phonon-visualizer";
 
 import { EXPLORE_URLS } from "../../common/restApiUtils";
 
+import GapPlot from "./SuperConGap";
+
 import {
   loadAiidaBands,
   loadXY,
@@ -44,10 +46,41 @@ function SuperConductivity({ params, loadedData }) {
   const [a2fData, setA2fData] = useState(null);
   const [a2fLoading, setA2fLoading] = useState(false);
 
+  const [gapfuncData, setGapfuncData] = useState(null);
+  const [gapfuncLoading, setGapfuncLoading] = useState(false);
+
   const [phononVisData, setPhononVisData] = useState(null);
   const [phononVisLoading, setPhononVisLoading] = useState(false);
 
   if (!supercon) return <div className="empty-supercon-div"></div>;
+
+  // --- Fetch GapFunction Data ---
+  useEffect(() => {
+    async function fetchGapFunction() {
+      if (!supercon.aniso_gap_function_uuid) {
+        console.warn(
+          "No gapfunction data available for UUID:",
+          supercon.aniso_gap_function_uuid,
+        );
+        setGapfuncData(null);
+        return;
+      }
+
+      setGapfuncLoading(true);
+      try {
+        const method = `${params.method}-supercon`;
+        const data = await loadXY(method, supercon.aniso_gap_function_uuid);
+        setGapfuncData(data || null);
+        console.log("gp", gapfuncData);
+      } catch (err) {
+        console.error("Failed to load gapfunction data:", err);
+        setGapfuncData(null);
+      } finally {
+        setGapfuncLoading(false);
+      }
+    }
+    fetchGapFunction();
+  }, [params.method, supercon.aniso_gap_function_uuid]);
 
   // --- Fetch A2F Data ---
   useEffect(() => {
@@ -240,7 +273,35 @@ function SuperConductivity({ params, loadedData }) {
         },
       ],
     },
+    {
+      title: "Gap Function",
+      showTitleOnFallback: false,
+      columns: [
+        {
+          width: 12,
+          render: () => (
+            <GapPlot
+              gapfuncData={gapfuncData}
+              verts={supercon.aniso_info.temps}
+              points={supercon.aniso_info.average_deltas}
+              delta0={supercon.aniso_info.delta0}
+              Tc={supercon.aniso_info.Tc}
+              expo={supercon.aniso_info.expo}
+            />
+          ),
+          condition: gapfuncData != null && supercon.aniso_info != null,
+          loading: gapfuncLoading,
+          fallback: () => (
+            <div className="text-gray-400 text-center">
+              No Gap Function Data
+            </div>
+          ),
+        },
+      ],
+    },
   ];
+
+  console.log("gp", gapfuncData);
 
   return (
     <div>
