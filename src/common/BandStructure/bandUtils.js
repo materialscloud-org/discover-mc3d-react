@@ -1,6 +1,37 @@
 import { splitBandsData } from "bands-visualiser";
 import * as math from "mathjs";
 
+export function prettifyLabels(label) {
+  const greekMapping = {
+    GAMMA: "Γ",
+    DELTA: "Δ",
+    SIGMA: "Σ",
+    LAMBDA: "Λ",
+  };
+  Object.keys(greekMapping).forEach((symbol) => {
+    const regex = new RegExp(symbol, "gi");
+    label = label.replace(regex, greekMapping[symbol]);
+  });
+
+  label = label.replace(/\bG\b/g, "Γ");
+  label = label.replace(/-/g, "—");
+  const ssMapping = {
+    0: "₀",
+    1: "₁",
+    2: "₂",
+    3: "₃",
+    4: "₄",
+    5: "₅",
+    6: "₆",
+    7: "₇",
+    8: "₈",
+    9: "₉",
+  };
+  label = label.replace(/_(.)/g, (match, p1) => ssMapping[p1] || match);
+
+  return label;
+}
+
 // Check if electronic data contains bands
 export function bandsExist(electronicData) {
   return (

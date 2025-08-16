@@ -13,7 +13,10 @@ import {
   prepareSuperConBand,
 } from "../../common/BandStructure/BandStructure";
 
-import { normalizeBandsData } from "../../common/BandStructure/bandUtils";
+import {
+  normalizeBandsData,
+  prettifyLabels,
+} from "../../common/BandStructure/bandUtils";
 
 import PhononVisualizer from "mc-react-phonon-visualizer";
 
@@ -53,6 +56,40 @@ function SuperConductivity({ params, loadedData }) {
   const [phononVisLoading, setPhononVisLoading] = useState(false);
 
   if (!supercon) return <div className="empty-supercon-div"></div>;
+
+  function roundFloats(obj, decimals = 3) {
+    if (Array.isArray(obj)) {
+      return obj.map((v) => roundFloats(v, decimals));
+    } else if (obj !== null && typeof obj === "object") {
+      const res = {};
+      for (const key in obj) {
+        res[key] = roundFloats(obj[key], decimals);
+      }
+      return res;
+    } else if (typeof obj === "number") {
+      // Round to specified decimals
+      return parseFloat(obj.toFixed(decimals));
+      // OR for Float32 precision: return Math.fround(obj);
+    }
+    return obj; // strings, booleans, null, undefined
+  }
+
+  function downsamplePhononData(data, step = 2) {
+    // step = 2 keeps every other point, step = 3 every third, etc.
+    const copy = { ...data };
+
+    // Downsample distances
+    copy.distances = data.distances.filter((_, i) => i % step === 0);
+
+    // Downsample qpoints (if array of arrays)
+    copy.qpoints = data.qpoints.filter((_, i) => i % step === 0);
+
+    // Downsample eigenvalues, vectors
+    copy.eigenvalues = data.eigenvalues.filter((_, i) => i % step === 0);
+    copy.vectors = data.vectors.filter((_, i) => i % step === 0);
+
+    return copy;
+  }
 
   // --- Fetch GapFunction Data ---
   useEffect(() => {
@@ -114,6 +151,10 @@ function SuperConductivity({ params, loadedData }) {
       setPhononVisLoading(true);
       try {
         const data = await loadSuperConPhononVis(loadedData.details.id);
+        data.highsym_qpts?.forEach((qpt) => {
+          qpt[1] = prettifyLabels(qpt[1]);
+        });
+
         setPhononVisData(data);
       } catch (err) {
         console.error("Failed to load phonon visualiser:", err);
@@ -301,14 +342,12 @@ function SuperConductivity({ params, loadedData }) {
     },
   ];
 
-  console.log("gp", gapfuncData);
-
   return (
     <div>
       <SuperconHeader params={params} superconData={supercon} />
-
       <Container fluid className="section-container">
         {sections.map((section, i) => {
+          // use sections array to populate rows.
           const hasAnyContent = section.columns.some(
             (col) => col.condition || col.loading,
           );
