@@ -1,4 +1,3 @@
-import { MCInfoBox } from "../../common/MCInfoBox";
 import { ExploreButton } from "mc-react-library";
 import { DoiBadge } from "mc-react-library";
 
@@ -9,9 +8,13 @@ export function SuperconHeader({ params, superconData }) {
     <>
       <div className="section-heading">Contribution: Superconductivity</div>
       <div style={{ padding: "10px 10px" }}>
-        Superconduction properities have been been provided by $AUTHORLIST, for
-        details on methodology see <a href="/#/contributions">contributions</a>.
-        If using any of the data in this section be sure to cite: <br></br>
+        Superconduction properities have been been provided by Bercx et al, for
+        details on methodology see{" "}
+        <a href="#/contributions" target="_blank">
+          {" "}
+          contributions
+        </a>
+        . If using any of the data in this section be sure to cite: <br></br>
         <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
           <a
             style={{

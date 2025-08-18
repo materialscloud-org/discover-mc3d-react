@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+
+import "./index.css";
 
 import A2FPlot from "./A2FPlot";
 
@@ -31,6 +33,51 @@ import {
 } from "../../common/restApiUtils";
 import { SuperconHeader } from "./SuperconHeader";
 
+function Section({ title, children }) {
+  return (
+    <Row className="mb-4 g-4 align-items-start">
+      {title && <div className="subsection-title w-100 mb-0">{title}</div>}
+      {children}
+    </Row>
+  );
+}
+
+function SectionColumn({
+  width,
+  subtitle,
+  loading,
+  condition,
+  fallback,
+  children,
+}) {
+  return (
+    <Col
+      md={width}
+      className="flex flex-col"
+      style={{ minHeight: "300px" }} // ensures vertical centering works
+    >
+      {/* Always render subtitle row, even if empty */}
+      <div className="subsection-title w-100 mb-2">{subtitle || "\u00A0"}</div>
+
+      {loading ? (
+        <div className="flex justify-center items-center w-100 h-full">
+          <div style={{ maxWidth: "70px", width: "100%" }}>
+            <McloudSpinner />
+          </div>
+        </div>
+      ) : condition ? (
+        children
+      ) : fallback ? (
+        fallback
+      ) : (
+        <div className="flex items-center justify-center h-full text-gray-400 border border-dashed rounded p-3">
+          No data
+        </div>
+      )}
+    </Col>
+  );
+}
+
 function SuperConductivity({ params, loadedData }) {
   function safePrepareBands(bands, fermi, configName) {
     if (!bands || typeof fermi !== "number") return null;
@@ -56,40 +103,6 @@ function SuperConductivity({ params, loadedData }) {
   const [phononVisLoading, setPhononVisLoading] = useState(false);
 
   if (!supercon) return <div className="empty-supercon-div"></div>;
-
-  function roundFloats(obj, decimals = 3) {
-    if (Array.isArray(obj)) {
-      return obj.map((v) => roundFloats(v, decimals));
-    } else if (obj !== null && typeof obj === "object") {
-      const res = {};
-      for (const key in obj) {
-        res[key] = roundFloats(obj[key], decimals);
-      }
-      return res;
-    } else if (typeof obj === "number") {
-      // Round to specified decimals
-      return parseFloat(obj.toFixed(decimals));
-      // OR for Float32 precision: return Math.fround(obj);
-    }
-    return obj; // strings, booleans, null, undefined
-  }
-
-  function downsamplePhononData(data, step = 2) {
-    // step = 2 keeps every other point, step = 3 every third, etc.
-    const copy = { ...data };
-
-    // Downsample distances
-    copy.distances = data.distances.filter((_, i) => i % step === 0);
-
-    // Downsample qpoints (if array of arrays)
-    copy.qpoints = data.qpoints.filter((_, i) => i % step === 0);
-
-    // Downsample eigenvalues, vectors
-    copy.eigenvalues = data.eigenvalues.filter((_, i) => i % step === 0);
-    copy.vectors = data.vectors.filter((_, i) => i % step === 0);
-
-    return copy;
-  }
 
   // --- Fetch GapFunction Data ---
   useEffect(() => {
@@ -166,6 +179,11 @@ function SuperConductivity({ params, loadedData }) {
     fetchPhononVis();
   }, [loadedData]);
 
+  //
+  const numBands = useMemo(() => {
+    return phononVisData?.eigenvalues?.[0]?.length ?? 0;
+  }, [phononVisData]);
+
   // --- Fetch Bands Data ---
   useEffect(() => {
     async function fetchBands() {
@@ -223,44 +241,47 @@ function SuperConductivity({ params, loadedData }) {
     fetchBands();
   }, [params.method, supercon]);
 
-  // Rendered sections below. //
-  const sections = [
-    {
-      title: "",
-      columns: [
-        {
-          width: 6,
-          subTitle: "Electronic Bands",
-          showTitleOnFallback: true,
-          render: () => (
+  return (
+    <div>
+      <SuperconHeader params={params} superconData={supercon} />
+
+      <Container fluid className="section-container">
+        {/* Electronic Bands + SuperCon Info */}
+        <Section>
+          <SectionColumn
+            width={6}
+            subtitle="Electronic Bands"
+            loading={bandsLoading}
+            condition={bandsDataArray?.length > 0}
+            fallback={
+              <div className="text-gray-400 text-center">No bands data</div>
+            }
+          >
             <BandStructure
               bandsDataArray={bandsDataArray}
               loading={bandsLoading}
               config="supercon-bands-wannier"
             />
-          ),
-          condition: bandsDataArray?.length > 0,
-          loading: bandsLoading,
-          fallback: () => (
-            <div className="text-gray-400 text-center">No bands data</div>
-          ),
-        },
-        {
-          width: 6,
-          render: () => <SuperConInfo superconData={supercon} />,
-          condition: supercon != null,
-          loading: false,
-        },
-      ],
-    },
-    {
-      title: "",
-      columns: [
-        {
-          width: 6,
-          subTitle: "Phonon Bands",
-          showTitleOnFallback: true,
-          render: () => (
+          </SectionColumn>
+
+          <SectionColumn width={6} subtitle=" " condition={supercon != null}>
+            <SuperConInfo superconData={supercon} />
+          </SectionColumn>
+        </Section>
+        {/* Phonon Bands + Spectral Function */}
+        <Section>
+          <SectionColumn
+            width={6}
+            subtitle="Phonon Bands"
+            loading={phononBandsLoading}
+            condition={
+              phononBandsArray.length > 0 &&
+              supercon?.highest_phonon_frequency != null
+            }
+            fallback={
+              <div className="text-gray-400 text-center">No bands data</div>
+            }
+          >
             <BandStructure
               bandsDataArray={phononBandsArray}
               loading={phononBandsLoading}
@@ -268,20 +289,17 @@ function SuperConductivity({ params, loadedData }) {
               maxYval={supercon.highest_phonon_frequency + 2}
               minYval={0}
             />
-          ),
-          condition:
-            phononBandsArray.length > 0 &&
-            supercon?.highest_phonon_frequency != null,
-          loading: phononBandsLoading,
-          fallback: () => (
-            <div className="text-gray-400 text-center">No bands data</div>
-          ),
-        },
-        {
-          width: 6,
-          subTitle: "Spectral Function",
-          showTitleOnFallback: false,
-          render: () => (
+          </SectionColumn>
+
+          <SectionColumn
+            width={6}
+            subtitle="Spectral Function"
+            loading={a2fLoading}
+            condition={a2fData?.a2f && a2fData?.frequency}
+            fallback={
+              <div className="text-gray-400 text-center">No spectral data</div>
+            }
+          >
             <A2FPlot
               a2f={a2fData?.a2f}
               frequency={a2fData?.frequency}
@@ -289,115 +307,47 @@ function SuperConductivity({ params, loadedData }) {
               lambda={a2fData?.lambda}
               maxYval={supercon.highest_phonon_frequency + 2}
             />
-          ),
-          condition: a2fData?.a2f && a2fData?.frequency,
-          loading: a2fLoading,
-          fallback: () => (
-            <div className="text-gray-400 text-center">No spectral data</div>
-          ),
-        },
-      ],
-    },
-    {
-      title: "Interactive Phonon Visualiser",
-      showTitleOnFallback: false,
-      columns: [
-        {
-          width: 12,
-          render: () => (
-            <PhononVisualizer
-              props={{ title: "Phonon visualizer", ...phononVisData }}
-            />
-          ),
-          condition: phononVisData != null,
-          loading: phononVisLoading,
-        },
-      ],
-    },
-    {
-      title: "Gap Function",
-      showTitleOnFallback: false,
-      columns: [
-        {
-          width: 12,
-          render: () => (
-            <GapPlot
-              gapfuncData={gapfuncData}
-              verts={supercon.aniso_info.temps}
-              points={supercon.aniso_info.average_deltas}
-              delta0={supercon.aniso_info.delta0}
-              Tc={supercon.aniso_info.Tc}
-              expo={supercon.aniso_info.expo}
-            />
-          ),
-          condition: gapfuncData != null && supercon.aniso_info != null,
-          loading: gapfuncLoading,
-          fallback: () => (
+          </SectionColumn>
+        </Section>
+
+        {/* Interactive Phonon Visualiser */}
+        {/* <Section title="Interactive Phonon Visualiser">
+          <SectionColumn */}
+        {/* width={12}
+            loading={phononVisLoading}
+            condition={phononVisData != null} */}
+        {/* > */}
+        {/* <PhononVisualizer props={{ title: "Phonon visualizer", ...phononVisData }} /> */}
+        {/* </SectionColumn> */}
+        {/* </Section> */}
+        {/* Gap Function */}
+        <SectionColumn
+          subtitle="Gap Function Plot"
+          width={12}
+          loading={gapfuncLoading}
+          condition={gapfuncData != null && supercon?.aniso_info != null}
+          fallback={
             <div className="text-gray-400 text-center">
               No Gap Function Data
             </div>
-          ),
-        },
-      ],
-    },
-  ];
-
-  return (
-    <div>
-      <SuperconHeader params={params} superconData={supercon} />
-      <Container fluid className="section-container">
-        {sections.map((section, i) => {
-          // use sections array to populate rows.
-          const hasAnyContent = section.columns.some(
-            (col) => col.condition || col.loading,
-          );
-
-          return (
-            <Row key={i} className="mb-4 g-4">
-              {section.title && (
-                <div className="subsection-title w-100 mb-0">
-                  {section.title || "\u00A0"}
-                </div>
-              )}
-
-              {section.columns.map((col, j) => {
-                const showTitle =
-                  col.subTitle && (col.condition || col.showTitleOnFallback);
-
-                return (
-                  <Col key={j} md={col.width} className="flex-column">
-                    {showTitle && (
-                      <div className="subsection-title w-100 mb-2">
-                        {showTitle ? col.subTitle : "\u00A0"}
-                      </div>
-                    )}
-
-                    {col.loading ? (
-                      <div className="flex justify-center items-center w-100">
-                        <div style={{ maxWidth: "70px", width: "100%" }}>
-                          <McloudSpinner />
-                        </div>
-                      </div>
-                    ) : col.condition ? (
-                      col.render()
-                    ) : col.fallback ? (
-                      col.fallback()
-                    ) : (
-                      <div className="flex items-center justify-center h-100 text-gray-400 border border-dashed rounded p-3">
-                        No data
-                      </div>
-                    )}
-                  </Col>
-                );
-              })}
-            </Row>
-          );
-        })}
+          }
+        >
+          <GapPlot
+            gapfuncData={gapfuncData}
+            verts={supercon?.aniso_info?.temps}
+            points={supercon?.aniso_info?.average_deltas}
+            delta0={supercon?.aniso_info?.delta0}
+            Tc={supercon?.aniso_info?.Tc}
+            expo={supercon?.aniso_info?.expo}
+            minXVal={0}
+            maxXVal={null}
+            minYVal={0}
+            maxYVal={null}
+          />
+        </SectionColumn>
       </Container>
     </div>
   );
 }
-
-// === RENDER ===
 
 export default SuperConductivity;

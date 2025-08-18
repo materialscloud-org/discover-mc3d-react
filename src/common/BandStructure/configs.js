@@ -7,8 +7,6 @@ export const traceConfigs = {
     width: 1.75,
     opacity: 1,
     units: "eV",
-    mode: "markers",
-    marker: { size: 3, color: "red" },
   },
   electronicQE: {
     label: "QE",
@@ -17,8 +15,6 @@ export const traceConfigs = {
     width: 2.25,
     opacity: 0.95,
     units: "eV",
-    mode: "markers",
-    marker: { size: 3, color: "blue" },
   },
   phononEPW: {
     label: "EPW Phonons",
@@ -27,8 +23,6 @@ export const traceConfigs = {
     width: 1.75,
     opacity: 1,
     units: "eV",
-    mode: "markers",
-    marker: { size: 3, color: "red" },
   },
 
   unknownEntry: {

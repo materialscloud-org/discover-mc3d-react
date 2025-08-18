@@ -10,6 +10,13 @@ const omegaLogLabel = (
   </>
 );
 
+const TcLabel = (
+  <>
+    T<sub>c</sub>
+    <span style={{ marginLeft: "0.10em" }}></span>
+  </>
+);
+
 // helper function to round a float from loadedData.
 function formatIfExists(
   value,
@@ -28,7 +35,7 @@ export function SuperConInfo({ superconData }) {
   // key value mapping for table entries.
   const generalEntries = [
     {
-      key: "Allen-Dynes Tc",
+      key: <>Allen-Dynes {TcLabel}</>,
       value: formatIfExists(superconData.allen_dynes_tc, {
         format: (v) => `${v} K`,
         fallback: "Not calculated",
@@ -49,13 +56,13 @@ export function SuperConInfo({ superconData }) {
       }),
     },
     {
-      key: "Coarse Fermi Energy",
+      key: "Coarse Fermi energy",
       value: formatIfExists(superconData.fermi_energy_coarse, {
         format: (v) => `${v} eV`,
       }),
     },
     {
-      key: "Highest Phonon Frequency",
+      key: "Highest phonon frequency",
       value: formatIfExists(superconData.highest_phonon_frequency, {
         format: (v) => `${v} meV`,
       }),
@@ -64,14 +71,15 @@ export function SuperConInfo({ superconData }) {
 
   const superConEntries = [
     {
-      key: "Isotropic Tc",
+      key: <>Isotropic {TcLabel}</>,
       value: formatIfExists(superconData.iso_tc, {
         format: (v) => `${v} K`,
         fallback: "Not superconducting",
       }),
     },
     {
-      key: "Anisotropic Tc",
+      key: <>Anisotropic {TcLabel}</>,
+
       value: formatIfExists(superconData.aniso_info?.Tc, {
         format: (v) => `${v} K`,
         fallback: "Not superconducting",

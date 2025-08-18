@@ -1,13 +1,7 @@
 import { useEffect, useRef } from "react";
-import { BandsVisualiser, splitBandsData } from "bands-visualiser";
+import { BandsVisualiser } from "bands-visualiser";
 
-import {
-  CONFIG_MAP,
-  SUPERCON_EQE_TRACE_CONFIG,
-  SUPERCON_EEPW_TRACE_CONFIG,
-  SUPERCON_BANDS_LAYOUT_CONFIG,
-  traceConfigs,
-} from "./configs";
+import { SUPERCON_BANDS_LAYOUT_CONFIG, traceConfigs } from "./configs";
 
 // Helper
 function shiftBands(bandsData, shift) {
@@ -32,8 +26,6 @@ export function prepareSuperConBand(
   shiftBands(bandObject, shiftVal);
 
   let traceFormat = traceConfigs[config];
-  const width = traceFormat.width;
-  const opacity = traceFormat.opacity;
 
   const bandsDataArrayObj = {
     bandsData: bandObject,
@@ -43,13 +35,13 @@ export function prepareSuperConBand(
 
       hovertemplate: `<b>${traceFormat.label}</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
       mode: traceFormat.mode,
-      marker: traceFormat.marker,
-      // line: {
-      //   color: traceFormat.colors[0],
-      //   dash: traceFormat.dash,
-      //   width: traceFormat.width,
-      //   opacity: traceFormat.opacity,
-      // },
+      // marker: traceFormat.marker,
+      line: {
+        color: traceFormat.colors[0],
+        dash: traceFormat.dash,
+        width: traceFormat.width,
+        opacity: traceFormat.opacity,
+      },
     },
   };
 

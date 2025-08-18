@@ -9,10 +9,6 @@ const GAP_TRACE_CONFIG = {
   units: "Units?",
 };
 
-const VERT_LINE_CONFIG = {
-  color: "#111",
-};
-
 const GAP_LAYOUT_CONFIG = {
   xaxis: {
     title: {
@@ -81,7 +77,9 @@ function createAnalyticGapTrace(
     name: label,
     type: "scatter",
     mode: "lines",
-    line: { color: "red", dash: "dash" },
+    hovertemplate:
+      "<b>BCS fitted equation:</b>: <b>x:</b> %{x:.3f}, <b>y:</b> %{y:.3f}<b></b><extra></extra>",
+    line: { color: "#b22222", dash: "dash" },
   };
 }
 
@@ -93,6 +91,10 @@ export default function GapPlot({
   delta0,
   expo,
   resolution = 100,
+  minXVal = 0,
+  maxXVal = null,
+  minYVal = null,
+  maxYVal = 0,
 }) {
   const plotRef = useRef(null);
 
@@ -101,79 +103,90 @@ export default function GapPlot({
   useEffect(() => {
     if (!gapfuncData) return;
 
-    // get traces from gap func
-    const traces = Object.entries(gapfuncData)
-      .filter(([key, val]) => Array.isArray(val)) // only arrays
-      .map(([label, arr]) => ({
-        x: arr.map((a) => a[0]), // first element of each pair
-        y: arr.map((a) => a[1]), // second element of each pair
-        label: `${GAP_TRACE_CONFIG.label}`,
-        name: `${GAP_TRACE_CONFIG.label}`,
-        hovertemplate: `<b>${GAP_TRACE_CONFIG.label}</b>: YVAL: %{y:.3f} XVAL:%{x:.3f} UNITS:${GAP_TRACE_CONFIG.units}<br><extra></extra>`,
-        type: "scatter",
-        mode: "lines",
-        line: {
-          color: GAP_TRACE_CONFIG.color,
-        },
-      }));
+    const safeVerts = verts ?? [];
+    console.log("sfv", safeVerts);
 
-    // get points as traces too.
-    // Traces for points
+    // get traces from gap func
+    console.log("gfd", gapfuncData);
+    const traces = Object.entries(gapfuncData)
+      .filter(([key, val]) => Array.isArray(val))
+      .map(([label, arr]) => {
+        const xVals = arr.map(([x, y]) => x);
+        const yVals = arr.map(([x, y]) => y);
+
+        // z = distance to nearest vert
+        const customdata = xVals.map((x) => {
+          // only consider verts to the left of x
+          const leftVerts = safeVerts.filter((v) => v <= x);
+          if (!leftVerts.length) return null; // no left vert
+          const leftVert = Math.max(...leftVerts);
+          return [x - leftVert]; // distance from the left line
+        });
+
+        return {
+          x: xVals,
+          y: yVals,
+          customdata,
+          type: "scatter",
+          mode: "lines",
+          line: { color: GAP_TRACE_CONFIG.color },
+          hovertemplate:
+            "<b>T</b>: %{x:.3f}<br><b>gap:</b> %{y:.3f}<br><b>HistogramValue: %{customdata:.3f}</b><extra></extra>",
+        };
+      });
+
+    // Markers for points
     const pointTraces = (verts || []).map((x, i) => ({
       x: [x],
       y: [(points || [])[i]], // take y from points array
       name: `point ${i}`,
       type: "scatter",
       mode: "markers",
-      marker: { color: "#d62728", size: 12 },
+      hovertemplate:
+        "<b>Weighted average at %{x:.0f}K:</b> %{y:.3f}<extra></extra>",
+      marker: { color: GAP_TRACE_CONFIG.color, size: 12 },
     }));
 
     traces.push(...pointTraces);
 
     // add the fitted curve.
     const curveTrace = createAnalyticGapTrace(delta0, expo, Tc, resolution);
-
-    console.log("cT", curveTrace);
-
     traces.push(curveTrace);
 
-    let layoutWithVerts;
-    if (verts && verts.length) {
-      const minX = Math.min(...verts) - 1.5;
-      const maxX = Math.max(...verts) + 1.5;
-
-      layoutWithVerts = {
-        ...GAP_LAYOUT_CONFIG,
-        xaxis: {
-          ...GAP_LAYOUT_CONFIG.xaxis,
-          range: [minX, maxX], // set x-axis limits
-        },
-        shapes: [
-          ...(GAP_LAYOUT_CONFIG.shapes || []),
-          ...verts.map((x) => ({
-            type: "line",
-            x0: x,
-            x1: x,
-            y0: 0,
-            y1: 1,
-            yref: "paper", // still spans full y-axis
-            line: { color: "#111", width: 1.25 },
-          })),
-        ],
-      };
-    } else {
-      layoutWithVerts = GAP_LAYOUT_CONFIG;
-    }
+    let layoutWithVerts = {
+      ...GAP_LAYOUT_CONFIG,
+      xaxis: {
+        ...GAP_LAYOUT_CONFIG.xaxis,
+        range:
+          minXVal != null && maxXVal != null ? [minXVal, maxXVal] : undefined,
+      },
+      yaxis: {
+        ...GAP_LAYOUT_CONFIG.yaxis,
+        range:
+          minYVal != null && maxYVal != null ? [minYVal, maxYVal] : undefined,
+      },
+      shapes: [
+        ...(GAP_LAYOUT_CONFIG.shapes || []),
+        ...safeVerts.map((x) => ({
+          type: "line",
+          x0: x,
+          x1: x,
+          y0: 0,
+          y1: 1,
+          yref: "paper",
+          line: { color: "#111", width: 1.25 },
+          layer: "below",
+        })),
+      ],
+    };
 
     // Render the plot
     Plotly.newPlot(plotRef.current, traces, layoutWithVerts, {
       responsive: true,
     });
 
-    console.log("traces", traces);
     console.log("gp", gapfuncData);
 
-    // Optional cleanup on unmount
     return () => Plotly.purge(plotRef.current);
   }, [gapfuncData]);
 
