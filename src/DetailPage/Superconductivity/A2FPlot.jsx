@@ -4,9 +4,8 @@ import Plotly from "plotly.js-dist-min";
 const A2F_TRACE_CONFIG = {
   color: "#d62728",
   dash: "solid",
-  label: "A2F data",
+  label: "Eliashberg spectral function",
   lineWidth: 1.75,
-  units: "a2f",
 };
 
 const A2F_CUMULATIVE_CONFIG = {
@@ -111,7 +110,7 @@ export default function A2FPlot({
       mode: "lines",
       label: `${A2F_TRACE_CONFIG.label}`,
       name: `${A2F_TRACE_CONFIG.label}`,
-      hovertemplate: `<b>${A2F_TRACE_CONFIG.label}</b>: %{x:.3f} ${A2F_TRACE_CONFIG.units}<br><extra></extra>`,
+      hovertemplate: `<b>${A2F_TRACE_CONFIG.label}</b>: %{x:.3f} <br><extra></extra>`,
       line: {
         color: A2F_TRACE_CONFIG.color,
         dash: A2F_TRACE_CONFIG.dash,

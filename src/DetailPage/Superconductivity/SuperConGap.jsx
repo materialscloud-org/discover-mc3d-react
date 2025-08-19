@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import Plotly from "plotly.js-dist-min"; // or "plotly.js-basic-dist"
 
 const GAP_TRACE_CONFIG = {
@@ -13,9 +13,9 @@ const GAP_LAYOUT_CONFIG = {
   xaxis: {
     title: {
       text: "T [K]",
-      font: { size: 18, color: "#111" },
+      font: { size: 17, color: "#111" },
     },
-    tickfont: { size: 20 },
+    tickfont: { size: 15 },
     showgrid: false,
     zeroline: false,
     showline: false,
@@ -23,10 +23,10 @@ const GAP_LAYOUT_CONFIG = {
   },
   yaxis: {
     title: {
-      text: "∆<sub>nk</sub> [meV]",
-      font: { size: 18, color: "#111" },
+      text: "Δ<sub>n<b>k</b></sub>(T) [meV]",
+      font: { size: 17, color: "#111" },
     },
-    tickfont: { size: 20 },
+    tickfont: { size: 15 },
     showgrid: false,
     zeroline: false,
     showline: false,
@@ -104,7 +104,6 @@ export default function GapPlot({
     if (!gapfuncData) return;
 
     const safeVerts = verts ?? [];
-    console.log("sfv", safeVerts);
 
     // get traces from gap func
     console.log("gfd", gapfuncData);
@@ -118,9 +117,9 @@ export default function GapPlot({
         const customdata = xVals.map((x) => {
           // only consider verts to the left of x
           const leftVerts = safeVerts.filter((v) => v <= x);
-          if (!leftVerts.length) return null; // no left vert
+          if (!leftVerts.length) return null;
           const leftVert = Math.max(...leftVerts);
-          return [x - leftVert]; // distance from the left line
+          return [x - leftVert];
         });
 
         return {
@@ -131,7 +130,7 @@ export default function GapPlot({
           mode: "lines",
           line: { color: GAP_TRACE_CONFIG.color },
           hovertemplate:
-            "<b>T</b>: %{x:.3f}<br><b>gap:</b> %{y:.3f}<br><b>HistogramValue: %{customdata:.3f}</b><extra></extra>",
+            "<b>T</b>: %{x:.3f} K<br><b>Fit of BCS gap:</b> %{y:.3f}<br><b>Histogram of Δ<sub>n<b>k</b></sub>(0)</b>: %{customdata:.3f}<extra></extra>",
         };
       });
 

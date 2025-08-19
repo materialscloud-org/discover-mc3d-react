@@ -11,7 +11,13 @@ import { Container, Row, Col } from "react-bootstrap";
 import { McloudSpinner } from "mc-react-library";
 
 import {
+  SUPERCON_BANDS_LAYOUT_CONFIG,
+  SUPERCON_PHONON_A2F_LAYOUT_CONFIG,
+} from "../../common/BandStructure/configs";
+
+import {
   BandStructure,
+  BandsA2F,
   prepareSuperConBand,
 } from "../../common/BandStructure/BandStructure";
 
@@ -32,6 +38,7 @@ import {
   loadSuperConPhononVis,
 } from "../../common/restApiUtils";
 import { SuperconHeader } from "./SuperconHeader";
+import { getA2FTraces } from "./getA2FTraces";
 
 function Section({ title, children }) {
   return (
@@ -58,7 +65,6 @@ function SectionColumn({
     >
       {/* Always render subtitle row, even if empty */}
       <div className="subsection-title w-100 mb-2">{subtitle || "\u00A0"}</div>
-
       {loading ? (
         <div className="flex justify-center items-center w-100 h-full">
           <div style={{ maxWidth: "70px", width: "100%" }}>
@@ -217,11 +223,9 @@ function SuperConductivity({ params, loadedData }) {
         );
 
         // WARNING BANDS DATA IS UNALIGNED WE NORMALISE IT HERE (DANGEROUSLY)
-        // const rescaledFilteredBDArray = normalizeBandsData(
-        //   [preppedQE, preppedEPW].filter(Boolean),
-        // );
-
-        const rescaledFilteredBDArray = [preppedQE, preppedEPW].filter(Boolean);
+        const rescaledFilteredBDArray = normalizeBandsData(
+          [preppedQE, preppedEPW].filter(Boolean),
+        );
 
         const preppedPh = safePrepareBands(phBands, 0, "phononEPW");
 
@@ -260,7 +264,9 @@ function SuperConductivity({ params, loadedData }) {
             <BandStructure
               bandsDataArray={bandsDataArray}
               loading={bandsLoading}
-              config="supercon-bands-wannier"
+              minYval={-10.4}
+              maxYval={+10.4}
+              layoutOverrides={SUPERCON_BANDS_LAYOUT_CONFIG}
             />
           </SectionColumn>
 
@@ -268,11 +274,10 @@ function SuperConductivity({ params, loadedData }) {
             <SuperConInfo superconData={supercon} />
           </SectionColumn>
         </Section>
-        {/* Phonon Bands + Spectral Function */}
         <Section>
           <SectionColumn
-            width={6}
-            subtitle="Phonon Bands"
+            width={12}
+            subtitle="Phonon Bands, Eliashberg spectral function and electron-phonon coupling strength "
             loading={phononBandsLoading}
             condition={
               phononBandsArray.length > 0 &&
@@ -282,30 +287,33 @@ function SuperConductivity({ params, loadedData }) {
               <div className="text-gray-400 text-center">No bands data</div>
             }
           >
-            <BandStructure
+            <BandsA2F
               bandsDataArray={phononBandsArray}
-              loading={phononBandsLoading}
-              config="supercon-phonon-wannier"
-              maxYval={supercon.highest_phonon_frequency + 2}
               minYval={0}
-            />
-          </SectionColumn>
-
-          <SectionColumn
-            width={6}
-            subtitle="Spectral Function"
-            loading={a2fLoading}
-            condition={a2fData?.a2f && a2fData?.frequency}
-            fallback={
-              <div className="text-gray-400 text-center">No spectral data</div>
-            }
-          >
-            <A2FPlot
-              a2f={a2fData?.a2f}
-              frequency={a2fData?.frequency}
-              degaussq={a2fData?.degaussq}
-              lambda={a2fData?.lambda}
-              maxYval={supercon.highest_phonon_frequency + 2}
+              maxYval={100}
+              dosDataArray={[
+                {
+                  dosData: {
+                    x: [0],
+                    y: [0],
+                    showlegend: false,
+                  },
+                  traceFormat: {
+                    name: "",
+                    legend: "legend5",
+                    showlegend: false,
+                    opacity: 0,
+                  },
+                },
+              ]}
+              loading={phononBandsLoading}
+              layoutOverrides={SUPERCON_PHONON_A2F_LAYOUT_CONFIG}
+              customTraces={getA2FTraces({
+                a2f: a2fData?.a2f,
+                frequency: a2fData?.frequency,
+                degaussq: a2fData?.degaussq,
+                lambda: a2fData?.lambda,
+              })}
             />
           </SectionColumn>
         </Section>
@@ -322,8 +330,8 @@ function SuperConductivity({ params, loadedData }) {
         {/* </Section> */}
         {/* Gap Function */}
         <SectionColumn
-          subtitle="Gap Function Plot"
-          width={12}
+          subtitle="Anisotropic superconducting gap function"
+          width={8}
           loading={gapfuncLoading}
           condition={gapfuncData != null && supercon?.aniso_info != null}
           fallback={

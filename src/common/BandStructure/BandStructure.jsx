@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { BandsVisualiser } from "bands-visualiser";
 
-import { SUPERCON_BANDS_LAYOUT_CONFIG, traceConfigs } from "./configs";
+import { traceConfigs, SUPERCON_PHONON_A2F_LAYOUT_CONFIG } from "./configs";
 
 // Helper
 function shiftBands(bandsData, shift) {
@@ -27,7 +27,7 @@ export function prepareSuperConBand(
 
   let traceFormat = traceConfigs[config];
 
-  const bandsDataArrayObj = {
+  let bandsDataArrayObj = {
     bandsData: bandObject,
     traceFormat: {
       label: `${traceFormat.label}`,
@@ -44,41 +44,105 @@ export function prepareSuperConBand(
       },
     },
   };
+  // hide phonon from the plot without breaking other trace formatting...
+  if (config == "phononEPW") {
+    bandsDataArrayObj = {
+      bandsData: bandObject,
+      traceFormat: {
+        label: `${traceFormat.label}`,
+        name: traceFormat.label,
+
+        hovertemplate: `<b>${traceFormat.label}</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
+        mode: traceFormat.mode,
+        // marker: traceFormat.marker,
+        line: {
+          color: traceFormat.colors[0],
+          dash: traceFormat.dash,
+          width: traceFormat.width,
+          opacity: traceFormat.opacity,
+        },
+        showlegend: false,
+      },
+    };
+  }
 
   return bandsDataArrayObj;
 }
 
 // Standalone visualiser component
 // expects the bandsDataArray to contain already traceFormatted entries.
+// can override the default layout by passing a layoutOverride.
 export function BandStructure({
   bandsDataArray,
   loading,
-  maxYval = null, // incase you want to force Yvals.
+  maxYval = null,
   minYval = null,
+  layoutOverrides = null,
 }) {
   const containerRef = useRef(null);
-  const visualiserRef = useRef(null);
 
-  const plotSettings = SUPERCON_BANDS_LAYOUT_CONFIG;
-
-  // deep merge Yvals
-  const settings = {
-    ...plotSettings,
-    yaxis: {
-      ...(plotSettings.yaxis || {}),
-      range: [minYval, maxYval],
-    },
-  };
+  const settings = layoutOverrides ?? {};
+  settings.yaxis.range = [minYval, maxYval];
 
   useEffect(() => {
     if (!containerRef.current || !bandsDataArray) return;
 
-    if (visualiserRef.current?.destroy) {
-      visualiserRef.current.destroy();
-    }
-
-    visualiserRef.current = BandsVisualiser(containerRef.current, {
+    BandsVisualiser(containerRef.current, {
       bandsDataArray,
+      settings,
+    });
+  }, [bandsDataArray]);
+
+  if (loading)
+    return (
+      <div
+        className="placeholder-wave d-flex align-items-center justify-content-center rounded bg-secondary"
+        style={{ height: "450px", width: "100%" }}
+      >
+        <span>Loading...</span>
+      </div>
+    );
+  if (!bandsDataArray)
+    return (
+      <div
+        className="placeholder-wave d-flex align-items-center justify-content-center rounded bg-secondary"
+        style={{ height: "500px", width: "100%" }}
+      >
+        <span> ... Malformed Bands/DOS Data? ... </span>
+      </div>
+    );
+
+  return (
+    <div>
+      <div ref={containerRef} style={{ width: "100%", height: "450px" }} />
+    </div>
+  );
+}
+
+export function BandsA2F({
+  bandsDataArray,
+  dosDataArray = [],
+  loading,
+  minYval = null,
+  maxYval = null,
+  layoutOverrides = null,
+  customTraces = [],
+}) {
+  const containerRef = useRef(null);
+
+  const settings = layoutOverrides;
+
+  if (minYval != null && maxYval != null) {
+    settings.yaxis.range = [minYval, maxYval];
+  }
+
+  useEffect(() => {
+    if (!containerRef.current || !bandsDataArray) return;
+
+    BandsVisualiser(containerRef.current, {
+      bandsDataArray,
+      dosDataArray,
+      customTraces,
       settings,
     });
   }, [bandsDataArray]);
