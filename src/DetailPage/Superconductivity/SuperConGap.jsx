@@ -98,15 +98,12 @@ export default function GapPlot({
 }) {
   const plotRef = useRef(null);
 
-  console.log("gap", gapfuncData);
-
   useEffect(() => {
     if (!gapfuncData) return;
 
     const safeVerts = verts ?? [];
 
-    // get traces from gap func
-    console.log("gfd", gapfuncData);
+    // get traces from gap funcData
     const traces = Object.entries(gapfuncData)
       .filter(([key, val]) => Array.isArray(val))
       .map(([label, arr]) => {

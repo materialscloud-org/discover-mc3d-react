@@ -102,6 +102,7 @@ export const SUPERCON_PHONON_A2F_LAYOUT_CONFIG = {
     ...COMMON_LAYOUT_CONFIG.yaxis,
     title: { ...COMMON_LAYOUT_CONFIG.yaxis.title, text: "Energy [meV]" },
     autorange: false,
+    rangemode: "nonnegative",
   },
   yaxis2: {
     matches: "y",
@@ -110,7 +111,16 @@ export const SUPERCON_PHONON_A2F_LAYOUT_CONFIG = {
     showgrid: false,
     rangemode: "nonnegative",
     autorange: false,
+    zeroline: false,
   },
+  xaxis: {
+    showgrid: false,
+    ticks: "inside",
+    tickfont: { size: 14, color: "#333" },
+    title: { text: "q-path", font: { size: 16, color: "#333" } },
+    // No tickvals/ticktext
+  },
+
   xaxis2: {
     ...COMMON_LAYOUT_CONFIG.xaxis,
     title: { ...COMMON_LAYOUT_CONFIG.xaxis.title, text: "α<sup>2</sup>F(ω)" },
@@ -127,7 +137,6 @@ export const SUPERCON_PHONON_A2F_LAYOUT_CONFIG = {
     tickfont: { size: 15, color: "#333" },
     ticks: "inside",
     tickmode: "auto",
-    zeroline: false,
   },
   legend5: {
     orientation: "v",

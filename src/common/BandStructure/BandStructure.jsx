@@ -1,8 +1,6 @@
 import { useEffect, useRef } from "react";
 import { BandsVisualiser } from "bands-visualiser";
 
-import { traceConfigs, SUPERCON_PHONON_A2F_LAYOUT_CONFIG } from "./configs";
-
 // Helper
 function shiftBands(bandsData, shift) {
   bandsData.paths.forEach((path) => {
@@ -12,61 +10,6 @@ function shiftBands(bandsData, shift) {
       });
     });
   });
-}
-
-// supercon data set is not spin polarised
-// only use the first color in colors
-// and dont try to spin split.
-export function prepareSuperConBand(
-  bandObject,
-  shiftVal = 0,
-  config = "unknownEntry",
-) {
-  // shift bandobject to fermiLevel
-  shiftBands(bandObject, shiftVal);
-
-  let traceFormat = traceConfigs[config];
-
-  let bandsDataArrayObj = {
-    bandsData: bandObject,
-    traceFormat: {
-      label: `${traceFormat.label}`,
-      name: traceFormat.label,
-
-      hovertemplate: `<b>${traceFormat.label}</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
-      mode: traceFormat.mode,
-      // marker: traceFormat.marker,
-      line: {
-        color: traceFormat.colors[0],
-        dash: traceFormat.dash,
-        width: traceFormat.width,
-        opacity: traceFormat.opacity,
-      },
-    },
-  };
-  // hide phonon from the plot without breaking other trace formatting...
-  if (config == "phononEPW") {
-    bandsDataArrayObj = {
-      bandsData: bandObject,
-      traceFormat: {
-        label: `${traceFormat.label}`,
-        name: traceFormat.label,
-
-        hovertemplate: `<b>${traceFormat.label}</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
-        mode: traceFormat.mode,
-        // marker: traceFormat.marker,
-        line: {
-          color: traceFormat.colors[0],
-          dash: traceFormat.dash,
-          width: traceFormat.width,
-          opacity: traceFormat.opacity,
-        },
-        showlegend: false,
-      },
-    };
-  }
-
-  return bandsDataArrayObj;
 }
 
 // Standalone visualiser component

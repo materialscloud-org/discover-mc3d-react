@@ -18,8 +18,9 @@ import {
 import {
   BandStructure,
   BandsA2F,
-  prepareSuperConBand,
 } from "../../common/BandStructure/BandStructure";
+
+import { prepareSuperConBand } from "../../common/BandStructure/bandUtils";
 
 import {
   normalizeBandsData,
@@ -43,7 +44,7 @@ import { getA2FTraces } from "./getA2FTraces";
 function Section({ title, children }) {
   return (
     <Row className="mb-4 g-4 align-items-start">
-      {title && <div className="subsection-title w-100 mb-0">{title}</div>}
+      {title && <div className="subsection-title w-10 mb-0">{title}</div>}
       {children}
     </Row>
   );
@@ -56,15 +57,28 @@ function SectionColumn({
   condition,
   fallback,
   children,
+  style = {},
+  className = "",
+  subtitleStyle = {},
+  subtitleClassName = "",
 }) {
   return (
     <Col
       md={width}
-      className="flex flex-col"
-      style={{ minHeight: "300px" }} // ensures vertical centering works
+      className={`flex flex-col ${className}`}
+      style={{ minHeight: "300px", ...style }}
     >
-      {/* Always render subtitle row, even if empty */}
-      <div className="subsection-title w-100 mb-2">{subtitle || "\u00A0"}</div>
+      {/* Subtitle always renders */}
+      <div
+        className={`subsection-title w-100 mb-2 ${subtitleClassName}`}
+        style={{
+          marginBottom: "0.5rem", // default spacing
+          ...subtitleStyle,
+        }}
+      >
+        {subtitle || "\u00A0"}
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center w-100 h-full">
           <div style={{ maxWidth: "70px", width: "100%" }}>
@@ -76,7 +90,9 @@ function SectionColumn({
       ) : fallback ? (
         fallback
       ) : (
-        <div className="flex items-center justify-center h-full text-gray-400 border border-dashed rounded p-3">
+        <div
+          className={`flex items-center justify-center h-full text-gray-400 border border-dashed rounded p-3`}
+        >
           No data
         </div>
       )}
@@ -265,7 +281,7 @@ function SuperConductivity({ params, loadedData }) {
               bandsDataArray={bandsDataArray}
               loading={bandsLoading}
               minYval={-10.4}
-              maxYval={+10.4}
+              maxYval={+10.8}
               layoutOverrides={SUPERCON_BANDS_LAYOUT_CONFIG}
             />
           </SectionColumn>
@@ -277,6 +293,7 @@ function SuperConductivity({ params, loadedData }) {
         <Section>
           <SectionColumn
             width={12}
+            subtitleStyle={{ position: "absolute", zIndex: 10 }}
             subtitle="Phonon Bands, Eliashberg spectral function and electron-phonon coupling strength "
             loading={phononBandsLoading}
             condition={
@@ -284,23 +301,28 @@ function SuperConductivity({ params, loadedData }) {
               supercon?.highest_phonon_frequency != null
             }
             fallback={
-              <div className="text-gray-400 text-center">No bands data</div>
+              <div className="text-gray-400 text-center mt-5">
+                No bands data
+              </div>
             }
           >
             <BandsA2F
               bandsDataArray={phononBandsArray}
               minYval={0}
-              maxYval={100}
+              maxYval={
+                supercon?.highest_phonon_frequency != null
+                  ? Math.min(supercon?.highest_phonon_frequency + 2, 100)
+                  : 100
+              }
               dosDataArray={[
                 {
                   dosData: {
                     x: [0],
                     y: [0],
-                    showlegend: false,
                   },
                   traceFormat: {
                     name: "",
-                    legend: "legend5",
+                    legend: "legend2",
                     showlegend: false,
                     opacity: 0,
                   },
