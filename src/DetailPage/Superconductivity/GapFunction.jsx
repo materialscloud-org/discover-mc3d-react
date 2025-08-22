@@ -79,7 +79,7 @@ function createAnalyticGapTrace(
     type: "scatter",
     mode: "lines",
     hovertemplate:
-      "<b>BCS fitted equation:</b>: <b>x:</b> %{x:.3f}, <b>y:</b> %{y:.3f}<b></b><extra></extra>",
+      "<b>Fit of BCS gap:</b> <b>x:</b> %{x:.3f}, <b>y:</b> %{y:.3f}<b></b><extra></extra>",
     line: { color: "#b22222", dash: "dash" },
   };
 }
@@ -128,7 +128,7 @@ export default function GapFunction({
           mode: "lines",
           line: { color: GAP_TRACE_CONFIG.color },
           hovertemplate:
-            "<b>T</b>: %{x:.3f} K<br><b>Fit of BCS gap:</b> %{y:.3f}<br><b>Histogram of Δ<sub>n<b>k</b></sub>(0)</b>: %{customdata:.3f}<extra></extra>",
+            "<b>T</b>: %{x:.3f} K<br><b>Fit of BCS gap:</b> %{y:.3f}<br><b>Histogram of Δ<sub>n<b>k</b></sub></b>: %{customdata:.3f}<extra></extra>",
         };
       });
 

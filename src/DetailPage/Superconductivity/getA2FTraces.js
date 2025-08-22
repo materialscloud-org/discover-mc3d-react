@@ -6,6 +6,7 @@ const A2F_TRACE_CONFIG = {
   color: "#d62728",
   dash: "solid",
   label: "α<sup>2</sup>F(ω)",
+  hoverlabel: "Eliashberg spectral function",
   lineWidth: 1.75,
   xaxis: "x2",
   yaxis: "y2",
@@ -15,6 +16,7 @@ const A2F_CUMULATIVE_CONFIG = {
   color: "#111",
   dash: "solid",
   label: "λ(ω)",
+  hoverlabel: "Cumulative electron-phonon coupling strength",
   lineWidth: 1.75,
   units: "a2f",
   xaxis: "x3",
@@ -39,7 +41,7 @@ export function getA2FTraces({
     type: "scatter",
     mode: "lines",
     name: A2F_TRACE_CONFIG.label,
-    hovertemplate: `<b>${A2F_TRACE_CONFIG.label}</b>: %{x:.3f} <br><extra></extra>`,
+    hovertemplate: `<b>${A2F_TRACE_CONFIG.hoverlabel}</b>: %{x:.3f} <br><extra></extra>`,
     line: {
       color: A2F_TRACE_CONFIG.color,
       dash: A2F_TRACE_CONFIG.dash,
@@ -66,7 +68,7 @@ export function getA2FTraces({
     name: A2F_CUMULATIVE_CONFIG.label,
     label: `${A2F_CUMULATIVE_CONFIG.label}`,
     name: A2F_CUMULATIVE_CONFIG.label,
-    hovertemplate: `<b>${A2F_CUMULATIVE_CONFIG.label}</b>: %{x:.3f} ${A2F_CUMULATIVE_CONFIG.units}<br><extra></extra>`,
+    hovertemplate: `<b>${A2F_CUMULATIVE_CONFIG.hoverlabel}</b>: %{x:.3f}<br><extra></extra>`,
     line: {
       color: A2F_CUMULATIVE_CONFIG.color,
       dash: A2F_CUMULATIVE_CONFIG.dash,

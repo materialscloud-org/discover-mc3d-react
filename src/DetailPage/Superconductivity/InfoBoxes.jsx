@@ -84,7 +84,7 @@ export function CalculationDetailsInfoBox({ superconData, style = {} }) {
         </>
       ),
       value: formatIfExists(superconData.ecut, {
-        format: (v) => `${v} Ry`,
+        format: (v) => `${v} eV`,
         fallback: "No data",
       }),
     },
@@ -140,14 +140,14 @@ export function CalculationDetailsInfoBox({ superconData, style = {} }) {
       }),
     },
     {
-      key: "fine q-grid",
+      key: "Fine k-grid",
       value: formatIfExists(superconData.kfpoints_mesh, {
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No EPW fine kgriddata",
       }),
     },
     {
-      key: "fine q-grid",
+      key: "Fine q-grid",
       value: formatIfExists(superconData.qfpoints_mesh, {
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No EPW fine qgriddata",
@@ -163,7 +163,7 @@ export function CalculationDetailsInfoBox({ superconData, style = {} }) {
     {
       key: "Fermi window",
       value: formatIfExists(superconData.fermi_window, {
-        format: (v) => `${v} eV`,
+        format: (v) => `±${v} eV`,
         fallback: "No data",
       }),
     },
@@ -227,7 +227,7 @@ export function CalculationDetailsInfoBox({ superconData, style = {} }) {
       {...{ style }}
       childrenLeft={
         <div>
-          <b>General Properties</b>
+          <b>General properties</b>
           <ul className="no-bullets">
             {genInfo
               .filter((item) => item.value !== undefined)
@@ -237,7 +237,7 @@ export function CalculationDetailsInfoBox({ superconData, style = {} }) {
                 </li>
               ))}
           </ul>
-          <b>Superconducting Properties</b>
+          <b>Superconducting properties</b>
 
           <ul className="no-bullets">
             {superconInfo
@@ -252,7 +252,7 @@ export function CalculationDetailsInfoBox({ superconData, style = {} }) {
       }
       childrenRight={
         <div>
-          <b>DFT Calculation Details </b>
+          <b>DFT calculation details </b>
           <ul className="no-bullets">
             {dftInfo
               .filter((item) => item.value !== undefined)
@@ -262,7 +262,7 @@ export function CalculationDetailsInfoBox({ superconData, style = {} }) {
                 </li>
               ))}
           </ul>
-          <b>EPW Calculation Details</b>
+          <b>EPW calculation details</b>
           <ul className="no-bullets">
             {epwInfo
               .filter((item) => item.value !== undefined)

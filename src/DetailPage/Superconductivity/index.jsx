@@ -236,7 +236,7 @@ function SuperConductivity({ params, loadedData }) {
           </TitledColumn>
           <TitledColumn
             width={6}
-            subtitle="Electronic Bands"
+            subtitle="Electronic band structure"
             loading={bandsLoading}
             condition={bandsDataArray?.length > 0}
             subtitleStyle={{ marginTop: "0px" }}
@@ -245,8 +245,9 @@ function SuperConductivity({ params, loadedData }) {
             }
           >
             <div style={{ marginBottom: "10px", marginLeft: "10px" }}>
-              Electronic bands calculated with Quantum ESPRESSO (QE) and the
-              first-principles electron-phonon physics code EPW.
+              Electronic band structure calculated with Quantum ESPRESSO (QE)
+              and the first-principles electron-phonon physics code EPW,
+              computed via Wannier interpolation
             </div>
             <BandStructure
               bandsDataArray={bandsDataArray}
