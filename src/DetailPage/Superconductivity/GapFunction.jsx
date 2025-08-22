@@ -13,20 +13,21 @@ const GAP_LAYOUT_CONFIG = {
   xaxis: {
     title: {
       text: "T [K]",
-      font: { size: 17, color: "#111" },
+      font: { size: 15, color: "#111" },
     },
-    tickfont: { size: 15 },
+    tickfont: { size: 14 },
     showgrid: false,
     zeroline: false,
     showline: false,
     ticks: "inside",
+    rangemode: "nonnegative",
   },
   yaxis: {
     title: {
       text: "Δ<sub>n<b>k</b></sub>(T) [meV]",
-      font: { size: 17, color: "#111" },
+      font: { size: 15, color: "#111" },
     },
-    tickfont: { size: 15 },
+    tickfont: { size: 14 },
     showgrid: false,
     zeroline: false,
     showline: false,
@@ -83,7 +84,7 @@ function createAnalyticGapTrace(
   };
 }
 
-export default function GapPlot({
+export default function GapFunction({
   gapfuncData,
   Tc,
   verts,
@@ -186,5 +187,5 @@ export default function GapPlot({
     return () => Plotly.purge(plotRef.current);
   }, [gapfuncData]);
 
-  return <div ref={plotRef} style={{ width: "100%", height: "500px" }} />;
+  return <div ref={plotRef} style={{ width: "100%", height: "350px" }} />;
 }

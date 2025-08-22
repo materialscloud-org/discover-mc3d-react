@@ -1,0 +1,16 @@
+.two-wide-container {
+  overflow-y: scroll;
+  min-width: 200px;
+  background: #f8f8f8;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 equal columns */
+  gap: 1rem;
+  height: 100%;
+  padding: 5px 10px;
+}
+
+.info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

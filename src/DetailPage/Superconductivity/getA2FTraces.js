@@ -76,6 +76,5 @@ export function getA2FTraces({
     yaxis: A2F_CUMULATIVE_CONFIG.yaxis,
   };
 
-  console.log("c", [a2fTrace, cumulativeTrace]);
   return [a2fTrace, cumulativeTrace];
 }
