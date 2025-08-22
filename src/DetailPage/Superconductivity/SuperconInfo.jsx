@@ -24,8 +24,10 @@ function formatIfExists(
   { decimals = 3, format = (v) => v, fallback = undefined } = {},
 ) {
   if (typeof value === "number" && !isNaN(value)) {
-    const rounded = Number(value.toFixed(decimals));
+    const rounded = Number(value.toFixed(decimals)); // round numbers
     return format(rounded);
+  } else if (value !== undefined && value !== null) {
+    return format(value); // apply format for strings/other types
   }
   return fallback;
 }
@@ -34,21 +36,21 @@ export function SuperConInfo({ superconData }) {
   const genInfo = [
     {
       key: "Space group number",
-      value: formatIfExists(superconData.spacegroup, {
+      value: formatIfExists(superconData.space_group_number, {
         format: (v) => `${v}`,
         fallback: "Unknown Spacegroup",
       }),
     },
     {
       key: "Total energy",
-      value: formatIfExists(superconData.energy, {
+      value: formatIfExists(superconData.total_energy, {
         format: (v) => `${v} eV`,
         fallback: "Unknown Total energy",
       }),
     },
     {
       key: "Cell volume",
-      value: formatIfExists(superconData.volume, {
+      value: formatIfExists(superconData.cell_volume, {
         format: (v) => `${v} Å³`,
         fallback: "Unknown Spacegroup",
       }),
@@ -110,9 +112,9 @@ export function SuperConInfo({ superconData }) {
           (0)
         </>
       ),
-      value: formatIfExists(superconData.iso_tc, {
+      value: formatIfExists(superconData.aniso_info?.delta0, {
         format: (v) => `${v} K`,
-        fallback: "Not superconducting",
+        fallback: "No nk Data",
       }),
     },
     {
@@ -131,58 +133,75 @@ export function SuperConInfo({ superconData }) {
           E<sub>cut</sub>
         </>
       ),
-      value: formatIfExists(superconData.energycutoff, {
+      value: formatIfExists(superconData.ecut, {
         format: (v) => `${v} Ry`,
         fallback: "No data",
       }),
     },
     {
       key: "Smearing",
-      value: formatIfExists(superconData.smearing, {
+      value: formatIfExists(superconData.scf_smearing, {
         format: (v) => `${v} eV`,
         fallback: "No data",
       }),
     },
     {
       key: "DFPT k-grid",
-      value: "13×13×14",
+      value: formatIfExists(superconData.dft_kgrid, {
+        format: (v) => `${v} eV`,
+        fallback: "No DFPT kgrid data",
+      }),
     },
     {
       key: "DFPT q-grid",
-      value: "4×4×4",
+
+      value: formatIfExists(superconData.dft_qgrid, {
+        format: (v) => `${v} eV`,
+        fallback: "No DFPT qgrid data",
+      }),
     },
   ];
 
   const epwInfo = [
     {
       key: "Type",
-      value: formatIfExists(superconData.epw_type, {
+      value: formatIfExists(superconData.type, {
         format: (v) => `${v}`,
-        fallback: "No data",
       }),
     },
     {
       key: "Number of Wannier functions",
-      value: formatIfExists(superconData.no_wannier, {
+      value: formatIfExists(superconData.number_of_wannier_functions, {
         format: (v) => `${v}`,
-        fallback: "No data",
       }),
     },
     {
       key: "Coarse k-grid",
-      value: "13×13×13",
+      value: formatIfExists(superconData.epw_coarse_kgrid, {
+        format: (v) => `${v}`,
+        fallback: "No EPW coarse kgriddata",
+      }),
     },
     {
       key: "Coarse q-grid",
-      value: "4×4×4",
+      value: formatIfExists(superconData.epw_coarse_qgrid, {
+        format: (v) => `${v}`,
+        fallback: "No EPW coarse qgriddata",
+      }),
     },
     {
-      key: "Fine k-grid",
-      value: "23×23×23",
+      key: "fine q-grid",
+      value: formatIfExists(superconData.epw_fine_kgrid, {
+        format: (v) => `${v}`,
+        fallback: "No EPW fine kgriddata",
+      }),
     },
     {
-      key: "Fine q-grid",
-      value: "4×4×4",
+      key: "fine q-grid",
+      value: formatIfExists(superconData.epw_fine_qgrid, {
+        format: (v) => `${v}`,
+        fallback: "No EPW fine qgriddata",
+      }),
     },
     {
       key: "Smearing-q",

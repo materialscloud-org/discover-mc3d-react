@@ -107,6 +107,8 @@ function SuperConductivity({ params, loadedData }) {
   }
 
   const supercon = loadedData.details.supercon;
+  console.log("Supercon Data:", supercon);
+  if (!supercon) return <div className="empty-supercon-div"></div>;
 
   // loading and data useStates
   const [bandsDataArray, setBandsDataArray] = useState([]);
@@ -123,8 +125,6 @@ function SuperConductivity({ params, loadedData }) {
 
   const [phononVisData, setPhononVisData] = useState(null);
   const [phononVisLoading, setPhononVisLoading] = useState(false);
-
-  if (!supercon) return <div className="empty-supercon-div"></div>;
 
   // --- Fetch GapFunction Data ---
   useEffect(() => {

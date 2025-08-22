@@ -49,7 +49,7 @@ export const COMMON_LAYOUT_CONFIG = {
 
   // Common X-axis settings
   xaxis: {
-    showgrid: false,
+    showgrid: true,
     ticks: "inside",
     tickfont: { size: 14, color: "#333" },
     title: { font: { size: 16, color: "#333" } },
@@ -85,7 +85,7 @@ export const COMMON_LAYOUT_CONFIG = {
   ],
 };
 
-// layout fo rbands
+// layout for bands
 export const SUPERCON_BANDS_LAYOUT_CONFIG = {
   ...COMMON_LAYOUT_CONFIG,
   yaxis: {
@@ -114,7 +114,6 @@ export const SUPERCON_PHONON_A2F_LAYOUT_CONFIG = {
     zeroline: false,
   },
   xaxis: {
-    showgrid: false,
     ticks: "inside",
     tickfont: { size: 14, color: "#333" },
     title: { text: "q-path", font: { size: 16, color: "#333" } },
@@ -124,6 +123,7 @@ export const SUPERCON_PHONON_A2F_LAYOUT_CONFIG = {
   xaxis2: {
     ...COMMON_LAYOUT_CONFIG.xaxis,
     title: { ...COMMON_LAYOUT_CONFIG.xaxis.title, text: "α<sup>2</sup>F(ω)" },
+    showgrid: false,
   },
   xaxis3: {
     overlaying: "x2",
@@ -138,7 +138,7 @@ export const SUPERCON_PHONON_A2F_LAYOUT_CONFIG = {
     ticks: "inside",
     tickmode: "auto",
   },
-  legend5: {
+  legend2: {
     orientation: "v",
     y: 0.1,
     x: 0.585,
