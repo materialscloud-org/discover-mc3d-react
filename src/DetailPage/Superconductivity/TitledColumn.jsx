@@ -3,15 +3,15 @@ import { McloudSpinner } from "mc-react-library";
 
 export function TitledColumn({
   width,
-  subtitle,
+  title,
   loading,
   condition,
   fallback,
   children,
   style = {},
   className = "",
-  subtitleStyle = {},
-  subtitleClassName = "",
+  titleStyle = {},
+  titleClassName = "",
 }) {
   return (
     <Col
@@ -19,15 +19,15 @@ export function TitledColumn({
       className={`flex flex-col ${className}`}
       style={{ minHeight: "300px", ...style }}
     >
-      {/* Subtitle always renders */}
+      {/* Title always renders */}
       <div
-        className={`subsection-title w-100 mb-3 ${subtitleClassName}`}
+        className={`subsection-title w-100 mb-3 ${titleClassName}`}
         style={{
           marginBottom: "0.5rem", // default spacing
-          ...subtitleStyle,
+          ...titleStyle,
         }}
       >
-        {subtitle || "\u00A0"}
+        {title || "\u00A0"}
       </div>
 
       {loading ? (

@@ -1,75 +1,52 @@
 import { useState, useEffect, useMemo } from "react";
+import { Container, Row } from "react-bootstrap";
 
 import "./index.css";
 
-import { CalculationDetailsInfoBox, SuperconDetailsInfoBox } from "./InfoBoxes";
+import TitledColumn from "./TitledColumn";
+import { SuperconHeader } from "./Header";
+import SuperconInfoBox from "./InfoBoxes";
+import GapFunction from "./GapFunction";
+import { getA2FTraces } from "./getA2FTraces";
 
-import { Container, Row, Col } from "react-bootstrap";
-
-import { McloudSpinner } from "mc-react-library";
+import BandStructure from "../../common/BandStructure/BandStructure";
+import {
+  normalizeBandsData,
+  prepareSuperConBand,
+} from "../../common/BandStructure/utils";
 
 import {
   SUPERCON_BANDS_LAYOUT_CONFIG,
   SUPERCON_PHONON_A2F_LAYOUT_CONFIG,
 } from "../../common/BandStructure/configs";
 
-import {
-  BandStructure,
-  BandsA2F,
-} from "../../common/BandStructure/BandStructure";
-
-import {
-  normalizeBandsData,
-  prepareSuperConBand,
-} from "../../common/BandStructure/bandUtils";
-
-import GapFunction from "./GapFunction";
-
 import { loadAiidaBands, loadXY } from "../../common/restApiUtils";
-import { SuperconHeader } from "./Header";
-import { getA2FTraces } from "./getA2FTraces";
 
-function TitledColumn({
-  width,
-  subtitle,
-  loading,
-  condition,
-  fallback,
-  children,
-  style = {},
-  className = "",
-  subtitleStyle = {},
-  subtitleClassName = "",
-}) {
-  return (
-    <Col md={width} className={`flex flex-col ${className}`} style={style}>
-      {/* Subtitle always renders */}
-      <div
-        className={`subsection-title w-100 mb-1 ${subtitleClassName}`}
-        style={{
-          marginTop: "40px",
-          marginBottom: "20px",
-          ...subtitleStyle,
-        }}
-      >
-        {subtitle || "\u00A0"}
-      </div>
+// handler for fetching loading and setting of backend data.
+function useAsyncData(fetcher, deps) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-      {loading ? (
-        <div className="flex justify-center items-center w-100 h-full">
-          <div style={{ maxWidth: "70px", width: "100%" }}>
-            <McloudSpinner />
-          </div>
-        </div>
-      ) : condition ? (
-        children
-      ) : fallback ? (
-        fallback
-      ) : (
-        <div></div>
-      )}
-    </Col>
-  );
+  useEffect(() => {
+    let cancelled = false;
+    async function run() {
+      setLoading(true);
+      try {
+        const result = await fetcher();
+        if (!cancelled) setData(result ?? null);
+      } catch {
+        if (!cancelled) setData(null);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, deps);
+
+  return [data, loading];
 }
 
 function SuperConductivity({ params, loadedData }) {
@@ -79,143 +56,73 @@ function SuperConductivity({ params, loadedData }) {
   }
 
   const supercon = loadedData.details.supercon;
-  console.log("Supercon Data:", supercon);
+  console.log("Superconductivity Data:", supercon);
+
+  // --- Return a empty div if data is missing --- //
   if (!supercon) return <div className="empty-supercon-div"></div>;
 
-  // loading and data useStates
-  const [bandsDataArray, setBandsDataArray] = useState([]);
-  const [bandsLoading, setBandsLoading] = useState(false);
+  // --- GapFunction Data ---
+  const [gapfuncData, gapfuncLoading] = useAsyncData(
+    () =>
+      supercon.aniso_gap_function_uuid
+        ? loadXY(`${params.method}-supercon`, supercon.aniso_gap_function_uuid)
+        : null,
+    [params.method, supercon.aniso_gap_function_uuid],
+  );
 
-  const [phononBandsArray, setPhononBandsArray] = useState([]);
-  const [phononBandsLoading, setPhononBandsLoading] = useState(false);
+  // --- A2F Data ---
+  const [a2fData, a2fLoading] = useAsyncData(
+    () =>
+      supercon.a2f_uuid
+        ? loadXY(`${params.method}-supercon`, supercon.a2f_uuid)
+        : null,
+    [params.method, supercon.a2f_uuid],
+  );
 
-  const [a2fData, setA2fData] = useState(null);
-  const [a2fLoading, setA2fLoading] = useState(false);
+  // --- Bands Data (both electronic + phonon) ---
+  const [bandsResult, bandsLoading] = useAsyncData(async () => {
+    const method = `${params.method}-supercon`;
 
-  const [gapfuncData, setGapfuncData] = useState(null);
-  const [gapfuncLoading, setGapfuncLoading] = useState(false);
+    const [epwBands, qeBands, phBands] = await Promise.all([
+      supercon.epw_el_band_structure_uuid
+        ? loadAiidaBands(method, supercon.epw_el_band_structure_uuid)
+        : null,
+      supercon.qe_el_band_structure_uuid
+        ? loadAiidaBands(method, supercon.qe_el_band_structure_uuid)
+        : null,
+      supercon.epw_ph_band_structure_uuid
+        ? loadAiidaBands(method, supercon.epw_ph_band_structure_uuid)
+        : null,
+    ]);
 
-  // --- Fetch GapFunction Data ---
-  useEffect(() => {
-    async function fetchGapFunction() {
-      if (!supercon.aniso_gap_function_uuid) {
-        setGapfuncData(null);
-        return;
-      }
+    const preppedEPW = safePrepareBands(
+      epwBands,
+      supercon.fermi_energy_coarse,
+      "electronicEPW",
+    );
+    const preppedQE = safePrepareBands(
+      qeBands,
+      supercon.fermi_energy_coarse,
+      "electronicQE",
+    );
 
-      setGapfuncLoading(true);
-      try {
-        const method = `${params.method}-supercon`;
-        const data = await loadXY(method, supercon.aniso_gap_function_uuid);
-        setGapfuncData(data || null);
-        console.log("gp", gapfuncData);
-      } catch (err) {
-        setGapfuncData(null);
-      } finally {
-        setGapfuncLoading(false);
-      }
-    }
-    fetchGapFunction();
-  }, [params.method, supercon.aniso_gap_function_uuid]);
+    // WARNING: EPW and QE bands are differently lengths.
+    const rescaledFilteredBDArray = normalizeBandsData(
+      [preppedQE, preppedEPW].filter(Boolean),
+    );
 
-  // --- Fetch A2F Data ---
-  useEffect(() => {
-    async function fetchA2F() {
-      if (!supercon.a2f_uuid) {
-        setA2fData(null);
-        return;
-      }
+    const preppedPh = safePrepareBands(phBands, 0, "phononEPW");
 
-      setA2fLoading(true);
-      try {
-        const method = `${params.method}-supercon`;
-        const data = await loadXY(method, supercon.a2f_uuid);
-        setA2fData(data || null);
-      } catch (err) {
-        setA2fData(null);
-      } finally {
-        setA2fLoading(false);
-      }
-    }
-    fetchA2F();
-  }, [params.method, supercon.a2f_uuid]);
+    console.log("Loaded bands:", { epwBands, qeBands, phBands });
 
-  // --- Fetch Phonon Visualiser ---
-  // useEffect(() => {
-  //   if (!loadedData?.details?.id) return;
-
-  //   async function fetchPhononVis() {
-  //     setPhononVisLoading(true);
-  //     try {
-  //       const data = await loadSuperConPhononVis(loadedData.details.id);
-  //       data.highsym_qpts?.forEach((qpt) => {
-  //         qpt[1] = prettifyLabels(qpt[1]);
-  //       });
-
-  //       setPhononVisData(data);
-  //     } catch (err) {
-  //       console.error("Failed to load phonon visualiser:", err);
-  //       setPhononVisData(null);
-  //     } finally {
-  //       setPhononVisLoading(false);
-  //     }
-  //   }
-  //   fetchPhononVis();
-  // }, [loadedData]);
-
-  // --- Fetch Bands Data ---
-  useEffect(() => {
-    async function fetchBands() {
-      setBandsLoading(true);
-      setPhononBandsLoading(true);
-
-      try {
-        const method = `${params.method}-supercon`;
-
-        const epwBands = supercon.epw_el_band_structure_uuid
-          ? await loadAiidaBands(method, supercon.epw_el_band_structure_uuid)
-          : null;
-
-        const qeBands = supercon.qe_el_band_structure_uuid
-          ? await loadAiidaBands(method, supercon.qe_el_band_structure_uuid)
-          : null;
-
-        const phBands = supercon.epw_ph_band_structure_uuid
-          ? await loadAiidaBands(method, supercon.epw_ph_band_structure_uuid)
-          : null;
-
-        const preppedEPW = safePrepareBands(
-          epwBands,
-          supercon.fermi_energy_coarse,
-          "electronicEPW",
-        );
-        const preppedQE = safePrepareBands(
-          qeBands,
-          supercon.fermi_energy_coarse,
-          "electronicQE",
-        );
-
-        // WARNING BANDS DATA IS UNALIGNED WE NORMALISE IT HERE (DANGEROUSLY)
-        const rescaledFilteredBDArray = normalizeBandsData(
-          [preppedQE, preppedEPW].filter(Boolean),
-        );
-
-        const preppedPh = safePrepareBands(phBands, 0, "phononEPW");
-
-        console.log("Loaded bands:", { epwBands, qeBands, phBands });
-
-        setBandsDataArray(rescaledFilteredBDArray);
-        setPhononBandsArray(preppedPh ? [preppedPh] : []);
-      } catch (err) {
-        setBandsDataArray([]);
-        setPhononBandsArray([]);
-      } finally {
-        setBandsLoading(false);
-        setPhononBandsLoading(false);
-      }
-    }
-    fetchBands();
+    return {
+      el: rescaledFilteredBDArray,
+      ph: preppedPh ? [preppedPh] : [],
+    };
   }, [params.method, supercon]);
+
+  const bandsDataArray = bandsResult?.el ?? [];
+  const phononBandsArray = bandsResult?.ph ?? [];
 
   return (
     <div>
@@ -225,21 +132,21 @@ function SuperConductivity({ params, loadedData }) {
         <Row>
           <TitledColumn
             width={6}
-            subtitle=""
-            subtitleStyle={{ marginTop: "0px" }}
+            title=""
+            titleStyle={{ marginTop: "0px" }}
             condition={supercon != null}
           >
-            <CalculationDetailsInfoBox
+            <SuperconInfoBox
               superconData={supercon}
               style={{ marginTop: "0px" }}
             />
           </TitledColumn>
           <TitledColumn
             width={6}
-            subtitle="Electronic band structure"
+            title="Electronic band structure"
             loading={bandsLoading}
             condition={bandsDataArray?.length > 0}
-            subtitleStyle={{ marginTop: "0px" }}
+            titleStyle={{ marginTop: "0px" }}
             fallback={
               <div className="text-gray-400 text-center">No bands data</div>
             }
@@ -262,9 +169,9 @@ function SuperConductivity({ params, loadedData }) {
         {/* Combined PhBands/Elaishberg plot */}
         <Row>
           <TitledColumn
-            width={12} // messy way to make title look pretty.
-            subtitle="Phonon bands and electron-phonon interaction"
-            loading={phononBandsLoading}
+            width={12}
+            title="Phonon bands and electron-phonon interaction"
+            loading={bandsLoading}
             condition={
               phononBandsArray.length > 0 &&
               supercon?.highest_phonon_frequency != null
@@ -280,7 +187,7 @@ function SuperConductivity({ params, loadedData }) {
               function [α<sup>2</sup>F(ω)] and electron-phonon coupling strength
               [λ(ω)].
             </div>
-            <BandsA2F
+            <BandStructure // dodgy
               bandsDataArray={phononBandsArray}
               minYval={0}
               maxYval={
@@ -302,7 +209,7 @@ function SuperConductivity({ params, loadedData }) {
                   },
                 },
               ]}
-              loading={phononBandsLoading}
+              loading={bandsLoading}
               layoutOverrides={SUPERCON_PHONON_A2F_LAYOUT_CONFIG}
               customTraces={getA2FTraces({
                 a2f: a2fData?.a2f,
@@ -316,21 +223,9 @@ function SuperConductivity({ params, loadedData }) {
 
         {/* Gap function plot */}
         <Row>
-          {/* <TitledColumn
-            width={12}
-            subtitle="Superconducting properties"
-            condition={supercon != null}
-            style={{ minHeight: "10px" }}
-            subtitleStyle={{ marginTop: "0px" }}
-          >
-            <div style={{ marginLeft: "10px" }}>
-              Final resulting superconducting properties and the anisotropic gap
-              function plot.
-            </div>{" "}
-          </TitledColumn> */}
           <TitledColumn
             width={9}
-            subtitle="Anisotropic superconducting gap function"
+            title="Anisotropic superconducting gap function"
             condition={supercon != null}
             loading={gapfuncLoading}
           >

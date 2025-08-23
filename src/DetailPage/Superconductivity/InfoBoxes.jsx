@@ -35,7 +35,7 @@ function formatIfExists(
   return fallback;
 }
 
-export function CalculationDetailsInfoBox({ superconData, style = {} }) {
+export function SuperconInfoBox({ superconData, style = {} }) {
   const genInfo = [
     {
       key: "Space group number",
@@ -334,3 +334,5 @@ export function SuperconDetailsInfoBox({ superconData, style = {} }) {
 
   return <MCInfoBox {...{ style }}></MCInfoBox>;
 }
+
+export default SuperconInfoBox;

@@ -1,6 +1,6 @@
 import { splitBandsData } from "bands-visualiser";
 import * as math from "mathjs";
-import { traceConfigs, SUPERCON_PHONON_A2F_LAYOUT_CONFIG } from "./configs";
+import { traceConfigs } from "./configs";
 
 export function prettifyLabels(label) {
   const greekMapping = {
@@ -33,20 +33,17 @@ export function prettifyLabels(label) {
   return label;
 }
 
-// Check if electronic data contains bands
-export function bandsExist(electronicData) {
-  return (
-    electronicData.bands_uuid != null &&
-    electronicData.fermi_energy?.value != null &&
-    electronicData.band_gap?.value != null
-  );
-}
-
 // Compute the band energy shift so Fermi level aligns to 0
 export function computeBandShift(electronicData) {
-  if (!bandsExist(electronicData)) return 0.0;
+  if (
+    !electronicData?.bands_uuid ||
+    electronicData?.fermi_energy?.value == null ||
+    electronicData?.band_gap?.value == null
+  ) {
+    return null;
+  }
 
-  const fermi = math.max(electronicData.fermi_energy.value); // max for spin-polarized
+  const fermi = Math.max(electronicData.fermi_energy.value); // handles spin-polarized
   const gap = electronicData.band_gap.value;
   return -fermi - gap / 2;
 }
@@ -60,45 +57,6 @@ export function shiftBands(bandsData, shift) {
       });
     });
   });
-}
-
-// Format band data into array with styling (handles spin cases)
-export function formatBandsData(bands) {
-  if (bands.paths[0].two_band_types) {
-    const [downBands, upBands] = splitBandsData(bands, 2);
-    return [
-      {
-        bandsData: downBands,
-        traceFormat: {
-          label: "Down Channel",
-          hovertemplate:
-            "<b>Down Spin</b>: %{y:.3f} eV<br>" + "<extra></extra>",
-          showlegend: false,
-          line: { color: "#5B4EB8", dash: "solid", width: 1.6 },
-        },
-      },
-      {
-        bandsData: upBands,
-        traceFormat: {
-          label: "Up Channel",
-          hovertemplate: "<b>Up Spin</b>: %{y:.3f} eV<br>" + "<extra></extra>",
-          showlegend: false,
-          line: { color: "#5B4EB8", dash: "dashdot", width: 1.6 },
-        },
-      },
-    ];
-  }
-
-  return [
-    {
-      bandsData: bands,
-      traceFormat: {
-        hovertemplate: "<b>Energy</b>: %{y:.3f} eV<br>" + "<extra></extra>",
-        showlegend: false,
-        line: { color: "#5B4EB8", dash: "solid", width: 1.6 },
-      },
-    },
-  ];
 }
 
 // stretches bandData arrays so that they share a global xMin and global xMax.

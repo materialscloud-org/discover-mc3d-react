@@ -1,82 +1,34 @@
 import { useEffect, useRef } from "react";
 import { BandsVisualiser } from "bands-visualiser";
 
-// Helper
-function shiftBands(bandsData, shift) {
-  bandsData.paths.forEach((path) => {
-    path.values.forEach((subpath) => {
-      subpath.forEach((val, idx, arr) => {
-        arr[idx] += shift;
-      });
-    });
-  });
-}
-
-// Standalone visualiser component
-// expects the bandsDataArray to contain already traceFormatted entries.
-// can override the default layout by passing a layoutOverride.
+/**
+ * Standalone visualiser component for band structures with optional DOS overlay.
+ *
+ * @param {Object[]} bandsDataArray - Array of already trace-formatted band data.
+ * @param {Object[]|null} [dosDataArray=null] - Optional DOS data array to plot alongside bands.
+ * @param {Object[]|null} [customTraces=[]] - Optional extra Plotly traces to include.
+ * @param {number|null} [minYval=null] - Optional minimum Y-axis value.
+ * @param {number|null} [maxYval=null] - Optional maximum Y-axis value.
+ * @param {Object|null} [layoutOverrides=null] - Optional Plotly layout overrides.
+ */
 export function BandStructure({
   bandsDataArray,
-  loading,
-  maxYval = null,
-  minYval = null,
-  layoutOverrides = null,
-}) {
-  const containerRef = useRef(null);
-
-  const settings = layoutOverrides ?? {};
-  settings.yaxis.range = [minYval, maxYval];
-
-  useEffect(() => {
-    if (!containerRef.current || !bandsDataArray) return;
-
-    BandsVisualiser(containerRef.current, {
-      bandsDataArray,
-      settings,
-    });
-  }, [bandsDataArray]);
-
-  if (loading)
-    return (
-      <div
-        className="placeholder-wave d-flex align-items-center justify-content-center rounded bg-secondary"
-        style={{ height: "450px", width: "100%" }}
-      >
-        <span>Loading...</span>
-      </div>
-    );
-  if (!bandsDataArray)
-    return (
-      <div
-        className="placeholder-wave d-flex align-items-center justify-content-center rounded bg-secondary"
-        style={{ height: "500px", width: "100%" }}
-      >
-        <span> ... Malformed Bands/DOS Data? ... </span>
-      </div>
-    );
-
-  return (
-    <div>
-      <div ref={containerRef} style={{ width: "100%", height: "450px" }} />
-    </div>
-  );
-}
-
-export function BandsA2F({
-  bandsDataArray,
-  dosDataArray = [],
-  loading,
-  minYval = null,
-  maxYval = null,
-  layoutOverrides = null,
+  dosDataArray = undefined,
   customTraces = [],
+  minYval = null,
+  maxYval = null,
+  layoutOverrides = null,
 }) {
   const containerRef = useRef(null);
 
-  const settings = layoutOverrides;
+  // clone settings to avoid mutating props
+  const settings = { ...(layoutOverrides ?? {}) };
 
   if (minYval != null && maxYval != null) {
-    settings.yaxis.range = [minYval, maxYval];
+    settings.yaxis = {
+      ...(settings.yaxis ?? {}),
+      range: [minYval, maxYval],
+    };
   }
 
   useEffect(() => {
@@ -88,32 +40,19 @@ export function BandsA2F({
       customTraces,
       settings,
     });
-  }, [bandsDataArray]);
+  }, [bandsDataArray, dosDataArray, customTraces]);
 
-  if (loading)
+  if (!bandsDataArray)
     return (
       <div
         className="placeholder-wave d-flex align-items-center justify-content-center rounded bg-secondary"
         style={{ height: "450px", width: "100%" }}
       >
-        <span>Loading...</span>
-      </div>
-    );
-  if (!bandsDataArray)
-    return (
-      <div
-        className="placeholder-wave d-flex align-items-center justify-content-center rounded bg-secondary"
-        style={{ height: "500px", width: "100%" }}
-      >
-        <span> ... Malformed Bands/DOS Data? ... </span>
+        <span> Failed to render data for the visualiser </span>
       </div>
     );
 
-  return (
-    <div>
-      <div ref={containerRef} style={{ width: "100%", height: "450px" }} />
-    </div>
-  );
+  return <div ref={containerRef} style={{ width: "100%", height: "450px" }} />;
 }
 
 export default BandStructure;

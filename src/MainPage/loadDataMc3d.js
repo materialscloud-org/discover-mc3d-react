@@ -125,8 +125,6 @@ function formatColumns(metadata) {
     }
   });
 
-  console.log(columns);
-
   // order and hide columns
   let orderedColumns = [];
   COLUMN_ORDER_AND_SETTINGS.forEach((set) => {
@@ -220,9 +218,6 @@ export async function loadDataMc3d(method) {
   console.log(`formatRows: ${end - start} ms`);
 
   let columns = formatColumns(metadata);
-
-  // console.log(rows);
-  // console.log(columns);
 
   // return a Promise of the correctly formatted data
   return {

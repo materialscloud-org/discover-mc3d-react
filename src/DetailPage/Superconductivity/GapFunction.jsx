@@ -91,7 +91,7 @@ export default function GapFunction({
   points,
   delta0,
   expo,
-  resolution = 100,
+  resolution = 1000,
   minXVal = 0,
   maxXVal = null,
   minYVal = null,
@@ -100,7 +100,7 @@ export default function GapFunction({
   const plotRef = useRef(null);
 
   useEffect(() => {
-    if (!gapfuncData) return;
+    if (!gapfuncData || !plotRef.current) return;
 
     const safeVerts = verts ?? [];
 
@@ -181,8 +181,6 @@ export default function GapFunction({
     Plotly.newPlot(plotRef.current, traces, layoutWithVerts, {
       responsive: true,
     });
-
-    console.log("gp", gapfuncData);
 
     return () => Plotly.purge(plotRef.current);
   }, [gapfuncData]);

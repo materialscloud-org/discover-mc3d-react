@@ -40,7 +40,7 @@ const CITATION_MAPPING = {
   MBercx25: {
     authorsText: "Bercx et al.",
     journalText: "arXiv:2503.10943",
-    doi: "10.1103/sb28-fjc9",
+    doi: "10.48550/arXiv.2503.10943",
     year: 2025,
   },
 };

@@ -141,7 +141,6 @@ export async function loadXrd(method, id) {
 // maybe should be generalised.
 export async function loadSuperConPhononVis(id) {
   let endpoint = `${MC_REST_API_URL}/pbesol-v1/supercon-phonon-vis/${id}`;
-  console.log("endpoint", endpoint);
   try {
     const response = await fetch(endpoint, { method: "get" });
     if (!response.ok) {
