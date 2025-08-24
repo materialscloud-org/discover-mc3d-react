@@ -6,18 +6,20 @@ import Mc3dLogo from "../assets/mc3d.png";
 
 import { DoiBadge } from "mc-react-library";
 
-export default function TitleAndLogo() {
+export default function TitleAndLogo({
+  titleString = "Materials Cloud Three-Dimensional Structure Database (MC3D)",
+  imgSrc = Mc3dLogo,
+  doiId = "rw-t0",
+}) {
   return (
     <div className="title-and-logo">
       <div className="title-and-doi">
-        <span className="title-span">
-          Materials Cloud Three-Dimensional Structure Database (MC3D)
-        </span>
+        <span className="title-span">{titleString}</span>
         <div style={{ marginLeft: "4px" }}>
-          <DoiBadge doi_id="rw-t0" />
+          <DoiBadge doi_id={doiId} />
         </div>
       </div>
-      <img src={Mc3dLogo} className="mc3d-logo"></img>
+      <img src={imgSrc} className="mc3d-logo" alt="MC3D Logo" />
     </div>
   );
 }

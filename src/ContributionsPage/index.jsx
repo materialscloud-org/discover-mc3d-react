@@ -50,7 +50,7 @@ function ContributionsPage() {
           name: "Materials Cloud Three-Dimensional Structure Database",
           link: `${import.meta.env.BASE_URL}`,
         },
-        { name: `Contributed Data`, link: null },
+        { name: `Extended dataset documentation`, link: null },
       ]}
     >
       <Container fluid="xxl">

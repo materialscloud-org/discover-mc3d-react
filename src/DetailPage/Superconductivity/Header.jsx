@@ -39,7 +39,7 @@ export function SuperconHeader({ params, superconData }) {
         role="alert"
       >
         This contribution re-relaxes the structure with a different methodology.
-        To see this structure and the provenance:{" "}
+        To see this structure, explore the AiiDA provenance{" "}
         {superconData?.a2f_uuid && (
           <ExploreButton
             explore_url={EXPLORE_URLS[params.method] + "-supercon"}

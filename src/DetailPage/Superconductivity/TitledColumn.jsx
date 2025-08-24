@@ -26,24 +26,24 @@ export function TitledColumn({
     fallback || null
   );
 
-  // Only render title if there’s something to show and title exists
-  return content ? (
+  if (!content) return null; // Nothing to render if no content
+
+  return (
     <Col
       md={width}
       className={`flex flex-col ${className}`}
       style={{ minHeight: "300px", ...style }}
     >
-      {title && (
-        <div
-          className={`subsection-title w-100 mb-3 ${titleClassName}`}
-          style={{ marginBottom: "0.5rem", ...titleStyle }}
-        >
-          {title}
-        </div>
-      )}
+      {/* Always render the title div if there’s content */}
+      <div
+        className={`subsection-title w-100 mb-3 ${titleClassName}`}
+        style={{ marginBottom: "0.5rem", ...titleStyle }}
+      >
+        {title || "\u00A0"} {/* Render non-breaking space if title is empty */}
+      </div>
       {content}
     </Col>
-  ) : null; // Render nothing if content is null
+  );
 }
 
 export default TitledColumn;
