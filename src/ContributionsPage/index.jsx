@@ -19,7 +19,7 @@ import TitleAndLogo from "../common/TitleAndLogo";
 
 import MaterialsCloudHeader from "mc-react-header";
 
-const markdownEntries = ["preface.md", "example.md", "superconductivity.md"];
+const markdownEntries = ["preface.md", "superconductivity.md"];
 
 function ContributionsPage() {
   const [markdowns, setMarkdowns] = useState([]);
@@ -57,45 +57,68 @@ function ContributionsPage() {
         <TitleAndLogo />
         {markdowns.length === 0
           ? "Loading..."
-          : markdowns.map((md, i) => (
-              <div key={i} className="markdown-entry">
-                <ReactMarkdown
-                  remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
-                  rehypePlugins={[rehypeKatex]}
-                  components={{
-                    a: ({ node, ...props }) => {
-                      const href = props.href || "";
-                      const isHashLink = href.startsWith("#");
+          : markdowns.map((md, i) => {
+              const containerId = `markdown-entry-${i}`; // unique ID per file
+              return (
+                <div key={i} className="markdown-entry" id={containerId}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
+                    rehypePlugins={[rehypeKatex]}
+                    components={{
+                      a: ({ node, ...props }) => {
+                        const href = props.href || "";
+                        const isHashLink = href.startsWith("#");
 
-                      if (isHashLink) {
-                        // smooth-scroll for hash links
+                        if (isHashLink) {
+                          return (
+                            <a
+                              {...props}
+                              onClick={(e) => {
+                                e.preventDefault();
+
+                                // scope to container if needed
+                                const container =
+                                  e.currentTarget.closest(".markdown-entry");
+                                const el = container?.querySelector(href);
+
+                                if (el) {
+                                  const yOffset = -80; // adjust for fixed header
+                                  const y =
+                                    el.getBoundingClientRect().top +
+                                    window.pageYOffset +
+                                    yOffset;
+                                  window.scrollTo({
+                                    top: y,
+                                    behavior: "smooth",
+                                  });
+
+                                  // Add flash class
+                                  el.classList.add("footnote-flash");
+                                  setTimeout(() => {
+                                    el.classList.remove("footnote-flash");
+                                  }, 2000); // duration matches CSS animation
+                                }
+                              }}
+                            />
+                          );
+                        }
+
+                        // external links
                         return (
                           <a
                             {...props}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              const el = document.querySelector(href);
-                              if (el) el.scrollIntoView({ behavior: "smooth" });
-                            }}
+                            target="_blank"
+                            rel="noopener noreferrer"
                           />
                         );
-                      }
-
-                      // all other links: open in new tab
-                      return (
-                        <a
-                          {...props}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        />
-                      );
-                    },
-                  }}
-                >
-                  {md}
-                </ReactMarkdown>
-              </div>
-            ))}
+                      },
+                    }}
+                  >
+                    {md}
+                  </ReactMarkdown>
+                </div>
+              );
+            })}
       </Container>
     </MaterialsCloudHeader>
   );

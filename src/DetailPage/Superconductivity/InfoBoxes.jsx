@@ -84,7 +84,7 @@ export function SuperconInfoBox({ superconData, style = {} }) {
         </>
       ),
       value: formatIfExists(superconData.ecut, {
-        format: (v) => `${v} eV`,
+        format: (v) => `${(v / 13.605703976).toFixed(0)} Ry`,
         fallback: "No data",
       }),
     },
@@ -96,15 +96,22 @@ export function SuperconInfoBox({ superconData, style = {} }) {
       }),
     },
     {
-      key: "DFPT k-grid",
+      key: (
+        <>
+          DFPT <b>k</b>-grid
+        </>
+      ),
       value: formatIfExists(superconData.kpoints_mesh, {
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No DFPT kgrid data",
       }),
     },
     {
-      key: "DFPT q-grid",
-
+      key: (
+        <>
+          DFPT <b>q</b>-grid
+        </>
+      ),
       value: formatIfExists(superconData.qpoints_mesh, {
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No DFPT qgrid data",
@@ -114,7 +121,7 @@ export function SuperconInfoBox({ superconData, style = {} }) {
 
   const epwInfo = [
     {
-      key: "Type",
+      key: "Type of anisotropy",
       value: formatIfExists(superconData.type, {
         format: (v) => `${v}`,
       }),
@@ -126,28 +133,44 @@ export function SuperconInfoBox({ superconData, style = {} }) {
       }),
     },
     {
-      key: "Coarse k-grid",
+      key: (
+        <>
+          Coarse <b>k</b>-grid
+        </>
+      ),
       value: formatIfExists(superconData.kpoints_mesh, {
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No EPW coarse kgriddata",
       }),
     },
     {
-      key: "Coarse q-grid",
+      key: (
+        <>
+          Coarse <b>q</b>-grid
+        </>
+      ),
       value: formatIfExists(superconData.qpoints_mesh, {
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No EPW coarse qgriddata",
       }),
     },
     {
-      key: "Fine k-grid",
+      key: (
+        <>
+          Fine <b>k</b>-grid
+        </>
+      ),
       value: formatIfExists(superconData.kfpoints_mesh, {
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No EPW fine kgriddata",
       }),
     },
     {
-      key: "Fine q-grid",
+      key: (
+        <>
+          Fine <b>q</b>-grid
+        </>
+      ),
       value: formatIfExists(superconData.qfpoints_mesh, {
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No EPW fine qgriddata",

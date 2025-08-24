@@ -79,7 +79,7 @@ function createAnalyticGapTrace(
     type: "scatter",
     mode: "lines",
     hovertemplate:
-      "<b>Fit of BCS gap:</b> <b>x:</b> %{x:.3f}, <b>y:</b> %{y:.3f}<b></b><extra></extra>",
+      "<b>Value of the fit of BCS gap at %{x:.2f}K:</b> %{y:.3f}<extra></extra>",
     line: { color: "#b22222", dash: "dash" },
   };
 }
@@ -111,24 +111,34 @@ export default function GapFunction({
         const xVals = arr.map(([x, y]) => x);
         const yVals = arr.map(([x, y]) => y);
 
-        // z = distance to nearest vert
-        const customdata = xVals.map((x) => {
-          // only consider verts to the left of x
-          const leftVerts = safeVerts.filter((v) => v <= x);
-          if (!leftVerts.length) return null;
-          const leftVert = Math.max(...leftVerts);
-          return [x - leftVert];
-        });
+        // compute leftVert and distance
+        const { leftVerts, distances } = xVals.reduce(
+          (acc, x) => {
+            const candidates = safeVerts.filter((v) => v <= x);
+            if (!candidates.length) {
+              acc.leftVerts.push(null);
+              acc.distances.push(null);
+            } else {
+              const leftVert = Math.max(...candidates);
+              acc.leftVerts.push(leftVert);
+              acc.distances.push(x - leftVert);
+            }
+            return acc;
+          },
+          { leftVerts: [], distances: [] },
+        );
 
         return {
           x: xVals,
           y: yVals,
-          customdata,
+          customdata: distances, // x - leftVert distances
+          text: leftVerts, // attach leftVert values here
           type: "scatter",
           mode: "lines",
           line: { color: GAP_TRACE_CONFIG.color },
           hovertemplate:
-            "<b>T</b>: %{x:.3f} K<br><b>Fit of BCS gap:</b> %{y:.3f}<br><b>Histogram of Δ<sub>n<b>k</b></sub></b>: %{customdata:.3f}<extra></extra>",
+            "<b>Histogram of Δ<sub>nk</sub>(%{text:.1f}K) at %{y:.2f} meV:</b>%{customdata:.2f} " +
+            "<extra></extra>",
         };
       });
 

@@ -41,7 +41,7 @@ export function getA2FTraces({
     type: "scatter",
     mode: "lines",
     name: A2F_TRACE_CONFIG.label,
-    hovertemplate: `<b>${A2F_TRACE_CONFIG.hoverlabel}</b>: %{x:.3f} <br><extra></extra>`,
+    hovertemplate: `<b>${A2F_TRACE_CONFIG.hoverlabel} at %{y:.2f} meV:</b> %{y:.3f} <br><extra></extra>`,
     line: {
       color: A2F_TRACE_CONFIG.color,
       dash: A2F_TRACE_CONFIG.dash,
@@ -68,7 +68,7 @@ export function getA2FTraces({
     name: A2F_CUMULATIVE_CONFIG.label,
     label: `${A2F_CUMULATIVE_CONFIG.label}`,
     name: A2F_CUMULATIVE_CONFIG.label,
-    hovertemplate: `<b>${A2F_CUMULATIVE_CONFIG.hoverlabel}</b>: %{x:.3f}<br><extra></extra>`,
+    hovertemplate: `<b>${A2F_CUMULATIVE_CONFIG.hoverlabel} at %{y:.2f} meV:</b> %{x:.3f}<br><extra></extra>`,
     line: {
       color: A2F_CUMULATIVE_CONFIG.color,
       dash: A2F_CUMULATIVE_CONFIG.dash,

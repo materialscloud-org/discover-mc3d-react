@@ -36,24 +36,41 @@
 }
 
 .footnotes {
-  margin-top: 2rem;
+  margin-top: 0rem;
   padding-left: 1rem;
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.85rem; /* 14px */
   color: #555;
 }
 
 .footnotes ol {
   padding-left: 1.25rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   margin-bottom: 0;
 }
 
 .footnotes li {
-  margin-bottom: 0.25rem;
-  line-height: 0.25;
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
   padding-left: 0;
 }
 
 .data-footnote-backref {
   display: none !important;
+}
+
+/* flash effect */
+.footnote-flash {
+  animation: flashHighlight 2s ease;
+}
+
+@keyframes flashHighlight {
+  0% {
+    background-color: yellow;
+  }
+  50% {
+    background-color: transparent;
+  }
+  100% {
+    background-color: transparent;
+  }
 }
