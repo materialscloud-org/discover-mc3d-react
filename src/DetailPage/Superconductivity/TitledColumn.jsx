@@ -13,42 +13,37 @@ export function TitledColumn({
   titleStyle = {},
   titleClassName = "",
 }) {
-  return (
+  // Determine what will be rendered
+  const content = loading ? (
+    <div className="flex justify-center items-center w-100 h-full">
+      <div style={{ maxWidth: "70px", width: "100%" }}>
+        <McloudSpinner />
+      </div>
+    </div>
+  ) : condition ? (
+    children
+  ) : (
+    fallback || null
+  );
+
+  // Only render title if there’s something to show and title exists
+  return content ? (
     <Col
       md={width}
       className={`flex flex-col ${className}`}
       style={{ minHeight: "300px", ...style }}
     >
-      {/* Title always renders */}
-      <div
-        className={`subsection-title w-100 mb-3 ${titleClassName}`}
-        style={{
-          marginBottom: "0.5rem", // default spacing
-          ...titleStyle,
-        }}
-      >
-        {title || "\u00A0"}
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center items-center w-100 h-full">
-          <div style={{ maxWidth: "70px", width: "100%" }}>
-            <McloudSpinner />
-          </div>
-        </div>
-      ) : condition ? (
-        children
-      ) : fallback ? (
-        fallback
-      ) : (
+      {title && (
         <div
-          className={`flex items-center justify-center h-full text-gray-400 border border-dashed rounded p-3`}
+          className={`subsection-title w-100 mb-3 ${titleClassName}`}
+          style={{ marginBottom: "0.5rem", ...titleStyle }}
         >
-          No data
+          {title}
         </div>
       )}
+      {content}
     </Col>
-  );
+  ) : null; // Render nothing if content is null
 }
 
 export default TitledColumn;

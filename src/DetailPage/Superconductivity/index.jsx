@@ -147,9 +147,6 @@ function SuperConductivity({ params, loadedData }) {
             loading={bandsLoading}
             condition={bandsDataArray?.length > 0}
             titleStyle={{ marginTop: "0px" }}
-            fallback={
-              <div className="text-gray-400 text-center">No bands data</div>
-            }
           >
             <div style={{ marginBottom: "10px", marginLeft: "10px" }}>
               Electronic band structure calculated with Quantum ESPRESSO (QE)
@@ -175,11 +172,6 @@ function SuperConductivity({ params, loadedData }) {
             condition={
               phononBandsArray.length > 0 &&
               supercon?.highest_phonon_frequency != null
-            }
-            fallback={
-              <div className="text-gray-400 text-center mt-5">
-                No bands data
-              </div>
             }
           >
             <div style={{ marginLeft: "10px" }}>
@@ -226,7 +218,7 @@ function SuperConductivity({ params, loadedData }) {
           <TitledColumn
             width={9}
             title="Anisotropic superconducting gap function"
-            condition={supercon != null}
+            condition={supercon.aniso_info != null}
             loading={gapfuncLoading}
           >
             <GapFunction

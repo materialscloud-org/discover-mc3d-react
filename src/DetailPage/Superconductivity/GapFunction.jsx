@@ -137,7 +137,7 @@ export default function GapFunction({
           mode: "lines",
           line: { color: GAP_TRACE_CONFIG.color },
           hovertemplate:
-            "<b>Histogram of Δ<sub>nk</sub>(%{text:.1f}K) at %{y:.2f} meV:</b>%{customdata:.2f} " +
+            "<b>Histogram of Δ<sub>nk</sub>(%{text:.1f}K) at %{y:.2f} meV:</b> %{customdata:.2f} " +
             "<extra></extra>",
         };
       });
