@@ -10,11 +10,12 @@ The theoretical background for understanding high temperature superconductivity 
 
 This dataset extends the base dataset (PBEsol-v1) and therefore the methodology may slightly differ. Full details are available in the publication[^1].
 
-A high-throughput computational search for novel phonon-mediated superconductors, starting from the Materials Cloud 3-dimensional structure database of experimentally known inorganic stoichiometric compounds. The Allen-Dynes critical temperature ($T_{c}$) was calculated for 4533 non-magnetic metals using a direct and progressively finer sampling of the electron-phonon couplings. For the candidates with the largest $T_{c}$, a process of automated Wannierizations and electron-phonon interpolations was used to identify the most promising 250 dynamically stable structures. For these structures, spectral functions, superconducting bandgaps, and isotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{iso}}$) were calculated. For $T_{c}^{\textrm{iso}}$ > 5 K, we compute the  anisotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{aniso}}$) which contains 140 materials.
+A high-throughput computational search for novel phonon-mediated superconductors, starting from the Materials Cloud 3-dimensional structure database of experimentally known inorganic stoichiometric compounds. The Allen-Dynes critical temperature ($T_{c}$) was calculated for 4533 non-magnetic metals using a direct and progressively finer sampling of the electron-phonon couplings. For the candidates with the largest $T_{c}$, a process of automated Wannierizations and electron-phonon interpolations was used to identify the most promising 250 dynamically stable structures. For these structures, spectral functions, superconducting bandgaps, and isotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{iso}}$) were calculated. For $T_{c}^{\textrm{iso}}$ > 5 K, we compute the anisotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{aniso}}$) which contains 140 materials.
 
 ---
 
 ### Superconductivity details
+
 $T_c$ is computed and reported at three levels of theory with increasing accuracy:
 
 1. Allen-Dynes $T_{c}^{\textrm{AD}}$ refers to the superconducting transition temperature computed with the Allen-Dynes formula:[^2]
@@ -22,14 +23,14 @@ $T_c$ is computed and reported at three levels of theory with increasing accurac
 $$
 k_B T_{c}^{\textrm{AD}} = \frac{\hbar \omega_{\textrm{log}}}{1.2} \exp \Big[ \frac{-1.04(1+\lambda)}{\lambda - \mu^*(1+0.62\lambda)}   \Big],
 $$
- 
-  -  $\lambda$: electron-phonon coupling strength
-  - $\omega_{\textrm{log}}$: logarithmic average of the phonon frequencies
-  - $\mu^*$: Coulomb screening parameter, chosen to be $\mu^*=0.13$ for all materials
-2. The Isotropic $T_{c}^{\textrm{iso}}$ refers to the solution of the isotropic Migdal-Eliashberg superconducting transition temperature and corresponds to  _Eqs 29-34 in Ref.[^3]_
+
+- $\lambda$: electron-phonon coupling strength
+- $\omega_{\textrm{log}}$: logarithmic average of the phonon frequencies
+- $\mu^*$: Coulomb screening parameter, chosen to be $\mu^*=0.13$ for all materials
+
+2. The Isotropic $T_{c}^{\textrm{iso}}$ refers to the solution of the isotropic Migdal-Eliashberg superconducting transition temperature and corresponds to _Eqs 29-34 in Ref.[^3]_
 
 3. Finally the Anisotropic $T_{c}^{\textrm{aniso}}$ refers to the solution of the anisotropic Migdal-Eliashberg superconducting transition temperature given by _Eqs 20-28 Ref.[^3]_
-
 
 ---
 
@@ -37,7 +38,7 @@ $$
 
 Due to the high-throughput multistep process undertaken, the open-source workflow manager AiiDA was used.
 
-The initial electron-phonon workchain is a five-step workflow that calculates the Eliashberg spectral function, the pseudopotentials used here are norm-conserving and are those recommended by PseudoDojo v0.5[^5] with the planewave cutoff ($E_{\textrm{cut}}$) being the highest value recommended by the library. This library was used over the SSSP library[^4] because it contains Projector-Augmented wave pseudopotenial (PAW) that have not been extensively tested with the EPW code. 
+The initial electron-phonon workchain is a five-step workflow that calculates the Eliashberg spectral function, the pseudopotentials used here are norm-conserving and are those recommended by PseudoDojo v0.5[^5] with the planewave cutoff ($E_{\textrm{cut}}$) being the highest value recommended by the library. This library was used over the SSSP library[^4] because it contains Projector-Augmented wave pseudopotenial (PAW) that have not been extensively tested with the EPW code.
 
 For ensuring accurate phonon calculations on potential superconductors, both Quantum ESPRESSO and EPW was utilised. EPW is necessary here as it specialises in computing electron-phonon interactions using maximally localized wannier functions. This workflow has the following steps:
 
@@ -45,7 +46,7 @@ For ensuring accurate phonon calculations on potential superconductors, both Qua
 2. compute dynamical matrices and perturbed potentials via a phonon calculation.
 3. coarse grids EPW calculations transforamtion to real space.
 4. dense grids electron-phonon interpolation to calculate $T_{c}^{\textrm{AD}}$ and $T_{c}^{\textrm{iso}}$
-5. fine grids automatic convegence 
+5. fine grids automatic convegence
 6. for $T_{c}^{\textrm{iso}}$ > 5 K a final convergence calculation of $T_{c}^{\textrm{aniso}}$ is performed.
 
 ---
@@ -64,8 +65,8 @@ for **k**/**q**-grids the following holds true:
 - The fine **k**-point grid is obtained from Fourier/Wannier interpolation.
 - The Fine **q**-grid is obtained from Fourier/Wannier interpolation.
 
-
 Other details:
+
 - $\Delta_{n\mathbf{k}}(0)$ is the value of the superconducting gap (in meV), extrapolated at 0K. It is obtained from a fit of the anisotropic $T_c$ data with a BCS equation.
 - The smearing value (_Smearing-q_) refers to the _"degaussq"_ input variable in EPW and is the smearing over q in the electron-phonon coupling in meV.
 - The Fermi window refers to the states around the Fermi level included in the superconducting calculation, expressed in eV.
