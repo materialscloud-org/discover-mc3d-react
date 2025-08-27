@@ -1,62 +1,53 @@
-## Superconductivity Estimation
-
-This dataset extends the base dataset (PBEsol-v1) and therefore the methodology may slightly differ. Full details are available in the publication[^1].
-
-A high-throughput computational search for novel phonon-mediated superconductors, starting from the Materials Cloud 3-dimensional structure database of experimentally known inorganic stoichiometric compounds. The Allen-Dynes critical temperature ($T_{c}$) was calculated for 4533 non-magnetic metals using a direct and progressively finer sampling of the electron-phonon couplings. For the candidates with the largest $T_{c}$, A process of automated Wannierizations and electron-phonon interpolations was used to identify the most promising 250 dynamically stable structures. For these structures, spectral functions, superconducting bandgaps, and isotropic Migdal-Eliashberg critical temperatures were calculated.
+## Superconductivity calculations
 
 ### Motivation
 
 Superconductors play an important role in many modern technologies, finding applications in magnetic resonance imaging, maglev trains and large-scale research infrastructure. While many superconductors have been discovered, high temperature superconductors remain elusive, often facing practical challenges such as synthetic difficulty or instability under ambient pressures.
 
-The theoretical background for understanding high temperature superconductivity is still an active area of research and the importance on electron-phonon interactions cannot be understated. Since the materials cloud three-dimensional database (MC3D) provides over a large dataset of characterized it serves as a foundation for performing high accuracy electron-phonon calculations on known materials.
+The theoretical background for understanding high temperature superconductivity is still an active area of research and the importance on electron-phonon interactions cannot be understated. Since the materials cloud three-dimensional database (MC3D) provides a large dataset of experimentally synthesised materials, it serves as a foundation for performing high accuracy electron-phonon calculations on known materials.
+
+## supercond-EPW database
+
+This dataset extends the base dataset (PBEsol-v1) and therefore the methodology may slightly differ. Full details are available in the publication[^1].
+
+A high-throughput computational search for novel phonon-mediated superconductors, starting from the Materials Cloud 3-dimensional structure database of experimentally known inorganic stoichiometric compounds. The Allen-Dynes critical temperature ($T_{c}$) was calculated for 4533 non-magnetic metals using a direct and progressively finer sampling of the electron-phonon couplings. For the candidates with the largest $T_{c}$, a process of automated Wannierizations and electron-phonon interpolations was used to identify the most promising 250 dynamically stable structures. For these structures, spectral functions, superconducting bandgaps, and isotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{iso}}$) were calculated. For $T_{c}^{\textrm{iso}}$ > 5 K, we compute the anisotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{aniso}}$) which contains 140 materials.
 
 ---
 
 ### Superconductivity details
 
-Many estimations of the $T_c$ for a material have been proposed. In this dataset three such estimations have been calculated.
+$T_c$ is computed and reported at three levels of theory with increasing accuracy:
 
-Allen-Dynes $T_c$ refers to the superconducting transition temperature computed with the Allen-Dynes formula[^2]:
+1. Allen-Dynes $T_{c}^{\textrm{AD}}$ refers to the superconducting transition temperature computed with the Allen-Dynes formula:[^2]
 
 $$
 k_B T_{c}^{\textrm{AD}} = \frac{\hbar \omega_{\textrm{log}}}{1.2} \exp \Big[ \frac{-1.04(1+\lambda)}{\lambda - \mu^*(1+0.62\lambda)}   \Big],
 $$
 
-- $\lambda$: electron-phonon coupling strength,
+- $\lambda$: electron-phonon coupling strength
 - $\omega_{\textrm{log}}$: logarithmic average of the phonon frequencies
-- $\mu^*$: Coulomb screening parameter, chosen to be $\mu^*=0.13$ for all materials.
+- $\mu^*$: Coulomb screening parameter, chosen to be $\mu^*=0.13$ for all materials
 
-The Isotropic $T_c$ refers to the solution of the isotropic Migdal-Eliashberg superconducting transition temperature. _Eqs 29-34 in footnote publication[^3]_
+2. The Isotropic $T_{c}^{\textrm{iso}}$ refers to the solution of the isotropic Migdal-Eliashberg superconducting transition temperature and corresponds to _Eqs 29-34 in Ref.[^3]_
 
-Finally the Anisotropic $T_c$ refers to the solution of the anisotropic Migdal-Eliashberg superconducting transition temperature. _Eqs 20-28 in footnote publication.[^3]_
-
-$\Delta_{n\mathbf{k}}(0)$ is the value of the superconducting gap (in meV), extrapolated at 0K. It is obtained from a fit of the anisotropic $T_c$ data with a BCS equation.
-
----
-
-### DFT calculation details
-
-Due to the high-throughput multistep process undertaken; The open-source workflow manager AiiDA was used.
-
-The initial electron-phonon workchain is a five-step workflow that calculates the Eliashberg spectral function, The pseudopotentials used here are norm-conserving and from the standard solid-state pseudopotentials (SSSP) PBEsol efficiency v1.1[^4] library with the planewave cutoff ($E_{\textrm{cut}}$) being the highest value recommended by the library.
-
-1. a DFT calculation performed on a fine **k**-point grid that is used later
-2. a DFT calculation on a coarser grid required to calculate the phonons in the next step
-3. a phonon calculation which calculates the electron-phonon coefficients on the coarse **k**-grid with a commensurate **q**-grid
-4. calculations of the real-space force constants.
-5. the Fourier interpolation over a dense **q**-grid and to calculate the final electron-phonon coupling and corresponding spectral function on the fine **k**-point grid.
+3. Finally the Anisotropic $T_{c}^{\textrm{aniso}}$ refers to the solution of the anisotropic Migdal-Eliashberg superconducting transition temperature given by _Eqs 20-28 Ref.[^3]_
 
 ---
 
 ### EPW calculation details
 
-For ensuring accurate phonon calculations on potential superconductors, both Quantum ESPRESSO and EPW was utilised. EPW is necessary here as it specialises in computing electron-phonon interactions using maximally localized wannier functions. For the EPW pipeline the choice of pseudopotential was switched to those recommended by PseudoDojo v0.5[^5] as projector augmented wave psuedopotentials have not been extensively tested with the EPW code. This workflow has the following steps:
+Due to the high-throughput multistep process undertaken, the open-source workflow manager AiiDA was used.
 
-1. construct wannier functions for the input structure using SCDM-k [^6]
+The initial electron-phonon workchain is a five-step workflow that calculates the Eliashberg spectral function, the pseudopotentials used here are norm-conserving and are those recommended by PseudoDojo v0.5[^5] with the planewave cutoff ($E_{\textrm{cut}}$) being the highest value recommended by the library. This library was used over the SSSP library[^4] because it contains Projector-Augmented wave pseudopotenial (PAW) that have not been extensively tested with the EPW code.
+
+For ensuring accurate phonon calculations on potential superconductors, both Quantum ESPRESSO and EPW was utilised. EPW is necessary here as it specialises in computing electron-phonon interactions using maximally localized wannier functions. This workflow has the following steps:
+
+1. construct wannier functions for the input structure using SCDM-k[^6]
 2. compute dynamical matrices and perturbed potentials via a phonon calculation.
-3. coarse grid EPW calculations to identify potential candidates.
-4. dense grid electron-phonon calculations in EPW on these candidates to calculate $T_c$
-5. full Eliashberg theory calculation across the dense grid to calculate the isotropic Eliashberg $T_c$
+3. coarse grids EPW calculations transforamtion to real space.
+4. dense grids electron-phonon interpolation to calculate $T_{c}^{\textrm{AD}}$ and $T_{c}^{\textrm{iso}}$
+5. fine grids automatic convegence
+6. for $T_{c}^{\textrm{iso}}$ > 5 K a final convergence calculation of $T_{c}^{\textrm{aniso}}$ is performed.
 
 ---
 
@@ -64,8 +55,8 @@ For ensuring accurate phonon calculations on potential superconductors, both Qua
 
 Two types of anisotropic calculation were performed:
 
-- "FBW" refers to the anisotropic full-bandwidth (FBW) Eliashberg equations. _Eqs. 20-25 of the footnote publication [^3]._
-- "FSR" refers to the anisotropic Fermi surface restricted (FSR) Eliashberg equations. _Eqs. 27-28 of the footnote publication [^3]._
+- "FBW" refers to the anisotropic full-bandwidth (FBW) Eliashberg equations. _Eqs. 20-25 in Ref.[^3]._
+- "FSR" refers to the anisotropic Fermi surface restricted (FSR) Eliashberg equations. _Eqs. 27-28 in Ref.[^3]_
 
 for **k**/**q**-grids the following holds true:
 
@@ -76,6 +67,7 @@ for **k**/**q**-grids the following holds true:
 
 Other details:
 
+- $\Delta_{n\mathbf{k}}(0)$ is the value of the superconducting gap (in meV), extrapolated at 0K. It is obtained from a fit of the anisotropic $T_c$ data with a BCS equation.
 - The smearing value (_Smearing-q_) refers to the _"degaussq"_ input variable in EPW and is the smearing over q in the electron-phonon coupling in meV.
 - The Fermi window refers to the states around the Fermi level included in the superconducting calculation, expressed in eV.
 - Number of Wannier functions: Importantly, these are Wannier functions for states around the Fermi level and therefore states deep into the valence or conduction band are sometimes not calculated.

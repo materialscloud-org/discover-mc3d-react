@@ -1,6 +1,8 @@
 import { ExploreButton } from "mc-react-library";
 import { DoiBadge } from "mc-react-library";
 
+import { Link } from "react-router-dom";
+
 import { EXPLORE_URLS } from "../../common/restApiUtils";
 
 import { CitationsList } from "../../common/CitationsList";
@@ -53,7 +55,12 @@ export function SuperconHeader({ params, superconData }) {
         and critical temperatures were systematically computed to identify and
         characterize promising superconducting materials. This frontend section
         contains the final superconductivity estimation results, as well as the
-        intermediate electronic and vibrational calculated properties.
+        intermediate electronic and vibrational calculated properties. For
+        further details regarding the methodology see the{" "}
+        <a href="./#/contributions" target="_blank">
+          contribution details
+        </a>
+        .
       </div>
     </>
   );
