@@ -26,7 +26,7 @@ import {
   applyColumnStateFromUrl,
 } from "./tableConfig";
 
-const DEFAULT_METHOD = "pbesol-v1";
+const DEFAULT_METHOD = "pbesol-v2";
 
 function getInitialMethodFromUrl() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -45,7 +45,7 @@ function getInitialMethodFromUrl() {
   }
 
   // fallback default method
-  return "pbesol-v1";
+  return DEFAULT_METHOD;
 }
 
 function getInitialColumnConfigFromUrl() {
@@ -87,6 +87,7 @@ function MainPage() {
   useEffect(() => {
     if (!method) return;
     loadDataMc3d(method).then((loadedData) => {
+      setColumns(loadedData.columns);
       setRows(loadedData.rows);
     });
   }, [method]);

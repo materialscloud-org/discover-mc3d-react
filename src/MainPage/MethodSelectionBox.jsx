@@ -23,6 +23,7 @@ const popover = (
 
 export const MethodSelectionBox = (props) => {
   let options = {
+    "pbesol-v2": `PBEsol-v2`,
     "pbesol-v1": `PBEsol-v1`,
     "pbe-v1": `PBE-v1`,
   };
