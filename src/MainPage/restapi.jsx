@@ -56,25 +56,11 @@ export const restapiText = (
         OPTIMADE specification
       </a>
       . This currently only includes the crystal structures and no properties or
-      provenance information is provided. Relevant endpoints are
-      <ul>
-        <li>
-          <a
-            href="https://aiida.materialscloud.org/mc3d/optimade/v1/info"
-            target="_blank"
-          >
-            https://aiida.materialscloud.org/mc3d/optimade/v1/info
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://aiida.materialscloud.org/mc3d/optimade/v1/structures"
-            target="_blank"
-          >
-            https://aiida.materialscloud.org/mc3d/optimade/v1/structures
-          </a>
-        </li>
-      </ul>
+      provenance information is provided. For the exact endpoints, see the{" "}
+      <a href="https://materialscloud.org/optimade" target="_blank">
+        Materials Cloud OPTIMADE API page
+      </a>
+      .
     </div>
   </div>
 );
