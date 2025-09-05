@@ -31,7 +31,7 @@ export function SuperconHeader({ params, superconData }) {
             marginLeft: "0.5rem",
           }}
         >
-          <CitationsList citationLabels={["MBercx25"]} />
+          <CitationsList citationLabels={["MBercxSupercon25"]} />
           <DoiBadge doi_id="9w-az" label="Data DOI" />
         </div>
       </div>

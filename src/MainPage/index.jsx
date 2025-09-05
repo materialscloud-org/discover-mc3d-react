@@ -20,6 +20,8 @@ import { DownloadButton } from "./DownloadButton";
 import { MethodSelectionBox } from "./MethodSelectionBox";
 import { loadGeneralInfo } from "../common/restApiUtils";
 
+import { CitationsList } from "../common/CitationsList.jsx";
+
 import {
   PRESETS,
   getColumnConfigFromUrl,
@@ -118,8 +120,13 @@ function MainPage() {
           compounds, and of their calculated properties. Structures have been
           obtained with fully-relaxed density-functional theory calculations,
           starting from experimental ones imported, cleaned and parsed from the
-          MPDS, COD and ICSD databases.
+          MPDS, COD and ICSD databases. For more details, please see the related
+          publication:
+          <div style={{ margin: "10px" }}>
+            <CitationsList citationLabels={["HuberMc3d25"]} />
+          </div>
         </div>
+
         <Tabs defaultActiveKey="use">
           <Tab eventKey="use" title="Use">
             <MethodSelectionBox

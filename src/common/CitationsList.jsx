@@ -37,10 +37,16 @@ const CITATION_MAPPING = {
     doi: "10.1021/acsnano.2c11510",
     year: 2023,
   },
-  MBercx25: {
+  MBercxSupercon25: {
     authorsText: "Bercx et al.",
     journalText: "arXiv:2503.10943",
     doi: "10.48550/arXiv.2503.10943",
+    year: 2025,
+  },
+  HuberMc3d25: {
+    authorsText: "Huber et al.",
+    journalText: "arXiv:2508.19223",
+    doi: "10.48550/arXiv:2508.19223",
     year: 2025,
   },
 };

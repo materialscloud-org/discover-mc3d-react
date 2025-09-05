@@ -16,7 +16,7 @@ export default function TitleAndLogo({
       <div className="title-and-doi">
         <span className="title-span">{titleString}</span>
         <div style={{ marginLeft: "4px" }}>
-          <DoiBadge doi_id={doiId} />
+          <DoiBadge doi_id={doiId} label="Data DOI" />
         </div>
       </div>
       <img src={imgSrc} className="mc3d-logo" alt="MC3D Logo" />
