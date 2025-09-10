@@ -36,23 +36,26 @@ const SourceInfoText = ({ source, metadata }) => {
   let infoTextList = [];
   let infoPopupList = [];
 
-  let hpThresh = metadata.info.source["high_pressure_threshold"];
-  let htThresh = metadata.info.source["high_temperature_threshold"];
+  // safety against null values.
+  let hpThresh = metadata?.info?.source?.high_pressure_threshold;
+  let htThresh = metadata?.info?.source?.high_temperature_threshold;
 
-  if (source["info"]["is_theoretical"]) {
+  if (source?.info?.is_theoretical) {
     infoTextList.push("theoretical origin");
     infoPopupList.push("is of theoretical origin");
   }
-  if (source["info"]["is_high_pressure"]) {
+
+  if (source?.info?.is_high_pressure && hpThresh) {
     infoTextList.push("high pressure");
     infoPopupList.push(
-      `was characterized at a pressure higher than ${hpThresh["value"]} ${hpThresh["unit"]}`,
+      `was characterized at a pressure higher than ${hpThresh.value} ${hpThresh.unit}`,
     );
   }
-  if (source["info"]["is_high_temperature"]) {
+
+  if (source?.info?.is_high_temperature && htThresh) {
     infoTextList.push("high temperature");
     infoPopupList.push(
-      `was characterized at a temperature higher than ${htThresh["value"]} ${htThresh["unit"]}`,
+      `was characterized at a temperature higher than ${htThresh.value} ${htThresh.unit}`,
     );
   }
 
