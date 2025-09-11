@@ -1,6 +1,6 @@
 // Helper file for table configuration from urls.
 
-// Define presets here - these toggle evertying else off by default
+// Define presets here - these toggle everything else off by default
 // Allows applying a method, but this can be overwritten with &method=...
 export const PRESETS = {
   superconductivity: {
@@ -27,7 +27,7 @@ example URL strings:
  ?sort=num_atoms:desc,num_elements:asc&hide=id,formula
  ?preset=superconductivity
  */
-export function getColumnConfigFromUrl(urlSearchParams, presets) {
+function getColumnConfigFromUrlParams(urlSearchParams) {
   const sortParam = urlSearchParams.get("sort");
   const showParam = urlSearchParams.get("show");
   const hideParam = urlSearchParams.get("hide");
@@ -38,8 +38,8 @@ export function getColumnConfigFromUrl(urlSearchParams, presets) {
   let hiddenFields = [];
 
   // If preset exists, apply it and ignore show/hide params
-  if (presetParam && presets[presetParam]) {
-    const preset = presets[presetParam];
+  if (presetParam && PRESETS[presetParam]) {
+    const preset = PRESETS[presetParam];
     sortEntries = parseSortParam(preset.sort);
     showFields = preset.showColumns || [];
     console.log("showFields", showFields);
@@ -72,12 +72,7 @@ function parseSortParam(sortStr) {
 }
 
 // Applies the column state to a given set of columns
-export function applyColumnStateFromUrl(
-  columns,
-  sortEntries,
-  hiddenFields,
-  showFields,
-) {
+function updateColumnState(columns, sortEntries, hiddenFields, showFields) {
   const isPresetMode = hiddenFields === null;
 
   return columns.map((col) => {
@@ -105,4 +100,34 @@ export function applyColumnStateFromUrl(
 
     return updatedCol;
   });
+}
+
+export function getMethodFromUrl(urlParams, defaultMethod) {
+  const methodFromUrl = urlParams.get("method");
+
+  if (methodFromUrl) {
+    return methodFromUrl;
+  }
+
+  // If no method in URL, check preset from URL
+  const presetName = urlParams.get("preset");
+  if (presetName && PRESETS[presetName] && PRESETS[presetName].method) {
+    return PRESETS[presetName].method;
+  }
+
+  return defaultMethod;
+}
+
+export function updateColumnsFromUrl(columns, urlParams) {
+  const { sortEntries, hiddenFields, showFields } =
+    getColumnConfigFromUrlParams(urlParams);
+
+  const newColumns = updateColumnState(
+    columns,
+    sortEntries,
+    hiddenFields,
+    showFields,
+  );
+
+  return newColumns;
 }

@@ -22,45 +22,20 @@ import { loadGeneralInfo } from "../common/restApiUtils";
 
 import { CitationsList } from "../common/CitationsList.jsx";
 
-import {
-  PRESETS,
-  getColumnConfigFromUrl,
-  applyColumnStateFromUrl,
-} from "./tableConfig";
+import { updateColumnsFromUrl, getMethodFromUrl } from "./handleUrlParams";
 
 const DEFAULT_METHOD = "pbesol-v2";
 
-function getInitialMethodFromUrl() {
-  const urlParams = new URLSearchParams(window.location.search);
-
-  // Get method from URL
-  const methodFromUrl = urlParams.get("method");
-
-  if (methodFromUrl) {
-    return methodFromUrl;
-  }
-
-  // If no method in URL, check preset from URL
-  const presetName = urlParams.get("preset");
-  if (presetName && PRESETS[presetName] && PRESETS[presetName].method) {
-    return PRESETS[presetName].method;
-  }
-
-  // fallback default method
-  return DEFAULT_METHOD;
-}
-
-function getInitialColumnConfigFromUrl() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return getColumnConfigFromUrl(urlParams, PRESETS);
-}
-
 // MC3D Landing page React component.
 function MainPage() {
+  const urlParams = new URLSearchParams(window.location.search);
+
   const [genInfo, setGenInfo] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
-  const [method, setMethod] = useState(getInitialMethodFromUrl());
+  const [method, setMethod] = useState(
+    getMethodFromUrl(urlParams, DEFAULT_METHOD),
+  );
 
   const materialSelectorRef = useRef(null);
 
@@ -68,33 +43,20 @@ function MainPage() {
     loadGeneralInfo().then(setGenInfo);
   }, []);
 
-  // On first load: get columns config & data
   useEffect(() => {
-    const { sortEntries, hiddenFields, showFields } =
-      getInitialColumnConfigFromUrl();
-
     loadDataMc3d(method).then((loadedData) => {
-      const sortedColumns = applyColumnStateFromUrl(
+      const updatedColumns = updateColumnsFromUrl(
         loadedData.columns,
-        sortEntries,
-        hiddenFields,
-        showFields,
+        urlParams,
       );
-      setColumns(sortedColumns);
-      setRows(loadedData.rows);
-    });
-  }, []);
-
-  // when method changes: only reload rows, keep existing columns
-  useEffect(() => {
-    if (!method) return;
-    loadDataMc3d(method).then((loadedData) => {
-      setColumns(loadedData.columns);
+      console.log("UPDATED", updatedColumns);
+      setColumns(updatedColumns);
       setRows(loadedData.rows);
     });
   }, [method]);
 
   const handleMethodChange = (event) => {
+    console.log("handleMethodChange");
     setRows([]);
     setMethod(event.target.value);
   };
