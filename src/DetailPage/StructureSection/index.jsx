@@ -3,6 +3,7 @@ import React from "react";
 import { ExploreButton, StructDownloadButton } from "mc-react-library";
 
 import { CellInfoBox } from "./CellInfo";
+import { AtomicSitesInfoBox } from "./AtomicSitesInfo";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -61,19 +62,7 @@ const StructureSection = ({ params, loadedData }) => {
             />
           </Col>
           <Col className="flex-column">
-            <div>
-              <div className="subsection-title">Atomic positions</div>
-              <MCTable
-                headerRow={["Kind label", "x [Å]", "y [Å]", "z [Å]"]}
-                contents={structureInfo.aiidaAttributes.sites.map((s) => [
-                  s.kind_name,
-                  s.position[0],
-                  s.position[1],
-                  s.position[2],
-                ])}
-                style={{ maxHeight: "332px" }} // Currently hand-picked
-              />
-            </div>
+            <AtomicSitesInfoBox structureInfo={structureInfo} />
           </Col>
         </Row>
       </Container>

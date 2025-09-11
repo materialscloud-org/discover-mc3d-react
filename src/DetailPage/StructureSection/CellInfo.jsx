@@ -72,6 +72,7 @@ export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
             display: "flex",
             justifyContent: "flex-end",
             gap: "40px",
+            marginRight: "5px",
             alignItems: "stretch",
           }}
         >
@@ -83,14 +84,15 @@ export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
             fontSize="17px"
             onToggle={handleLatticeInfoClick}
           />
-          {/* Prim to Conv Switch */}
-          <ToggleSwitch
+
+          {/* Prim to Conv Switch  DROPPED WHILE CONSIDERED BUGGED*/}
+          {/* <ToggleSwitch
             labelLeft="Primitive"
             labelRight="Conventional"
             switchLength="30px"
             fontSize="17px"
             onToggle={handleLatticeTypeClick}
-          />
+          /> */}
         </div>
       </div>
 
