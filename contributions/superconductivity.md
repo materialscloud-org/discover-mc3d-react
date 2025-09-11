@@ -1,4 +1,4 @@
-## Superconductivity calculations
+# Superconductivity calculations
 
 ### Motivation
 
@@ -10,7 +10,7 @@ The theoretical background for understanding high temperature superconductivity 
 
 This dataset extends the base dataset (PBEsol-v1) and therefore the methodology may slightly differ. Full details are available in the publication[^1].
 
-A high-throughput computational search for novel phonon-mediated superconductors, starting from the Materials Cloud 3-dimensional structure database of experimentally known inorganic stoichiometric compounds. The Allen-Dynes critical temperature ($T_{c}$) was calculated for 4533 non-magnetic metals using a direct and progressively finer sampling of the electron-phonon couplings. For the candidates with the largest $T_{c}$, a process of automated Wannierizations and electron-phonon interpolations was used to identify the most promising 250 dynamically stable structures. For these structures, spectral functions, superconducting bandgaps, and isotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{iso}}$) were calculated. For $T_{c}^{\textrm{iso}}$ > 5 K, we compute the anisotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{aniso}}$) which contains 140 materials.
+A high-throughput computational search for novel phonon-mediated superconductors, starting from the Materials Cloud 3-dimensional structure database of experimentally known inorganic stoichiometric compounds. The Allen-Dynes critical temperature ($T_{c}$) was calculated for 4533 non-magnetic metals using a direct and progressively finer sampling of the electron-phonon couplings. For the candidates with the largest $T_{c}$, a process of automated Wannierizations and electron-phonon interpolations was used to identify the most promising 250 dynamically stable structures. For these structures, spectral functions, superconducting bandgaps, and isotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{iso}}$) were calculated. For $T_{c}^{\textrm{iso}}$ > 5 K, we compute the anisotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{aniso}}$) which contains 140 materials. For all calculations, we use the "simple" acoustic sum [rule](https://docs.epw-code.org/doc/Inputs.html#asr-typ) which may lead to small soft modes.
 
 ---
 
@@ -79,7 +79,7 @@ Other details:
 
 [^1]:
     _If using this work be sure to cite:_ Marnik Bercx, Samuel Poncé, Yiming Zhang. _et al._ Charting the landscape of Bardeen-Cooper-Schrieffer superconductors in experimentally known compounds. arXiv:2503.10943 (2025).  
-    https://doi.org/10.48550/arXiv.2503.10943
+    https://journals.aps.org/prxenergy/abstract/10.1103/sb28-fjc9
 
 [^2]:
     _For details on Allen-Dynes superconductivity:_ P.B. Allen, R.C. Dynes Transition temperature of strong-coupled superconductors reanalyzed. Phys. Rev. B 12, 905 – Published 1 August, 1975
