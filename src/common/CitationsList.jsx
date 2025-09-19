@@ -46,7 +46,7 @@ const CITATION_MAPPING = {
   HuberMc3d25: {
     authorsText: "Huber et al.",
     journalText: "arXiv:2508.19223",
-    doi: "10.48550/arXiv:2508.19223",
+    doi: "10.48550/arXiv.2508.19223",
     year: 2025,
   },
 };
