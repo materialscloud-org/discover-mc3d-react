@@ -22,7 +22,11 @@ import { loadGeneralInfo } from "../common/restApiUtils";
 
 import { CitationsList } from "../common/CitationsList.jsx";
 
-import { updateColumnsFromUrl, getMethodFromUrl } from "./handleUrlParams";
+import {
+  updateColumnsFromUrl,
+  getMethodFromUrl,
+  getMethodFromPreset,
+} from "./handleUrlParams";
 
 const DEFAULT_METHOD = "pbesol-v2";
 
@@ -33,11 +37,12 @@ function MainPage() {
   const [genInfo, setGenInfo] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
-  const [method, setMethod] = useState(
-    getMethodFromUrl(urlParams, DEFAULT_METHOD),
-  );
 
-  const [preset, setPreset] = useState(urlParams.get("preset") || null);
+  // derive current method and preset directly from URL
+  const preset = urlParams.get("preset") || null;
+  const method = preset
+    ? getMethodFromPreset(preset)
+    : getMethodFromUrl(urlParams, DEFAULT_METHOD);
 
   const materialSelectorRef = useRef(null);
 
@@ -51,31 +56,28 @@ function MainPage() {
         loadedData.columns,
         urlParams,
       );
-      console.log("UPDATED", updatedColumns);
       setColumns(updatedColumns);
       setRows(loadedData.rows);
     });
-  }, [method]);
+  }, [method, preset]);
 
   const handleMethodChange = (event) => {
     const selected = event.target.value;
+    const url = new URL(window.location);
 
-    // Check if a preset was selected
     if (selected === "superconductivity") {
-      // Update URL with ?preset=superconductivity
-      const url = new URL(window.location);
+      // Preset
       url.searchParams.set("preset", selected);
-      window.location.href = url.toString(); // forces page reload, keeps old behavior
-      return; // stop further processing since page will reload
+      url.searchParams.delete("method");
+    } else {
+      // Normal DB
+      url.searchParams.set("method", selected);
+      url.searchParams.delete("preset");
     }
 
-    // Normal database selected
-    setPreset(null); // clear any active preset
+    window.history.pushState({}, "", url.toString());
     setRows([]); // clear table
-    setMethod(selected); // set the underlying method
   };
-
-  console.log("Loaded Columns", columns);
 
   return (
     <MaterialsCloudHeader

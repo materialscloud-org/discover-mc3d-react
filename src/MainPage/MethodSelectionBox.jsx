@@ -27,6 +27,7 @@ export const MethodSelectionBox = (props) => {
     "pbesol-v1": `PBEsol-v1`,
     "pbe-v1": `PBE-v1`,
   };
+
   Object.entries(options).forEach(([key, value]) => {
     if (props.genInfo?.["method-counts"]?.[key] != null) {
       options[key] += ` (${props.genInfo["method-counts"][key]})`;
@@ -39,7 +40,7 @@ export const MethodSelectionBox = (props) => {
   return (
     <div className="method-selection-box-outer">
       <div className="method-selection-box">
-        <p>Select a methodology:</p>
+        <p>Select a dataset:</p>
         <Form.Select
           size="sm"
           value={displayValue}
@@ -51,13 +52,17 @@ export const MethodSelectionBox = (props) => {
             minWidth: "max-content",
           }}
         >
-          <optgroup label="Full Databases">
-            <option value="pbesol-v2">PBEsol-v2</option>
-            <option value="pbesol-v1">PBEsol-v1</option>
-            <option value="pbe-v1">PBE-v1</option>
+          <optgroup label="Structure datasets">
+            {Object.entries(options).map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
           </optgroup>
-          <optgroup label="Preset Views">
-            <option value="superconductivity">superconductivity</option>
+          <optgroup label="Property-based views">
+            <option value="superconductivity">
+              Superconductivity (PBEsol-v1)
+            </option>
           </optgroup>
         </Form.Select>
 

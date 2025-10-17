@@ -102,6 +102,15 @@ function updateColumnState(columns, sortEntries, hiddenFields, showFields) {
   });
 }
 
+export function getMethodFromPreset(presetName) {
+  if (!presetName) return null;
+  const preset = PRESETS[presetName];
+  if (!preset) {
+    return null;
+  }
+  return preset.method;
+}
+
 export function getMethodFromUrl(urlParams, defaultMethod) {
   const methodFromUrl = urlParams.get("method");
 
