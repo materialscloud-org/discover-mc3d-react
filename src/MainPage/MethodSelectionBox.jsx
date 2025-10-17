@@ -7,15 +7,23 @@ import "./MethodSelectionBox.css";
 const popover = (
   <Popover id="popover-basic">
     <Popover.Header>
-      <b>Methodology-based subdatabases</b>
+      <b>Datasets & views</b>
     </Popover.Header>
     <Popover.Body style={{ textAlign: "justify" }}>
       <p>
-        The MC3D consists of subdatabases which have been calculated with a
-        single consistent computational approach. The label contains the
-        exchange-correlation functional that was used and a version number that
-        represents the rest of the computational protocol. See the "About" tab
-        and the publication (in preparation) for more detailed information.
+        MC3D contains <b>structure datasets</b> - collections computed with one
+        consistent computational approach. The label (e.g., <i>PBEsol-v1</i>)
+        contains the physical methodology and a version suffix representing the
+        computational protocol.
+      </p>
+      <p>
+        Structure datasets can have associated property contributions (e.g.,
+        Superconductivity), and the corresponding <b>property-based views</b>{" "}
+        allow to sort and filter the relevant data.
+      </p>
+      <p>
+        Use the menu to select either a structure dataset or a property view.
+        See the <b>About</b> tab and the publication for details.
       </p>
     </Popover.Body>
   </Popover>
@@ -40,7 +48,7 @@ export const MethodSelectionBox = (props) => {
   return (
     <div className="method-selection-box-outer">
       <div className="method-selection-box">
-        <p>Select a dataset:</p>
+        <p>Select a dataset or view:</p>
         <Form.Select
           size="sm"
           value={displayValue}

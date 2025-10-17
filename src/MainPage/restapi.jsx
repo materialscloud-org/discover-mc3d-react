@@ -55,8 +55,8 @@ export const restapiText = (
       <a href="https://www.optimade.org/optimade" target="_blank">
         OPTIMADE specification
       </a>
-      . This currently only includes the crystal structures and no properties or
-      provenance information is provided. For the exact endpoints, see the{" "}
+      . This currently includes the crystal structures and some properties but
+      no provenance information is provided. For the exact endpoints, see the{" "}
       <a href="https://materialscloud.org/optimade" target="_blank">
         Materials Cloud OPTIMADE API page
       </a>
