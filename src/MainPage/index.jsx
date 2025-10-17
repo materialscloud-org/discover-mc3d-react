@@ -37,6 +37,8 @@ function MainPage() {
     getMethodFromUrl(urlParams, DEFAULT_METHOD),
   );
 
+  const [preset, setPreset] = useState(urlParams.get("preset") || null);
+
   const materialSelectorRef = useRef(null);
 
   useEffect(() => {
@@ -56,9 +58,21 @@ function MainPage() {
   }, [method]);
 
   const handleMethodChange = (event) => {
-    console.log("handleMethodChange");
-    setRows([]);
-    setMethod(event.target.value);
+    const selected = event.target.value;
+
+    // Check if a preset was selected
+    if (selected === "superconductivity") {
+      // Update URL with ?preset=superconductivity
+      const url = new URL(window.location);
+      url.searchParams.set("preset", selected);
+      window.location.href = url.toString(); // forces page reload, keeps old behavior
+      return; // stop further processing since page will reload
+    }
+
+    // Normal database selected
+    setPreset(null); // clear any active preset
+    setRows([]); // clear table
+    setMethod(selected); // set the underlying method
   };
 
   console.log("Loaded Columns", columns);
@@ -94,6 +108,7 @@ function MainPage() {
             <MethodSelectionBox
               genInfo={genInfo}
               method={method}
+              selectedDisplay={preset || null} // display "preset value" if preset active
               handleMethodChange={handleMethodChange}
             />
             {/* <div className="description">

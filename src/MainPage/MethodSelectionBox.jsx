@@ -32,13 +32,17 @@ export const MethodSelectionBox = (props) => {
       options[key] += ` (${props.genInfo["method-counts"][key]})`;
     }
   });
+
+  // used to spoof values in the display box.
+  const displayValue = props.selectedDisplay || props.method;
+
   return (
     <div className="method-selection-box-outer">
       <div className="method-selection-box">
         <p>Select a methodology:</p>
         <Form.Select
           size="sm"
-          value={props.method}
+          value={displayValue}
           onChange={props.handleMethodChange}
           style={{
             display: "inline-block",
@@ -47,12 +51,16 @@ export const MethodSelectionBox = (props) => {
             minWidth: "max-content",
           }}
         >
-          {Object.entries(options).map(([key, value]) => (
-            <option key={key} value={key}>
-              {value}
-            </option>
-          ))}
+          <optgroup label="Full Databases">
+            <option value="pbesol-v2">PBEsol-v2</option>
+            <option value="pbesol-v1">PBEsol-v1</option>
+            <option value="pbe-v1">PBE-v1</option>
+          </optgroup>
+          <optgroup label="Preset Views">
+            <option value="superconductivity">superconductivity</option>
+          </optgroup>
         </Form.Select>
+
         <HelpButton popover={popover} placement="bottom" />
       </div>
     </div>
