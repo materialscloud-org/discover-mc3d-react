@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // standard markdown.
 import ReactMarkdown from "react-markdown";
@@ -65,7 +65,7 @@ function ContributionsPage() {
                     remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
                     rehypePlugins={[rehypeKatex]}
                     components={{
-                      a: ({ node, ...props }) => {
+                      a: ({ ...props }) => {
                         const href = props.href || "";
                         const isHashLink = href.startsWith("#");
 

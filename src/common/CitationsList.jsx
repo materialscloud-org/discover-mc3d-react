@@ -16,6 +16,7 @@ export const CitationText = ({ info }) => (
       className="citation-a"
       href={`https://doi.org/${info.doi}`}
       target="_blank"
+      rel="noopener noreferrer"
     >
       <FaBook size={16} color="black" /> {info.authorsText}, {info.journalText},
       ({info.year})

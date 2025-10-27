@@ -1,5 +1,3 @@
-import React from "react";
-
 import { ExploreButton, StructDownloadButton } from "mc-react-library";
 
 import { CellInfoBox } from "./CellInfo";
@@ -7,7 +5,6 @@ import { AtomicSitesInfoBox } from "./AtomicSitesInfo";
 
 import { Container, Row, Col } from "react-bootstrap";
 
-import { MCTable } from "../../common/MCTable";
 import { MCInfoBox } from "../../common/MCInfoBox";
 
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/restApiUtils";

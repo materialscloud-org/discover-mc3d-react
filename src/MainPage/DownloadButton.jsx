@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { Spinner } from "react-bootstrap";
+
 import { saveAs } from "file-saver";
 
 import { HelpButton } from "mc-react-library";
@@ -38,8 +41,6 @@ const popover = (
     </Popover.Body>
   </Popover>
 );
-import React, { useState } from "react";
-import { Spinner } from "react-bootstrap";
 
 export const DownloadButton = ({
   materialSelectorRef,

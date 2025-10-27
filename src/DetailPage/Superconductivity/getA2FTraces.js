@@ -67,7 +67,6 @@ export function getA2FTraces({
     mode: "lines",
     name: A2F_CUMULATIVE_CONFIG.label,
     label: `${A2F_CUMULATIVE_CONFIG.label}`,
-    name: A2F_CUMULATIVE_CONFIG.label,
     hovertemplate: `<b>${A2F_CUMULATIVE_CONFIG.hoverlabel} at %{y:.2f} meV:</b> %{x:.3f}<br><extra></extra>`,
     line: {
       color: A2F_CUMULATIVE_CONFIG.color,

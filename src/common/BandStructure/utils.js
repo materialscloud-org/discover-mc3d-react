@@ -1,5 +1,3 @@
-import { splitBandsData } from "bands-visualiser";
-import * as math from "mathjs";
 import { traceConfigs } from "./configs";
 
 export function prettifyLabels(label) {

@@ -9,11 +9,15 @@ const references = {
     ref: (
       <span>
         The Pauling File{" "}
-        <a href="http://paulingfile.com/" target="_blank">
+        <a
+          href="http://paulingfile.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           http://paulingfile.com/
         </a>{" "}
         exposed through the Materials Platform for Data Science{" "}
-        <a href="https://mpds.io/" target="_blank">
+        <a href="https://mpds.io/" target="_blank" rel="noopener noreferrer">
           https://mpds.io/
         </a>
         .
@@ -27,7 +31,11 @@ const references = {
         S. Gražulis et al. Crystallography open database (COD): an open-access
         collection of crystal structures and platform for world-wide
         collaboration. Nucleic Acids Research, 40:D420-D427, 2012,{" "}
-        <a href="http://www.crystallography.net" target="_blank">
+        <a
+          href="http://www.crystallography.net"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           http://www.crystallography.net
         </a>
         .
@@ -39,7 +47,11 @@ const references = {
     ref: (
       <span>
         Inorganic Crystal Structure Database,{" "}
-        <a href="http://www.fiz-karlsruhe.com/icsd.html" target="_blank">
+        <a
+          href="http://www.fiz-karlsruhe.com/icsd.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           http://www.fiz-karlsruhe.com/icsd.html
         </a>
         .
@@ -53,7 +65,11 @@ const references = {
         S. P. Huber et al. AiiDA 1.0, a scalable computational infrastructure
         for automated reproducible workflows and data provenance. Sci Data 7,
         300, 2020.{" "}
-        <a href="http://www.aiida.net" target="_blank">
+        <a
+          href="http://www.aiida.net"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           http://www.aiida.net
         </a>
         .
@@ -85,7 +101,11 @@ const references = {
     ref: (
       <span>
         A. Togo. Spglib.{" "}
-        <a href="https://spglib.readthedocs.io/" target="_blank">
+        <a
+          href="https://spglib.readthedocs.io/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           https://spglib.readthedocs.io/
         </a>
         .
@@ -109,6 +129,7 @@ const references = {
         <a
           href="https://github.com/electronic-structure/SIRIUS"
           target="_blank"
+          rel="noopener noreferrer"
         >
           https://github.com/electronic-structure/SIRIUS
         </a>
@@ -131,7 +152,11 @@ const references = {
       <span>
         G. Prandini, A. Marrazzo, I. E. Castelli, N. Mounet and N. Marzari, npj
         Computational Materials 4, 72 (2018).{" "}
-        <a href="http://www.materialscloud.org/sssp/" target="_blank">
+        <a
+          href="http://www.materialscloud.org/sssp/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           http://www.materialscloud.org/sssp/
         </a>
       </span>

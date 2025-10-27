@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
-
 import "./index.css";
 
 import { ExploreButton } from "mc-react-library";
 
 import { EXPLORE_URLS } from "../../common/restApiUtils";
 
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 
 function ProvenanceSection(props) {
   let details = props.loadedData.details;

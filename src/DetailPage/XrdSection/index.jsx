@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import XrdPlot from "./XrdPlot";
 
@@ -6,7 +6,7 @@ import { loadXrd } from "../../common/restApiUtils";
 
 import { McloudSpinner } from "mc-react-library";
 
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 
 const XrdSection = (props) => {
   const [xrdData, setXrdData] = useState(null);
@@ -21,7 +21,7 @@ const XrdSection = (props) => {
         setNotAvail(true);
       }
     });
-  }, []);
+  }, [props.params.method, props.params.id]);
 
   let xrd = "";
 

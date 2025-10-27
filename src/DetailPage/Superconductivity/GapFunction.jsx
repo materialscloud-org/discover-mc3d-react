@@ -102,14 +102,16 @@ export default function GapFunction({
   useEffect(() => {
     if (!gapfuncData || !plotRef.current) return;
 
+    const plotElement = plotRef.current;
+
     const safeVerts = verts ?? [];
 
     // get traces from gap funcData
     const traces = Object.entries(gapfuncData)
-      .filter(([key, val]) => Array.isArray(val))
-      .map(([label, arr]) => {
-        const xVals = arr.map(([x, y]) => x);
-        const yVals = arr.map(([x, y]) => y);
+      .filter(([val]) => Array.isArray(val))
+      .map(([arr]) => {
+        const xVals = arr.map(([x]) => x);
+        const yVals = arr.map(([y]) => y);
 
         // compute leftVert and distance
         const { leftVerts, distances } = xVals.reduce(
@@ -188,11 +190,11 @@ export default function GapFunction({
     };
 
     // Render the plot
-    Plotly.newPlot(plotRef.current, traces, layoutWithVerts, {
+    Plotly.newPlot(plotElement, traces, layoutWithVerts, {
       responsive: true,
     });
 
-    return () => Plotly.purge(plotRef.current);
+    return () => Plotly.purge(plotElement);
   }, [gapfuncData]);
 
   return <div ref={plotRef} style={{ width: "100%", height: "350px" }} />;

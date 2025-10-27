@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { BandsVisualiser } from "bands-visualiser";
 
 /**
@@ -22,8 +22,13 @@ export function BandStructure({
   const containerRef = useRef(null);
 
   // clone settings to avoid mutating props
-  const settings = { ...(layoutOverrides ?? {}) };
-
+  const settings = useMemo(() => {
+    const s = { ...(layoutOverrides ?? {}) };
+    if (minYval != null && maxYval != null) {
+      s.yaxis = { ...(s.yaxis ?? {}), range: [minYval, maxYval] };
+    }
+    return s;
+  }, [layoutOverrides, minYval, maxYval]);
   if (minYval != null && maxYval != null) {
     settings.yaxis = {
       ...(settings.yaxis ?? {}),
@@ -40,7 +45,7 @@ export function BandStructure({
       customTraces,
       settings,
     });
-  }, [bandsDataArray, dosDataArray, customTraces]);
+  }, [bandsDataArray, dosDataArray, customTraces, settings]);
 
   if (!bandsDataArray)
     return (

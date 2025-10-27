@@ -22,20 +22,24 @@ export const restapiText = (
       <ul>
         <li>
           The Materials Cloud REST API for the curated metadata:{" "}
-          <a href={DOCS_URL} target="_blank">
+          <a href={DOCS_URL} target="_blank" rel="noopener noreferrer">
             {DOCS_URL}
           </a>
           , see e.g.
           <ul>
             <li>
               Index of materials:{" "}
-              <a href={INDEX_URL} target="_blank">
+              <a href={INDEX_URL} target="_blank" rel="noopener noreferrer">
                 {INDEX_URL}
               </a>
             </li>
             <li>
               Single entry data:{" "}
-              <a href={SINGLE_ENTRY_URL} target="_blank">
+              <a
+                href={SINGLE_ENTRY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {SINGLE_ENTRY_URL}
               </a>
             </li>
@@ -43,7 +47,11 @@ export const restapiText = (
         </li>
         <li>
           AiiDA REST API for properties and provenance:{" "}
-          <a href={AIIDA_API_URLS["pbe-v1"]} target="_blank">
+          <a
+            href={AIIDA_API_URLS["pbe-v1"]}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {AIIDA_API_URLS["pbe-v1"]}
           </a>
         </li>
@@ -52,12 +60,20 @@ export const restapiText = (
     <div className="restapi-h">2. OPTIMADE REST API</div>
     <div>
       The MC3D database can also be accessed via an API following the{" "}
-      <a href="https://www.optimade.org/optimade" target="_blank">
+      <a
+        href="https://www.optimade.org/optimade"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         OPTIMADE specification
       </a>
       . This currently includes the crystal structures and some properties but
       no provenance information is provided. For the exact endpoints, see the{" "}
-      <a href="https://materialscloud.org/optimade" target="_blank">
+      <a
+        href="https://materialscloud.org/optimade"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Materials Cloud OPTIMADE API page
       </a>
       .

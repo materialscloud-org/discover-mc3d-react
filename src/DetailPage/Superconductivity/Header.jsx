@@ -57,7 +57,7 @@ export function SuperconHeader({ params, superconData }) {
         contains the final superconductivity estimation results, as well as the
         intermediate electronic and vibrational calculated properties. For
         further details regarding the methodology see the{" "}
-        <a href="./#/contributions" target="_blank">
+        <a href="./#/contributions" target="_blank" rel="noopener noreferrer">
           contribution details
         </a>
         .

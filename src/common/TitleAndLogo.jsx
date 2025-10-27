@@ -1,5 +1,3 @@
-import React from "react";
-
 import "./TitleAndLogo.css";
 
 import Mc3dLogo from "../assets/mc3d.png";

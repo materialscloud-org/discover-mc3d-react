@@ -1,5 +1,3 @@
-import React from "react";
-
 import "./index.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
