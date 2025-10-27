@@ -71,7 +71,7 @@ export default function SuperConductivity({ params, loadedData }) {
       `${params.method}-supercon`,
       supercon.aniso_gap_function_uuid,
     );
-  }, [params.method, supercon.aniso_gap_function_uuid]);
+  }, [params.method]);
 
   const [gapfuncData, gapfuncLoading] = useAsyncData(gapfuncFetcher, [
     gapfuncFetcher,
@@ -81,7 +81,7 @@ export default function SuperConductivity({ params, loadedData }) {
   const a2fFetcher = useCallback(async () => {
     if (!supercon.a2f_uuid) return null;
     return loadXY(`${params.method}-supercon`, supercon.a2f_uuid);
-  }, [params.method, supercon.a2f_uuid]);
+  }, [params.method]);
 
   const [a2fData] = useAsyncData(a2fFetcher, [a2fFetcher]);
 
@@ -121,13 +121,7 @@ export default function SuperConductivity({ params, loadedData }) {
       el: rescaledFilteredBDArray,
       ph: preppedPh ? [preppedPh] : [],
     };
-  }, [
-    params.method,
-    supercon.epw_el_band_structure_uuid,
-    supercon.qe_el_band_structure_uuid,
-    supercon.epw_ph_band_structure_uuid,
-    supercon.fermi_energy_coarse,
-  ]);
+  }, [params.method]);
 
   const [bandsResult, bandsLoading] = useAsyncData(bandsFetcher, [
     bandsFetcher,
