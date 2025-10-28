@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import Plotly from "plotly.js-dist-min"; // or "plotly.js-basic-dist"
+import Plotly from "plotly.js-basic-dist-min";
 
 const GAP_TRACE_CONFIG = {
   color: "#d62728",

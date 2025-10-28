@@ -1,13 +1,12 @@
-import { useState } from "react";
-import Plot from "react-plotly.js";
+import { useState, useEffect, useRef } from "react";
+import Plotly from "plotly.js-basic-dist-min";
 import Form from "react-bootstrap/Form";
-
 import { Row, Col } from "react-bootstrap";
-
 import { wavelengthName, getFittedCurve, getHistogram } from "./utils.js";
 
-const XrdPlot = (props) => {
-  let wavelengthsList = Object.keys(props.xrdData);
+const XrdPlot = ({ xrdData }) => {
+  const plotRef = useRef(null);
+  const wavelengthsList = Object.keys(xrdData);
 
   const [wavelength, setWavelength] = useState(wavelengthsList[0]);
   const [fitType, setFitType] = useState("Gaussian");
@@ -15,18 +14,55 @@ const XrdPlot = (props) => {
   const [showCurve, setShowCurve] = useState(true);
   const [showHistogram, setShowHistogram] = useState(true);
 
-  let fitTypes = ["Gaussian", "Lorentzian"];
+  const fitTypes = ["Gaussian", "Lorentzian"];
 
-  let xRange = props.xrdData[wavelength].angular_range.slice();
-  let yRange = [0, null];
+  // Build traces on render
+  const plotData = [];
+  if (showHistogram) plotData.push(getHistogram(xrdData[wavelength]));
+  if (showCurve)
+    plotData.push(getFittedCurve(xrdData[wavelength], fwhm, fitType));
 
-  let plotData = [];
-  if (showHistogram) {
-    plotData.push(getHistogram(props.xrdData[wavelength]));
-  }
-  if (showCurve) {
-    plotData.push(getFittedCurve(props.xrdData[wavelength], fwhm, fitType));
-  }
+  const xRange = xrdData[wavelength].angular_range.slice();
+  const yRange = [0, null];
+
+  // useEffect to render Plotly manually
+  useEffect(() => {
+    if (!plotRef.current) return;
+
+    const layout = {
+      showlegend: false,
+      xaxis: {
+        range: xRange,
+        title: "2\u03F4 [°]",
+        linecolor: "black",
+        linewidth: 1,
+        tickwidth: 1,
+        tickcolor: "black",
+        gridcolor: "lightgray",
+        mirror: true,
+      },
+      yaxis: {
+        range: yRange,
+        title: "Intensity [a.u.]",
+        linecolor: "black",
+        linewidth: 1,
+        tickwidth: 1,
+        tickcolor: "black",
+        gridcolor: "lightgray",
+        mirror: true,
+      },
+      margin: { l: 50, r: 20, b: 40, t: 20 },
+    };
+
+    const config = { responsive: true };
+
+    Plotly.newPlot(plotRef.current, plotData, layout, config);
+
+    // cleanup on unmount
+    return () => {
+      Plotly.purge(plotRef.current);
+    };
+  }, [xrdData, wavelength, fitType, fwhm, showCurve, showHistogram]);
 
   return (
     <div>
@@ -34,7 +70,10 @@ const XrdPlot = (props) => {
         <Col style={{ minWidth: "300px" }}>
           <Form>
             <Form.Label>Select the X-ray source</Form.Label>
-            <Form.Select onChange={(e) => setWavelength(e.target.value)}>
+            <Form.Select
+              value={wavelength}
+              onChange={(e) => setWavelength(e.target.value)}
+            >
               {wavelengthsList.map((wl) => (
                 <option key={wl} value={wl}>
                   {wavelengthName(wl)}
@@ -45,7 +84,10 @@ const XrdPlot = (props) => {
 
           <Form>
             <Form.Label>Select peak broadening profile</Form.Label>
-            <Form.Select onChange={(e) => setFitType(e.target.value)}>
+            <Form.Select
+              value={fitType}
+              onChange={(e) => setFitType(e.target.value)}
+            >
               {fitTypes.map((ft) => (
                 <option key={ft} value={ft}>
                   {ft}
@@ -64,71 +106,31 @@ const XrdPlot = (props) => {
               max={2.0}
               step={0.05}
               value={fwhm}
-              onInput={(e) =>
-                fwhm !== e.target.value && setFwhm(parseFloat(e.target.value))
-              }
+              onInput={(e) => setFwhm(parseFloat(e.target.value))}
             />
           </Form>
 
           <Form>
             <Form.Check
-              // inline
               checked={showCurve}
               onChange={(e) => setShowCurve(e.target.checked)}
               label="Show broadened curve"
-              name="group1"
-              type="checkbox"
-              id={`inline-checkbox-1`}
             />
             <Form.Check
-              // inline
               checked={showHistogram}
               onChange={(e) => setShowHistogram(e.target.checked)}
               label="Show histogram"
-              name="group1"
-              type="checkbox"
-              id={`inline-checkbox-2`}
             />
           </Form>
         </Col>
         <Col>
-          <Plot
-            data={plotData}
-            config={{ responsive: true }}
+          <div
+            ref={plotRef}
             style={{
               width: "100%",
               height: "100%",
               minHeight: "400px",
               minWidth: "300px",
-            }}
-            layout={{
-              showlegend: false,
-              xaxis: {
-                range: xRange,
-                title: "2\u03F4" + " [°]",
-                linecolor: "black",
-                linewidth: 1,
-                tickwidth: 1,
-                tickcolor: "black",
-                gridcolor: "lightgray",
-                mirror: true,
-              },
-              yaxis: {
-                range: yRange,
-                title: "Intensity [a.u.]",
-                linecolor: "black",
-                linewidth: 1,
-                tickwidth: 1,
-                tickcolor: "black",
-                gridcolor: "lightgray",
-                mirror: true,
-              },
-              margin: {
-                l: 50,
-                r: 20,
-                b: 40,
-                t: 20,
-              },
             }}
           />
         </Col>
