@@ -4,6 +4,8 @@ import Form from "react-bootstrap/Form";
 import { Row, Col } from "react-bootstrap";
 import { wavelengthName, getFittedCurve, getHistogram } from "./utils.js";
 
+import DataDownloadButton from "../../common/DataDownloadButton.jsx";
+
 const XrdPlot = ({ xrdData }) => {
   const plotRef = useRef(null);
   const wavelengthsList = Object.keys(xrdData);
@@ -122,6 +124,10 @@ const XrdPlot = ({ xrdData }) => {
               label="Show histogram"
             />
           </Form>
+          <div>
+            Download X-ray data
+            <DataDownloadButton data={xrdData} filename={"xrdData.json"} />
+          </div>
         </Col>
         <Col>
           <div
