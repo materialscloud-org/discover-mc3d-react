@@ -21,7 +21,7 @@ export default function DataDownloadButton({
   return (
     <Button
       size="sm"
-      style={{ margin: "4px", padding: "2px 5px" }}
+      style={{ margin: "4px", padding: "2px 7px" }}
       title="Download"
       onClick={handleDownload}
     >
