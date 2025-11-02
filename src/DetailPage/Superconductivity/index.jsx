@@ -19,7 +19,13 @@ import {
   SUPERCON_BANDS_LAYOUT_CONFIG,
   SUPERCON_PHONON_A2F_LAYOUT_CONFIG,
 } from "../../common/BandStructure/configs";
-import { loadAiidaBands, loadXY } from "../../common/restApiUtils";
+import {
+  loadAiidaBands,
+  loadXY,
+  loadSuperConPhononVis,
+} from "../../common/restApiUtils";
+
+import PhononVisualizer from "mc-react-phonon-visualizer";
 
 /**
  * Custom hook to load async data safely with cancellation support.
@@ -47,9 +53,7 @@ function useAsyncData(fetcher, deps) {
     return () => {
       cancelled = true;
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps); // deps are explicitly passed
+  }, deps);
   return [data, loading];
 }
 
@@ -63,6 +67,7 @@ function safePrepareBands(bands, fermi, configName) {
 
 export default function SuperConductivity({ params, loadedData }) {
   const supercon = loadedData?.details?.supercon;
+  const [scPhonon, setScPhonon] = useState(null);
 
   // --- Gap function fetcher ---
   const gapfuncFetcher = useCallback(async () => {
@@ -77,11 +82,23 @@ export default function SuperConductivity({ params, loadedData }) {
     gapfuncFetcher,
   ]);
 
+  // --- Supercon phonon fetcher ---
+  const scPhononFetcher = useCallback(async () => {
+    if (!params.id) return null;
+    return loadSuperConPhononVis(params.method, params.id);
+  }, [params.method, params.id]);
+
+  const [scPhonons, scPhononsLoading] = useAsyncData(scPhononFetcher, [
+    scPhononFetcher,
+  ]);
+
+  console.log("scData", scPhonons);
+
   // --- A2F fetcher ---
   const a2fFetcher = useCallback(async () => {
     if (!supercon.a2f_uuid) return null;
     return loadXY(`${params.method}-supercon`, supercon.a2f_uuid);
-  }, [params.method]);
+  }, [params.id]);
 
   const [a2fData] = useAsyncData(a2fFetcher, [a2fFetcher]);
 
@@ -233,6 +250,21 @@ export default function SuperConductivity({ params, loadedData }) {
               maxYVal={null}
             />
           </TitledColumn>
+        </Row>
+        <Row style={{ marginTop: "20px" }}>
+          <div className="mb-0">
+            <div className="subsection-title">Phonon Visualization</div>
+          </div>
+          {scPhonons && (
+            <PhononVisualizer
+              key={JSON.stringify(scPhonons)}
+              props={{
+                title: "Demo",
+                fastMode: true,
+                ...scPhonons,
+              }}
+            />
+          )}
         </Row>
       </Container>
     </div>

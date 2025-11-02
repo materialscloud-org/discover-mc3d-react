@@ -138,15 +138,16 @@ export async function loadXrd(method, id) {
   }
 }
 
-// maybe should be generalised.
-export async function loadSuperConPhononVis(id) {
-  let endpoint = `${MC_REST_API_URL}/pbesol-v1/supercon-phonon-vis/${id}`;
+export async function loadSuperConPhononVis(method, id) {
+  let endpoint = `${MC_REST_API_URL}/${method}/supercon-phonon-vis/${id}`;
+  console.log("ep", endpoint);
   try {
     const response = await fetch(endpoint, { method: "get" });
     if (!response.ok) {
       return null;
     }
     const json = await response.json();
+    console.log(json);
     return json;
   } catch (error) {
     console.error("Error fetching phonon-vis:", error);
