@@ -5,7 +5,7 @@
 // By default, use development API URLS
 let mcRestApiUrl = "https://api.dev.materialscloud.org/";
 let aiidaRestBaseUrl = "https://aiida.dev.materialscloud.org";
-let exploreBaseUrl = "https://www.dev.materialscloud.org/explore/";
+let exploreBaseUrl = "https://www.materialscloud.dev/explore/";
 
 // Use production backend if specified
 if (import.meta.env.VITE_PRODUCTION_BACKEND === "true") {
