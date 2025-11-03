@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Container, Row } from "react-bootstrap";
 
 import "./index.css";
@@ -26,6 +26,53 @@ import {
 } from "../../common/restApiUtils";
 
 import PhononVisualizer from "mc-react-phonon-visualizer";
+
+function prettifyLabels(label) {
+  // If it's an array, recursively prettify all string elements
+  if (Array.isArray(label)) {
+    return label.map((item) =>
+      typeof item === "string" ? prettifyLabels(item) : item,
+    );
+  }
+
+  if (typeof label !== "string") return label;
+
+  const greekMapping = {
+    GAMMA: "Γ",
+    DELTA: "Δ",
+    SIGMA: "Σ",
+    LAMBDA: "Λ",
+  };
+
+  // Replace named Greek letters
+  Object.entries(greekMapping).forEach(([key, symbol]) => {
+    const regex = new RegExp(key, "gi");
+    label = label.replace(regex, symbol);
+  });
+
+  // Replace standalone G with Γ
+  label = label.replace(/\bG\b/g, "Γ");
+
+  // Replace hyphens with em dashes
+  label = label.replace(/-/g, "—");
+
+  // Replace _0–_9 with subscript numerals
+  const subscriptMap = {
+    0: "₀",
+    1: "₁",
+    2: "₂",
+    3: "₃",
+    4: "₄",
+    5: "₅",
+    6: "₆",
+    7: "₇",
+    8: "₈",
+    9: "₉",
+  };
+  label = label.replace(/_(\d)/g, (_, d) => subscriptMap[d] || `_` + d);
+
+  return label;
+}
 
 /**
  * Custom hook to load async data safely with cancellation support.
@@ -67,7 +114,6 @@ function safePrepareBands(bands, fermi, configName) {
 
 export default function SuperConductivity({ params, loadedData }) {
   const supercon = loadedData?.details?.supercon;
-  const [scPhonon, setScPhonon] = useState(null);
 
   // --- Gap function fetcher ---
   const gapfuncFetcher = useCallback(async () => {
@@ -92,7 +138,15 @@ export default function SuperConductivity({ params, loadedData }) {
     scPhononFetcher,
   ]);
 
-  console.log("scData", scPhonons);
+  // Replace highsym_qts with pretty labels once loaded
+  const scPhononsPretty = useMemo(() => {
+    console.log(scPhonons);
+    if (!scPhonons) return null;
+    return {
+      ...scPhonons,
+      highsym_qpts: scPhonons.highsym_qpts?.map(prettifyLabels) ?? [],
+    };
+  }, [scPhonons]);
 
   // --- A2F fetcher ---
   const a2fFetcher = useCallback(async () => {
@@ -257,11 +311,11 @@ export default function SuperConductivity({ params, loadedData }) {
           </div>
           {scPhonons && (
             <PhononVisualizer
-              key={JSON.stringify(scPhonons)}
+              key={JSON.stringify(scPhononsPretty)}
               props={{
                 title: "Demo",
                 fastMode: true,
-                ...scPhonons,
+                ...scPhononsPretty,
               }}
             />
           )}
