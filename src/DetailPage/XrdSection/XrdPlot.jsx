@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Plotly from "plotly.js-basic-dist-min";
 import Form from "react-bootstrap/Form";
 import { Row, Col } from "react-bootstrap";
@@ -8,9 +8,9 @@ import DataDownloadButton from "../../common/DataDownloadButton.jsx";
 
 const XrdPlot = ({ xrdData }) => {
   const plotRef = useRef(null);
-  const wavelengthsList = Object.keys(xrdData);
 
-  const [wavelength, setWavelength] = useState(wavelengthsList[0]);
+  const wavelengthsList = xrdData ? Object.keys(xrdData) : [];
+  const [wavelength, setWavelength] = useState(wavelengthsList[0] || "");
   const [fitType, setFitType] = useState("Gaussian");
   const [fwhm, setFwhm] = useState(1.0);
   const [showCurve, setShowCurve] = useState(true);
@@ -62,9 +62,11 @@ const XrdPlot = ({ xrdData }) => {
 
     // cleanup on unmount
     return () => {
-      Plotly.purge(plotRef.current);
+      if (plotRef.current) Plotly.purge(plotRef.current);
     };
-  }, [xrdData, wavelength, fitType, fwhm, showCurve, showHistogram]);
+  }, [plotData, xRange, yRange]);
+
+  if (!xrdData) return <p>Loading XRD data...</p>;
 
   return (
     <div>
@@ -108,7 +110,7 @@ const XrdPlot = ({ xrdData }) => {
               max={2.0}
               step={0.05}
               value={fwhm}
-              onInput={(e) => setFwhm(parseFloat(e.target.value))}
+              onInput={(e) => setFwhm(parseFloat(e.currentTarget.value))}
             />
           </Form>
 
