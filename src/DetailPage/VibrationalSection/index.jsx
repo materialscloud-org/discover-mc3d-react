@@ -11,9 +11,16 @@ import { McloudSpinner } from "mc-react-library";
 
 export default function VibrationalSection({ params, loadedData }) {
   const [phononVisData, setPhononVisData] = useState(null);
-  const [notAvail, setNotAvail] = useState(false);
+  const [notAvail, setNotAvail] = useState(true); // only some have a notAvail state
 
   useEffect(() => {
+    if (!params?.supercon) {
+      setNotAvail(true);
+      return; // exit early
+    }
+
+    setNotAvail(false); //supercon exists
+
     loadSuperConPhononVis(params.method, params.id).then((loadedSCPVis) => {
       if (loadedSCPVis) {
         const prettyData = {
@@ -22,10 +29,10 @@ export default function VibrationalSection({ params, loadedData }) {
         };
         setPhononVisData(prettyData);
       } else {
-        setNotAvail(true);
+        setNotAvail(true); // set to true if something went wrong.
       }
     });
-  }, [params.method, params.id]);
+  }, [params?.supercon, params.method, params.id]);
 
   let content;
   if (notAvail) {
@@ -35,7 +42,7 @@ export default function VibrationalSection({ params, loadedData }) {
       <div
         style={{
           width: "150px",
-          height: "500px",
+          height: "400px",
           padding: "40px",
           margin: "0 auto",
         }}
