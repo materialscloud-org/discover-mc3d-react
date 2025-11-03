@@ -10,47 +10,47 @@ import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
 export default function VibrationalSection({ params, loadedData }) {
+  // Early return if there's no supercon data
+
   const [phononVisData, setPhononVisData] = useState(null);
-  const [notAvail, setNotAvail] = useState(true); // only some have a notAvail state
+  const [notAvail, setNotAvail] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!params?.supercon) {
-      setNotAvail(true);
-      return; // exit early
+    if (!loadedData?.details?.supercon) {
+      return; // dont fetch if no supercon data.
     }
+    setLoading(true);
 
-    setNotAvail(false); //supercon exists
+    loadSuperConPhononVis(params.method, params.id)
+      .then((loadedSCPVis) => {
+        if (loadedSCPVis) {
+          setPhononVisData({
+            ...loadedSCPVis,
+            highsym_qpts: loadedSCPVis.highsym_qpts?.map(prettifyLabels),
+          });
+        } else {
+          setNotAvail(true);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [params, loadedData]);
 
-    loadSuperConPhononVis(params.method, params.id).then((loadedSCPVis) => {
-      if (loadedSCPVis) {
-        const prettyData = {
-          ...loadedSCPVis,
-          highsym_qpts: loadedSCPVis.highsym_qpts?.map(prettifyLabels),
-        };
-        setPhononVisData(prettyData);
-      } else {
-        setNotAvail(true); // set to true if something went wrong.
-      }
-    });
-  }, [params?.supercon, params.method, params.id]);
+  // dont render if no data.
+  if (!loadedData?.details?.supercon) return null;
 
   let content;
+
   if (notAvail) {
-    return <div className="empty-vibrationsection-div" />;
-  } else if (phononVisData == null) {
+    // dont render if something went wrong.
+    return null;
+  } else if (loading) {
     content = (
-      <div
-        style={{
-          width: "150px",
-          height: "400px",
-          padding: "40px",
-          margin: "0 auto",
-        }}
-      >
+      <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
         <McloudSpinner />
       </div>
     );
-  } else {
+  } else if (phononVisData) {
     content = (
       <PhononVisualizer
         key={JSON.stringify(phononVisData)}
@@ -83,10 +83,8 @@ export default function VibrationalSection({ params, loadedData }) {
       </div>
       <Container fluid className="section-container">
         <Row>
-          <div>
-            <div className="subsection-title">
-              Interactive phonon visualization
-            </div>
+          <div className="subsection-title">
+            Interactive phonon visualization
           </div>
           {content}
         </Row>
