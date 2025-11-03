@@ -3,26 +3,54 @@ import { Row, Container } from "react-bootstrap";
 import { DoiBadge } from "mc-react-library";
 
 import { CitationsList } from "../../common/CitationsList";
-
 import PhononVisualizer from "mc-react-phonon-visualizer";
 import { loadSuperConPhononVis } from "../../common/restApiUtils";
 
 import prettifyLabels from "./prettifyPVlabels";
+import { McloudSpinner } from "mc-react-library";
 
 export default function VibrationalSection({ params, loadedData }) {
   const [phononVisData, setPhononVisData] = useState(null);
+  const [notAvail, setNotAvail] = useState(false);
 
   useEffect(() => {
-    loadSuperConPhononVis(params.method, params.id).then((data) => {
-      if (!data) return;
-
-      const prettyData = {
-        ...data,
-        highsym_qpts: data.highsym_qpts?.map(prettifyLabels),
-      };
-      setPhononVisData(prettyData);
+    loadSuperConPhononVis(params.method, params.id).then((loadedSCPVis) => {
+      if (loadedSCPVis) {
+        const prettyData = {
+          ...loadedSCPVis,
+          highsym_qpts: loadedSCPVis.highsym_qpts?.map(prettifyLabels),
+        };
+        setPhononVisData(prettyData);
+      } else {
+        setNotAvail(true);
+      }
     });
-  }, []);
+  }, [params.method, params.id]);
+
+  let content;
+  if (notAvail) {
+    return <div className="empty-vibrationsection-div" />;
+  } else if (phononVisData == null) {
+    content = (
+      <div
+        style={{
+          width: "150px",
+          height: "500px",
+          padding: "40px",
+          margin: "0 auto",
+        }}
+      >
+        <McloudSpinner />
+      </div>
+    );
+  } else {
+    content = (
+      <PhononVisualizer
+        key={JSON.stringify(phononVisData)}
+        props={{ title: "Demo", fastMode: true, ...phononVisData }}
+      />
+    );
+  }
 
   return (
     <div>
@@ -53,16 +81,7 @@ export default function VibrationalSection({ params, loadedData }) {
               Interactive phonon visualization
             </div>
           </div>
-          {phononVisData && (
-            <PhononVisualizer
-              key={JSON.stringify(phononVisData)}
-              props={{
-                title: "Demo",
-                fastMode: true,
-                ...phononVisData,
-              }}
-            />
-          )}
+          {content}
         </Row>
       </Container>
     </div>

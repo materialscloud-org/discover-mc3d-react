@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import { McloudSpinner } from "mc-react-library";
 import Plotly from "plotly.js-basic-dist-min";
 
 const GAP_TRACE_CONFIG = {
@@ -86,6 +87,8 @@ function createAnalyticGapTrace(
 
 export default function GapFunction({
   gapfuncData,
+  loading = false,
+  loadingIconScale = 8,
   Tc,
   verts,
   points,
@@ -100,13 +103,12 @@ export default function GapFunction({
   const plotRef = useRef(null);
 
   useEffect(() => {
-    if (!gapfuncData || !plotRef.current) return;
+    if (!gapfuncData || !plotRef.current || loading) return;
 
     const plotElement = plotRef.current;
-
     const safeVerts = verts ?? [];
 
-    // get traces from gap funcData
+    // build traces
     const traces = Object.entries(gapfuncData)
       .filter(([val]) => Array.isArray(val))
       .map(([arr]) => {
@@ -139,8 +141,7 @@ export default function GapFunction({
           mode: "lines",
           line: { color: GAP_TRACE_CONFIG.color },
           hovertemplate:
-            "<b>Histogram of Δ<sub>nk</sub>(%{text:.1f}K) at %{y:.2f} meV:</b> %{customdata:.2f} " +
-            "<extra></extra>",
+            "<b>Histogram of Δ<sub>nk</sub>(%{text:.1f}K) at %{y:.2f} meV:</b> %{customdata:.2f} <extra></extra>",
         };
       });
 
@@ -162,7 +163,7 @@ export default function GapFunction({
     const curveTrace = createAnalyticGapTrace(delta0, expo, Tc, resolution);
     traces.push(curveTrace);
 
-    let layoutWithVerts = {
+    const layoutWithVerts = {
       ...GAP_LAYOUT_CONFIG,
       xaxis: {
         ...GAP_LAYOUT_CONFIG.xaxis,
@@ -195,7 +196,46 @@ export default function GapFunction({
     });
 
     return () => Plotly.purge(plotElement);
-  }, [gapfuncData]);
+  }, [
+    gapfuncData,
+    verts,
+    points,
+    delta0,
+    expo,
+    Tc,
+    resolution,
+    minXVal,
+    maxXVal,
+    minYVal,
+    maxYVal,
+    loading,
+  ]);
 
-  return <div ref={plotRef} style={{ width: "100%", height: "350px" }} />;
+  return (
+    <div
+      ref={plotRef}
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "450px",
+        border: loading ? "2px solid #ccc" : "none",
+        borderRadius: loading ? "8px" : "0",
+      }}
+    >
+      {loading && (
+        <div
+          style={{
+            width: `${loadingIconScale}%`,
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 10,
+          }}
+        >
+          <McloudSpinner />
+        </div>
+      )}
+    </div>
+  );
 }
