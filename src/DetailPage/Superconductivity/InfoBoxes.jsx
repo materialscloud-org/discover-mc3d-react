@@ -1,5 +1,3 @@
-import { MCInfoBox } from "../../common/MCInfoBox";
-
 import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
 
 // some symbols need a little space to look good.

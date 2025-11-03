@@ -68,7 +68,7 @@ export const COMMON_LAYOUT_CONFIG = {
     borderwidth: 1,
   },
 
-  margin: { l: 65, r: 10, t: 0, b: 50 },
+  margin: { l: 65, r: 10, t: 10, b: 50 },
 
   shapes: [
     {
@@ -96,7 +96,7 @@ export const SUPERCON_BANDS_LAYOUT_CONFIG = {
 
 export const SUPERCON_PHONON_A2F_LAYOUT_CONFIG = {
   ...COMMON_LAYOUT_CONFIG,
-  margin: { l: 65, r: 10, t: 50, b: 50 },
+  margin: { l: 65, r: 10, t: 50, b: 40 },
 
   yaxis: {
     ...COMMON_LAYOUT_CONFIG.yaxis,

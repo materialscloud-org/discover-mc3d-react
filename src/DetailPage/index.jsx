@@ -25,6 +25,7 @@ import OverviewSection from "./OverviewSection";
 import StructureSection from "./StructureSection";
 import ProvenanceSection from "./ProvenanceSection";
 import XrdSection from "./XrdSection";
+import VibrationalSection from "./VibrationalSection";
 import SuperConductivity from "./Superconductivity";
 
 // if fetching fails we use this.
@@ -134,6 +135,7 @@ function DetailPage() {
         <StructureSection params={params} loadedData={loadedData} />
         <ProvenanceSection params={params} loadedData={loadedData} />
         <XrdSection params={params} loadedData={loadedData} />
+        <VibrationalSection params={params} loadedData={loadedData} />
         <SuperConductivity params={params} loadedData={loadedData} />
         {/* <RelatedSection /> */}
       </Container>

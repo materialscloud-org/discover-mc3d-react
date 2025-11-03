@@ -37,7 +37,7 @@ const GAP_LAYOUT_CONFIG = {
   legend: {
     visible: false,
   },
-  margin: { t: 10, b: 50, l: 52, r: 0 },
+  margin: { t: 10, b: 40, l: 65, r: 2 },
   shapes: [
     // the default border is a bit too thick
     {

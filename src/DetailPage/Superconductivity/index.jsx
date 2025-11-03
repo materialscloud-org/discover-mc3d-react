@@ -1,10 +1,12 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { Container, Row } from "react-bootstrap";
+import { useState, useEffect, useCallback } from "react";
+import { Container, Row, Col } from "react-bootstrap";
+
+import { CitationsList } from "../../common/CitationsList";
+import { DoiBadge, ExploreButton } from "mc-react-library";
+import { EXPLORE_URLS } from "../../common/restApiUtils";
 
 import "./index.css";
 
-import TitledColumn from "./TitledColumn";
-import { SuperconHeader } from "./Header";
 import SuperconInfoBox from "./InfoBoxes";
 import GapFunction from "./GapFunction";
 import { getA2FTraces } from "./getA2FTraces";
@@ -19,60 +21,8 @@ import {
   SUPERCON_BANDS_LAYOUT_CONFIG,
   SUPERCON_PHONON_A2F_LAYOUT_CONFIG,
 } from "../../common/BandStructure/configs";
-import {
-  loadAiidaBands,
-  loadXY,
-  loadSuperConPhononVis,
-} from "../../common/restApiUtils";
 
-import PhononVisualizer from "mc-react-phonon-visualizer";
-
-function prettifyLabels(label) {
-  // If it's an array, recursively prettify all string elements
-  if (Array.isArray(label)) {
-    return label.map((item) =>
-      typeof item === "string" ? prettifyLabels(item) : item,
-    );
-  }
-
-  if (typeof label !== "string") return label;
-
-  const greekMapping = {
-    GAMMA: "Γ",
-    DELTA: "Δ",
-    SIGMA: "Σ",
-    LAMBDA: "Λ",
-  };
-
-  // Replace named Greek letters
-  Object.entries(greekMapping).forEach(([key, symbol]) => {
-    const regex = new RegExp(key, "gi");
-    label = label.replace(regex, symbol);
-  });
-
-  // Replace standalone G with Γ
-  label = label.replace(/\bG\b/g, "Γ");
-
-  // Replace hyphens with em dashes
-  label = label.replace(/-/g, "—");
-
-  // Replace _0–_9 with subscript numerals
-  const subscriptMap = {
-    0: "₀",
-    1: "₁",
-    2: "₂",
-    3: "₃",
-    4: "₄",
-    5: "₅",
-    6: "₆",
-    7: "₇",
-    8: "₈",
-    9: "₉",
-  };
-  label = label.replace(/_(\d)/g, (_, d) => subscriptMap[d] || `_` + d);
-
-  return label;
-}
+import { loadAiidaBands, loadXY } from "../../common/restApiUtils";
 
 /**
  * Custom hook to load async data safely with cancellation support.
@@ -128,26 +78,6 @@ export default function SuperConductivity({ params, loadedData }) {
     gapfuncFetcher,
   ]);
 
-  // --- Supercon phonon fetcher ---
-  const scPhononFetcher = useCallback(async () => {
-    if (!params.id) return null;
-    return loadSuperConPhononVis(params.method, params.id);
-  }, [params.method, params.id]);
-
-  const [scPhonons, scPhononsLoading] = useAsyncData(scPhononFetcher, [
-    scPhononFetcher,
-  ]);
-
-  // Replace highsym_qts with pretty labels once loaded
-  const scPhononsPretty = useMemo(() => {
-    console.log(scPhonons);
-    if (!scPhonons) return null;
-    return {
-      ...scPhonons,
-      highsym_qpts: scPhonons.highsym_qpts?.map(prettifyLabels) ?? [],
-    };
-  }, [scPhonons]);
-
   // --- A2F fetcher ---
   const a2fFetcher = useCallback(async () => {
     if (!supercon.a2f_uuid) return null;
@@ -201,31 +131,71 @@ export default function SuperConductivity({ params, loadedData }) {
   const bandsDataArray = bandsResult?.el ?? [];
   const phononBandsArray = bandsResult?.ph ?? [];
 
+  console.log("aniso_info", supercon.aniso_info);
+
   if (!supercon) return <div className="empty-supercon-div" />;
 
   return (
     <div>
       <Container fluid className="section-container">
-        <SuperconHeader params={params} superconData={supercon} />
+        <div
+          style={{
+            margin: "10px 0px",
+            padding: "20px 0px 10px",
+            borderBottom: "1px solid #c4c4c4",
+          }}
+        >
+          <div style={{ fontSize: "24px" }}>Superconductivity estimation</div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "2px",
+              alignItems: "center",
+            }}
+          >
+            <CitationsList citationLabels={["MBercxSupercon25"]} />
+            <DoiBadge doi_id="9w-az" label="Data DOI" />
+          </div>
+        </div>
 
+        <div
+          className="alert alert-warning"
+          style={{ margin: "10px 10px 5px 10px" }}
+          role="alert"
+        >
+          This contribution re-relaxes the structure with a different
+          methodology. To see this structure, explore the AiiDA provenance{" "}
+          {supercon.a2f_uuid && (
+            <ExploreButton
+              explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+              uuid={supercon.structure_uuid}
+            />
+          )}
+        </div>
+        <div style={{ padding: "10px 10px" }}>
+          This dataset provides results from a high-throughput search for
+          phonon-mediated superconductivity, where electron–phonon interactions
+          and critical temperatures were systematically computed to identify and
+          characterize promising superconducting materials. This frontend
+          section contains the final superconductivity estimation results, as
+          well as the intermediate electronic and vibrational calculated
+          properties. For further details regarding the methodology see the{" "}
+          <a href="./#/contributions" target="_blank" rel="noopener noreferrer">
+            contribution details
+          </a>
+          .
+        </div>
+
+        {/* Info box and electronic bands */}
         <Row>
-          <TitledColumn
-            width={6}
-            title=""
-            titleStyle={{ marginTop: 0 }}
-            condition={supercon != null}
-          >
-            <SuperconInfoBox superconData={supercon} style={{ marginTop: 0 }} />
-          </TitledColumn>
-
-          <TitledColumn
-            width={6}
-            title="Electronic band structure"
-            loading={bandsLoading}
-            condition={bandsDataArray.length > 0}
-            titleStyle={{ marginTop: 0 }}
-          >
-            <div style={{ marginBottom: 10, marginLeft: 10 }}>
+          {/* Looks bad on sm/md breakpoints but also md/lg breakpoints look bad too... */}
+          <Col sm={12} md={6} className="mt-2 mt-md-5">
+            <SuperconInfoBox superconData={supercon} />
+          </Col>
+          <Col sm={12} md={6} className="mt-3 mt-md-0">
+            <div className="subsection-title">Electronic band structure</div>
+            <div className="mb-3 ms-2">
               Electronic band structure calculated with Quantum ESPRESSO (QE)
               and EPW.
             </div>
@@ -236,23 +206,20 @@ export default function SuperConductivity({ params, loadedData }) {
               maxYval={10.8}
               layoutOverrides={SUPERCON_BANDS_LAYOUT_CONFIG}
             />
-          </TitledColumn>
+          </Col>
         </Row>
 
-        <Row>
-          <TitledColumn
-            width={12}
-            title="Phonon bands and electron-phonon interaction"
-            loading={bandsLoading}
-            condition={
-              phononBandsArray.length > 0 &&
-              supercon.highest_phonon_frequency != null
-            }
-          >
-            <div style={{ marginLeft: 10 }}>
+        {/* Phonon bands and e-p interaction */}
+        {a2fData && (
+          <Row>
+            <div className="subsection-title">
+              Phonon bands and electron-phonon interaction
+            </div>
+            <div style={{ padding: "0px 10px" }}>
               Phonon band structure calculated with EPW, Eliashberg spectral
               function [α²F(ω)], and electron-phonon coupling strength [λ(ω)].
             </div>
+
             <BandStructure
               bandsDataArray={phononBandsArray}
               minYval={0}
@@ -263,10 +230,10 @@ export default function SuperConductivity({ params, loadedData }) {
               }
               dosDataArray={[
                 {
-                  dosData: { x: [0], y: [0] },
+                  dosData: { x: [0], y: [0] }, // fake dosData.
                   traceFormat: {
                     name: "",
-                    legend: "legend2",
+                    legend: "legend2", // draw legend on axisTwo.
                     showlegend: false,
                     opacity: 0,
                   },
@@ -274,6 +241,7 @@ export default function SuperConductivity({ params, loadedData }) {
               ]}
               loading={bandsLoading}
               layoutOverrides={SUPERCON_PHONON_A2F_LAYOUT_CONFIG}
+              // draw traces on fake dos.
               customTraces={getA2FTraces({
                 a2f: a2fData?.a2f,
                 frequency: a2fData?.frequency,
@@ -281,45 +249,31 @@ export default function SuperConductivity({ params, loadedData }) {
                 lambda: a2fData?.lambda,
               })}
             />
-          </TitledColumn>
-        </Row>
+          </Row>
+        )}
 
-        <Row>
-          <TitledColumn
-            width={9}
-            title="Anisotropic superconducting gap function"
-            condition={supercon.aniso_info != null}
-            loading={gapfuncLoading}
-          >
-            <GapFunction
-              gapfuncData={gapfuncData}
-              verts={supercon.aniso_info?.temps}
-              points={supercon.aniso_info?.average_deltas}
-              delta0={supercon.aniso_info?.delta0}
-              Tc={supercon.aniso_info?.Tc}
-              expo={supercon.aniso_info?.expo}
-              minXVal={0}
-              maxXVal={null}
-              minYVal={0}
-              maxYVal={null}
-            />
-          </TitledColumn>
-        </Row>
-        <Row style={{ marginTop: "20px" }}>
-          <div className="mb-0">
-            <div className="subsection-title">Phonon Visualization</div>
-          </div>
-          {scPhonons && (
-            <PhononVisualizer
-              key={JSON.stringify(scPhononsPretty)}
-              props={{
-                title: "Demo",
-                fastMode: true,
-                ...scPhononsPretty,
-              }}
-            />
-          )}
-        </Row>
+        {/* Anisotropic gap function. */}
+        {supercon.aniso_info && (
+          <Row>
+            <Col xs={12} style={{ maxWidth: "1200px" }}>
+              <div className="subsection-title">
+                Anisotropic superconducting gap function
+              </div>
+              <GapFunction
+                gapfuncData={gapfuncData}
+                verts={supercon.aniso_info.temps}
+                points={supercon.aniso_info.average_deltas}
+                delta0={supercon.aniso_info.delta0}
+                Tc={supercon.aniso_info.Tc}
+                expo={supercon.aniso_info.expo}
+                minXVal={0}
+                maxXVal={null}
+                minYVal={0}
+                maxYVal={null}
+              />
+            </Col>
+          </Row>
+        )}
       </Container>
     </div>
   );
