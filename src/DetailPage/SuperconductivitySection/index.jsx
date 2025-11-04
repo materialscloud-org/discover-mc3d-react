@@ -24,7 +24,7 @@ import {
 } from "../../common/BandStructure/configs";
 
 // Main component
-export default function SuperConductivity({ params, loadedData }) {
+export default function SuperConductivitySection({ params, loadedData }) {
   const supercon = loadedData?.details?.supercon;
   const method = params.method;
 

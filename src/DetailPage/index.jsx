@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 
 import "./index.css";
 
@@ -25,8 +25,14 @@ import OverviewSection from "./OverviewSection";
 import StructureSection from "./StructureSection";
 import ProvenanceSection from "./ProvenanceSection";
 import XrdSection from "./XrdSection";
-import VibrationalSection from "./VibrationalSection";
-import SuperConductivity from "./Superconductivity";
+
+// import VibrationalSection from "./VibrationalSection";
+// import SuperConductivity from "./Superconductivity";
+// lazy load the sections that may not exist.
+const VibrationalSection = lazy(() => import("./VibrationalSection"));
+const SuperconductivitySection = lazy(
+  () => import("./SuperconductivitySection"),
+);
 
 // if fetching fails we use this.
 import MissingDataWarning from "./MissingDataWarning";
@@ -135,8 +141,27 @@ function DetailPage() {
         <StructureSection params={params} loadedData={loadedData} />
         <ProvenanceSection params={params} loadedData={loadedData} />
         <XrdSection params={params} loadedData={loadedData} />
-        <VibrationalSection params={params} loadedData={loadedData} />
-        <SuperConductivity params={params} loadedData={loadedData} />
+
+        {/* Mcloud Spinner while jsx is loading. */}
+        <Suspense
+          fallback={
+            <div>
+              <McloudSpinner />
+            </div>
+          }
+        >
+          <VibrationalSection params={params} loadedData={loadedData} />
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <div>
+              <McloudSpinner />
+            </div>
+          }
+        >
+          <SuperconductivitySection params={params} loadedData={loadedData} />
+        </Suspense>
         {/* <RelatedSection /> */}
       </Container>
     </MaterialsCloudHeader>
