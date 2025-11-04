@@ -30,13 +30,11 @@
     "react-markdown": "^10.1.0",
     "react-router-dom": "6",
     "react-router-hash-link": "^2.4.3",
-    "react-scripts": "5.0.1",
     "react-table": "^7.7.0",
     "rehype-katex": "^7.0.1",
     "remark-footnotes": "^4.0.1",
     "remark-gfm": "^4.0.1",
-    "remark-math": "^6.0.0",
-    "web-vitals": "^2.1.4"
+    "remark-math": "^6.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
@@ -48,6 +46,9 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "gh-pages": "^6.1.1",
     "prettier": "^3.2.4",
-    "vite": "^7.1.12"
+    "react-scripts": "5.0.1",
+    "rollup-plugin-visualizer": "^6.0.5",
+    "vite": "^7.1.12",
+    "web-vitals": "^2.1.4"
   }
 }
