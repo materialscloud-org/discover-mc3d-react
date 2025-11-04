@@ -29,6 +29,7 @@ import {
 } from "./handleUrlParams";
 
 const DEFAULT_METHOD = "pbesol-v2";
+const sessionDataCache = {};
 
 // MC3D Landing page React component.
 function MainPage() {
@@ -51,7 +52,17 @@ function MainPage() {
   }, []);
 
   useEffect(() => {
+    // check the cache to see if it already exists.
+    const key = preset || method;
+    if (sessionDataCache[key]) {
+      const cached = sessionDataCache[key];
+      setColumns(updateColumnsFromUrl(cached.columns, urlParams));
+      setRows(cached.rows);
+      return;
+    }
+    // if not load it and cache it.
     loadDataMc3d(method).then((loadedData) => {
+      sessionDataCache[key] = loadedData;
       const updatedColumns = updateColumnsFromUrl(
         loadedData.columns,
         urlParams,
