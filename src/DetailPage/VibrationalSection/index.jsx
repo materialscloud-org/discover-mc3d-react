@@ -54,7 +54,7 @@ export default function VibrationalSection({ params, loadedData }) {
     content = (
       <PhononVisualizer
         key={JSON.stringify(phononVisData)}
-        props={{ title: "Demo", fastMode: true, ...phononVisData }}
+        props={{ ...phononVisData }}
       />
     );
   }

@@ -26,6 +26,7 @@ import {
   updateColumnsFromUrl,
   getMethodFromUrl,
   getMethodFromPreset,
+  getPresetColumnFilters,
 } from "./handleUrlParams";
 
 const DEFAULT_METHOD = "pbesol-v2";
@@ -39,11 +40,12 @@ function MainPage() {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
 
-  // derive current method and preset directly from URL
+  // derive current method, preset and filters directly from URL
   const preset = urlParams.get("preset") || null;
   const method = preset
     ? getMethodFromPreset(preset)
     : getMethodFromUrl(urlParams, DEFAULT_METHOD);
+  const columnFilters = getPresetColumnFilters(preset);
 
   const materialSelectorRef = useRef(null);
 
@@ -132,6 +134,7 @@ function MainPage() {
               ref={materialSelectorRef}
               columns={columns}
               rows={rows}
+              columnFilters={columnFilters}
             />
             <DownloadButton
               materialSelectorRef={materialSelectorRef}

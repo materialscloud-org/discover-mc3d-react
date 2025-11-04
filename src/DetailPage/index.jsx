@@ -145,7 +145,7 @@ function DetailPage() {
         {/* Mcloud Spinner while jsx is loading. */}
         <Suspense
           fallback={
-            <div>
+            <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
               <McloudSpinner />
             </div>
           }
@@ -155,7 +155,7 @@ function DetailPage() {
 
         <Suspense
           fallback={
-            <div>
+            <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
               <McloudSpinner />
             </div>
           }

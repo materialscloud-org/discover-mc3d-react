@@ -16,6 +16,7 @@ export const PRESETS = {
       "allen_dynes_tc",
       "highest_phonon_frequency",
     ],
+    filterColumns: ["allen_dynes_tc"],
   },
 };
 
@@ -139,4 +140,12 @@ export function updateColumnsFromUrl(columns, urlParams) {
   );
 
   return newColumns;
+}
+
+export function getPresetColumnFilters(preset) {
+  if (!preset || !PRESETS[preset]) return {};
+  return (PRESETS[preset].filterColumns || []).reduce((acc, field) => {
+    acc[field] = { filterType: "text", type: "notBlank" };
+    return acc;
+  }, {});
 }

@@ -132,44 +132,46 @@ export default function SuperConductivitySection({ params, loadedData }) {
         {/* Phonon bands and e-p interaction */}
         {supercon.a2f_uuid && (
           <Row>
-            <div className="subsection-title">
-              Phonon bands and electron-phonon interaction
-            </div>
-            <div style={{ padding: "0px 10px" }}>
-              Phonon band structure calculated with EPW, Eliashberg spectral
-              function [α²F(ω)], and electron-phonon coupling strength [λ(ω)].
-            </div>
+            <Col className="mt-4 mt-lg-0">
+              <div className="subsection-title">
+                Phonon bands and electron-phonon interaction
+              </div>
+              <div style={{ padding: "0px 10px" }}>
+                Phonon band structure calculated with EPW, Eliashberg spectral
+                function [α²F(ω)], and electron-phonon coupling strength [λ(ω)].
+              </div>
 
-            <BandStructure
-              bandsDataArray={hasPhBands ? bandsResults.ph : null}
-              loading={bandsLoading}
-              loadingIconScale={7}
-              minYval={0}
-              maxYval={
-                supercon.highest_phonon_frequency != null
-                  ? Math.min(supercon.highest_phonon_frequency + 2, 100)
-                  : 100
-              }
-              dosDataArray={[
-                {
-                  dosData: { x: [0], y: [0] }, // fake dosData.
-                  traceFormat: {
-                    name: "",
-                    legend: "legend2", // draw legend on axisTwo.
-                    showlegend: false,
-                    opacity: 0,
+              <BandStructure
+                bandsDataArray={hasPhBands ? bandsResults.ph : null}
+                loading={bandsLoading}
+                loadingIconScale={7}
+                minYval={0}
+                maxYval={
+                  supercon.highest_phonon_frequency != null
+                    ? Math.min(supercon.highest_phonon_frequency + 2, 100)
+                    : 100
+                }
+                dosDataArray={[
+                  {
+                    dosData: { x: [0], y: [0] }, // fake dosData.
+                    traceFormat: {
+                      name: "",
+                      legend: "legend2", // draw legend on axisTwo.
+                      showlegend: false,
+                      opacity: 0,
+                    },
                   },
-                },
-              ]}
-              layoutOverrides={SUPERCON_PHONON_A2F_LAYOUT_CONFIG}
-              // draw traces on fake dos.
-              customTraces={getA2FTraces({
-                a2f: a2fData?.a2f,
-                frequency: a2fData?.frequency,
-                degaussq: a2fData?.degaussq,
-                lambda: a2fData?.lambda,
-              })}
-            />
+                ]}
+                layoutOverrides={SUPERCON_PHONON_A2F_LAYOUT_CONFIG}
+                // draw traces on fake dos.
+                customTraces={getA2FTraces({
+                  a2f: a2fData?.a2f,
+                  frequency: a2fData?.frequency,
+                  degaussq: a2fData?.degaussq,
+                  lambda: a2fData?.lambda,
+                })}
+              />
+            </Col>
           </Row>
         )}
 
