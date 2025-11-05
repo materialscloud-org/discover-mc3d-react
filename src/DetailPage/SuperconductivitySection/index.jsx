@@ -86,7 +86,7 @@ export default function SuperConductivitySection({ params, loadedData }) {
         >
           This contribution re-relaxes the structure with a different
           methodology. To see this structure, explore the AiiDA provenance{" "}
-          {supercon.a2f_uuid && (
+          {supercon.structure_uuid && (
             <ExploreButton
               explore_url={EXPLORE_URLS[params.method] + "-supercon"}
               uuid={supercon.structure_uuid}
@@ -116,8 +116,20 @@ export default function SuperConductivitySection({ params, loadedData }) {
           <Col sm={12} md={6} className="mt-3 mt-md-0">
             <div className="subsection-title">Electronic band structure</div>
             <div className="mb-3 ms-2">
-              Electronic band structure calculated with Quantum ESPRESSO (QE)
-              and EPW.
+              Electronic band structure calculated with Quantum ESPRESSO (QE){" "}
+              {supercon.qe_el_band_structure_uuid && (
+                <ExploreButton
+                  explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+                  uuid={supercon.qe_el_band_structure_uuid}
+                />
+              )}{" "}
+              and EPW{" "}
+              {supercon.epw_el_band_structure_uuid && (
+                <ExploreButton
+                  explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+                  uuid={supercon.epw_el_band_structure_uuid}
+                />
+              )}
             </div>
             <BandStructure
               bandsDataArray={hasElecBands ? bandsResults.el : null}
@@ -130,15 +142,28 @@ export default function SuperConductivitySection({ params, loadedData }) {
         </Row>
 
         {/* Phonon bands and e-p interaction */}
-        {supercon.a2f_uuid && (
+        {supercon.epw_ph_band_structure_uuid && (
           <Row>
             <Col className="mt-4 mt-lg-0">
               <div className="subsection-title">
                 Phonon bands and electron-phonon interaction
               </div>
               <div style={{ padding: "0px 10px" }}>
-                Phonon band structure calculated with EPW, Eliashberg spectral
-                function [α²F(ω)], and electron-phonon coupling strength [λ(ω)].
+                Phonon band structure calculated with EPW{" "}
+                {supercon.epw_ph_band_structure_uuid && (
+                  <ExploreButton
+                    explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+                    uuid={supercon.epw_ph_band_structure_uuid}
+                  />
+                )}{" "}
+                Eliashberg spectral function [α²F(ω)], and electron-phonon
+                coupling strength [λ(ω)]{" "}
+                {supercon.a2f_uuid && (
+                  <ExploreButton
+                    explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+                    uuid={supercon.a2f_uuid}
+                  />
+                )}{" "}
               </div>
 
               <BandStructure
@@ -180,7 +205,13 @@ export default function SuperConductivitySection({ params, loadedData }) {
           <Row>
             <Col xs={12} style={{ maxWidth: "1200px" }}>
               <div className="subsection-title">
-                Anisotropic superconducting gap function
+                Anisotropic superconducting gap function{" "}
+                {supercon.aniso_gap_function_uuid && (
+                  <ExploreButton
+                    explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+                    uuid={supercon.aniso_gap_function_uuid}
+                  />
+                )}{" "}
               </div>
               <GapFunction
                 gapfuncData={gapfuncData}
