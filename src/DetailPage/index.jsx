@@ -142,26 +142,35 @@ function DetailPage() {
         <ProvenanceSection params={params} loadedData={loadedData} />
         <XrdSection params={params} loadedData={loadedData} />
 
-        {/* Mcloud Spinner while jsx is loading. */}
-        <Suspense
-          fallback={
-            <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
-              <McloudSpinner />
-            </div>
-          }
-        >
-          <VibrationalSection params={params} loadedData={loadedData} />
-        </Suspense>
+        {/* only try to load the following sections if you visit supercon */}
+        {loadedData?.details?.supercon && (
+          <Suspense
+            fallback={
+              <div
+                style={{ width: "150px", padding: "40px", margin: "0 auto" }}
+              >
+                <McloudSpinner />
+              </div>
+            }
+          >
+            <VibrationalSection params={params} loadedData={loadedData} />
+          </Suspense>
+        )}
 
-        <Suspense
-          fallback={
-            <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
-              <McloudSpinner />
-            </div>
-          }
-        >
-          <SuperconductivitySection params={params} loadedData={loadedData} />
-        </Suspense>
+        {loadedData?.details?.supercon && (
+          <Suspense
+            fallback={
+              <div
+                style={{ width: "150px", padding: "40px", margin: "0 auto" }}
+              >
+                <McloudSpinner />
+              </div>
+            }
+          >
+            <SuperconductivitySection params={params} loadedData={loadedData} />
+          </Suspense>
+        )}
+
         {/* <RelatedSection /> */}
       </Container>
     </MaterialsCloudHeader>
