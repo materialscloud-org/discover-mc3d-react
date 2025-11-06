@@ -39,7 +39,7 @@ export const EXPLORE_URLS = {
 // delay function for testing loading animations:
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function fetchWithFallback(primaryUrl, fallbackUrl, timeout = 1250) {
+async function fetchWithFallback(primaryUrl, fallbackUrl, timeout = 2500) {
   const controller = new AbortController();
   const signal = controller.signal;
   const timeoutId = setTimeout(() => controller.abort(), timeout);
