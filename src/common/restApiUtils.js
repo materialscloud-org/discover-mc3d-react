@@ -19,6 +19,9 @@ export const MC_REST_API_URL = `${mcRestApiUrl}mc3d`;
 const AIIDA_REST_BASE_URL = aiidaRestBaseUrl;
 const EXPLORE_BASE_URL = exploreBaseUrl;
 
+// if fetching fails we use this as an emergency.
+const MC_REST_API_FALLBACK_URL = "https://api.dev.materialscloud.org/mc3d";
+
 export const AIIDA_API_URLS = {
   "pbe-v1": `${AIIDA_REST_BASE_URL}/mc3d-pbe-v1/api/v4`,
   "pbesol-v1": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1/api/v4`,
@@ -36,38 +39,65 @@ export const EXPLORE_URLS = {
 // delay function for testing loading animations:
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function loadIndex(method) {
-  // await delay(2000);
-  let endpoint = `${MC_REST_API_URL}/${method}/overview`;
+async function fetchWithFallback(primaryUrl, fallbackUrl, timeout = 2500) {
+  const controller = new AbortController();
+  const signal = controller.signal;
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
   try {
-    const response = await fetch(endpoint, { method: "get" });
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error("Error fetching index:", error);
+    let response = await fetch(primaryUrl, { signal });
+    clearTimeout(timeoutId);
+
+    if (!response.ok)
+      throw new Error(`Primary fetch failed with status ${response.status}`);
+    return await response.json();
+  } catch (err) {
+    if (!fallbackUrl) {
+      console.error("Fetch failed:", err);
+      return null;
+    }
+
+    console.warn("Primary fetch failed, trying fallback:", err);
+
+    const fallbackController = new AbortController();
+    const fallbackSignal = fallbackController.signal;
+    const fallbackTimeoutId = setTimeout(
+      () => fallbackController.abort(),
+      timeout,
+    );
+
+    try {
+      let response = await fetch(fallbackUrl, {
+        signal: fallbackSignal,
+      });
+      clearTimeout(fallbackTimeoutId);
+
+      if (!response.ok)
+        throw new Error(`Fallback fetch failed with status ${response.status}`);
+      return await response.json();
+    } catch (fallbackErr) {
+      console.error("Both fetch attempts failed:", fallbackErr);
+      return null;
+    }
   }
+}
+
+export async function loadIndex(method) {
+  const primary = `${MC_REST_API_URL}/${method}/overview`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/overview`;
+  return fetchWithFallback(primary, fallback);
 }
 
 export async function loadMetadata(method) {
-  let endpoint = `${MC_REST_API_URL}/${method}/meta`;
-  try {
-    const response = await fetch(endpoint, { method: "get" });
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error("Error fetching metadata:", error);
-  }
+  const primary = `${MC_REST_API_URL}/${method}/meta`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/meta`;
+  return fetchWithFallback(primary, fallback);
 }
 
 export async function loadDetails(method, id) {
-  let endpoint = `${MC_REST_API_URL}/${method}/base/${id}`;
-  try {
-    const response = await fetch(endpoint, { method: "get" });
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error("Error fetching details:", error);
-  }
+  const primary = `${MC_REST_API_URL}/${method}/base/${id}`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/base/${id}`;
+  return fetchWithFallback(primary, fallback);
 }
 
 export async function loadAiidaAttributes(method, uuid) {
@@ -123,61 +153,26 @@ export async function loadXY(aiidaProfile, uuid) {
 }
 
 export async function loadXrd(method, id) {
-  // await delay(2000);
-  let endpoint = `${MC_REST_API_URL}/${method}/xrd/${id}`;
-  try {
-    const response = await fetch(endpoint, { method: "get" });
-    if (!response.ok) {
-      return null;
-    }
-    const json = await response.json();
-    return json.data;
-  } catch (error) {
-    console.error("Error fetching XRD:", error);
-    return null;
-  }
+  const primary = `${MC_REST_API_URL}/${method}/xrd/${id}`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/xrd/${id}`;
+  const result = await fetchWithFallback(primary, fallback);
+  return result?.data ?? null;
 }
 
 export async function loadSuperConPhononVis(method, id) {
-  let endpoint = `${MC_REST_API_URL}/${method}/supercon-phonon-vis/${id}`;
-  console.log("ep", endpoint);
-  try {
-    const response = await fetch(endpoint, { method: "get" });
-    if (!response.ok) {
-      return null;
-    }
-    const json = await response.json();
-    console.log(json);
-    return json;
-  } catch (error) {
-    console.error("Error fetching phonon-vis:", error);
-    return null;
-  }
+  const primary = `${MC_REST_API_URL}/${method}/supercon-phonon-vis/${id}`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/supercon-phonon-vis/${id}`;
+  return fetchWithFallback(primary, fallback);
 }
 
 export async function loadStructureUuids(method) {
-  let endpoint = `${MC_REST_API_URL}/${method}/structure-uuids`;
-  try {
-    const response = await fetch(endpoint, { method: "get" });
-    if (!response.ok) {
-      return null;
-    }
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error("Error fetching structure-uuids:", error);
-    return null;
-  }
+  const primary = `${MC_REST_API_URL}/${method}/structure-uuids`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/structure-uuids`;
+  return fetchWithFallback(primary, fallback);
 }
 
 export async function loadGeneralInfo() {
-  // await delay(2000);
-  let endpoint = `${MC_REST_API_URL}/info`;
-  try {
-    const response = await fetch(endpoint, { method: "get" });
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error("Error fetching info:", error);
-  }
+  const primary = `${MC_REST_API_URL}/info`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/info`;
+  return fetchWithFallback(primary, fallback);
 }
