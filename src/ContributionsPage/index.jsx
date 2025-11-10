@@ -42,17 +42,18 @@ function ContributionsPage() {
   }, []);
 
   return (
-    <MaterialsCloudHeader
-      activeSection={"discover"}
-      breadcrumbsPath={[
-        { name: "Discover", link: "https://www.materialscloud.org/discover" },
-        {
-          name: "Materials Cloud Three-Dimensional Structure Database",
-          link: `${import.meta.env.BASE_URL}`,
-        },
-        { name: `Extended dataset documentation`, link: null },
-      ]}
-    >
+    <>
+      <MaterialsCloudHeader
+        activeSection={"discover"}
+        breadcrumbsPath={[
+          { name: "Discover", link: "https://www.materialscloud.org/discover" },
+          {
+            name: "Materials Cloud Three-Dimensional Structure Database",
+            link: `${import.meta.env.BASE_URL}`,
+          },
+          { name: `Extended dataset documentation`, link: null },
+        ]}
+      />
       <Container fluid="xxl">
         <TitleAndLogo />
         {markdowns.length === 0
@@ -120,7 +121,7 @@ function ContributionsPage() {
               );
             })}
       </Container>
-    </MaterialsCloudHeader>
+    </>
   );
 }
 

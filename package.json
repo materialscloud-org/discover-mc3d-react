@@ -12,12 +12,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@spglib/moyo-wasm": "^0.7.1",
     "bands-visualiser": "^0.0.2",
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.10.3",
     "file-saver": "^2.0.5",
+    "gl-matrix": "^3.4.4",
     "katex": "^0.16.22",
-    "mc-react-header": "^0.3.1",
+    "mc-react-header": "file:mc-react-header-0.4.3.tgz",
     "mc-react-library": "^0.5.0",
     "mc-react-phonon-visualizer": "^0.4.0",
     "mc-react-ptable-materials-grid": "^0.8.7",

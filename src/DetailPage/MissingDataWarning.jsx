@@ -5,17 +5,18 @@ import MaterialsCloudHeader from "mc-react-header";
 // full page error component to handle when data is missing.
 export default function MissingDataWarning({ params, navigate }) {
   return (
-    <MaterialsCloudHeader
-      activeSection="discover"
-      breadcrumbsPath={[
-        { name: "Discover", link: "https://www.materialscloud.org/discover" },
-        {
-          name: "Materials Cloud Three-Dimensional Structure Database",
-          link: `${import.meta.env.BASE_URL}`,
-        },
-        { name: `${params.id}/${params.method}`, link: null },
-      ]}
-    >
+    <>
+      <MaterialsCloudHeader
+        activeSection="discover"
+        breadcrumbsPath={[
+          { name: "Discover", link: "https://www.materialscloud.org/discover" },
+          {
+            name: "Materials Cloud Three-Dimensional Structure Database",
+            link: `${import.meta.env.BASE_URL}`,
+          },
+          { name: `${params.id}/${params.method}`, link: null },
+        ]}
+      />
       <Container fluid="xxl">
         <TitleAndLogo />
         <div
@@ -39,6 +40,6 @@ export default function MissingDataWarning({ params, navigate }) {
           </Button>
         </div>
       </Container>
-    </MaterialsCloudHeader>
+    </>
   );
 }
