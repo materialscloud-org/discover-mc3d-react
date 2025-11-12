@@ -12,7 +12,11 @@ import TitleAndLogo from "../common/TitleAndLogo";
 
 import { formatTitle } from "../common/utils";
 
-import { Container } from "react-bootstrap";
+import { formatChemicalFormula } from "mc-react-library";
+
+import { Container, Row, Col } from "react-bootstrap";
+
+import TableOfContents from "../common/TableOfContents";
 
 import {
   loadMetadata,
@@ -122,6 +126,12 @@ function DetailPage() {
     params.method,
   );
 
+  const titleFormula = formatChemicalFormula(
+    loadedData.details.general.formula,
+  );
+
+  const titleMethodString = `${params.id}/${params.method}`;
+
   return (
     <>
       <MaterialsCloudHeader
@@ -139,43 +149,63 @@ function DetailPage() {
         ]}
       />
       <Container fluid="xxl">
-        <TitleAndLogo />
-        <div className="detail-page-heading">{title}</div>
-        <OverviewSection params={params} loadedData={loadedData} />
-        <StructureSection params={params} loadedData={loadedData} />
-        <ProvenanceSection params={params} loadedData={loadedData} />
-        <XrdSection params={params} loadedData={loadedData} />
+        <Row>
+          <TitleAndLogo />
+        </Row>
+        <Row>
+          <Col xl={2} md={3} className="sidepane">
+            <div className="detail-page-heading">{titleFormula}</div>
+            <div className="detail-page-subheading">{titleMethodString}</div>
 
-        {/* only try to load the following sections if you visit supercon */}
-        {loadedData?.details?.supercon && (
-          <Suspense
-            fallback={
-              <div
-                style={{ width: "150px", padding: "40px", margin: "0 auto" }}
+            <TableOfContents targetClass={"section-heading"} />
+          </Col>
+          {/* 10/12s with TOC, otherwise 12/12s */}
+          <Col xl={10} md={12}>
+            <OverviewSection params={params} loadedData={loadedData} />
+            <StructureSection params={params} loadedData={loadedData} />
+            <ProvenanceSection params={params} loadedData={loadedData} />
+            <XrdSection params={params} loadedData={loadedData} />
+            {/* only try to load the following sections if you visit supercon */}
+            {loadedData?.details?.supercon && (
+              <Suspense
+                fallback={
+                  <div
+                    style={{
+                      width: "150px",
+                      padding: "40px",
+                      margin: "0 auto",
+                    }}
+                  >
+                    <McloudSpinner />
+                  </div>
+                }
               >
-                <McloudSpinner />
-              </div>
-            }
-          >
-            <VibrationalSection params={params} loadedData={loadedData} />
-          </Suspense>
-        )}
-
-        {loadedData?.details?.supercon && (
-          <Suspense
-            fallback={
-              <div
-                style={{ width: "150px", padding: "40px", margin: "0 auto" }}
+                <VibrationalSection params={params} loadedData={loadedData} />
+              </Suspense>
+            )}
+            {loadedData?.details?.supercon && (
+              <Suspense
+                fallback={
+                  <div
+                    style={{
+                      width: "150px",
+                      padding: "40px",
+                      margin: "0 auto",
+                    }}
+                  >
+                    <McloudSpinner />
+                  </div>
+                }
               >
-                <McloudSpinner />
-              </div>
-            }
-          >
-            <SuperconductivitySection params={params} loadedData={loadedData} />
-          </Suspense>
-        )}
-
-        {/* <RelatedSection /> */}
+                <SuperconductivitySection
+                  params={params}
+                  loadedData={loadedData}
+                />
+              </Suspense>
+            )}
+            {/* <RelatedSection /> */}
+          </Col>
+        </Row>
       </Container>
     </>
   );

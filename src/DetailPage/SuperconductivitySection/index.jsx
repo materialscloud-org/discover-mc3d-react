@@ -57,28 +57,34 @@ export default function SuperConductivitySection({ params, loadedData }) {
 
   return (
     <div>
-      <Container fluid className="section-container">
+      <div
+        style={{
+          borderBottom: "1px solid #c4c4c4",
+        }}
+      >
         <div
+          className="section-heading"
           style={{
-            margin: "10px 0px",
-            padding: "20px 0px 10px",
-            borderBottom: "1px solid #c4c4c4",
+            borderBottom: "none",
+            marginBottom: "0px",
+            paddingBottom: "0px",
           }}
         >
-          <div style={{ fontSize: "24px" }}>Superconductivity estimation</div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "2px",
-              alignItems: "center",
-            }}
-          >
-            <CitationsList citationLabels={["MBercxSupercon25"]} />
-            <DoiBadge doi_id="9w-az" label="Data DOI" />
-          </div>
+          Superconductivity estimation
         </div>
-
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "2px",
+            alignItems: "center",
+          }}
+        >
+          <CitationsList citationLabels={["MBercxSupercon25"]} />
+          <DoiBadge doi_id="9w-az" label="Data DOI" />
+        </div>
+      </div>
+      <Container fluid className="section-container">
         <div
           className="alert alert-warning"
           style={{ margin: "10px 10px 5px 10px" }}

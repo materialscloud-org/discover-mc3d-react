@@ -1,0 +1,62 @@
+.toc {
+  border-top: rgb(230, 230, 230) solid 1px;
+  padding-top: 2px;
+  font-size: 14px;
+}
+
+.toc-heading {
+  padding-top: 2px;
+  font-size: 15px;
+  color: #111;
+}
+
+.toc-heading-toggle {
+  background-color: rgb(230, 230, 230);
+  border-radius: 7%;
+  border-color: rgb(215, 215, 215);
+  text-align: center; /* center the text inside */
+  border: solid 1px;
+  padding: 0.1rem 0.15rem;
+  margin-left: 0.3rem;
+}
+
+.toc-heading-toggle:hover {
+  color: black;
+  background-color: rgb(200, 200, 200);
+}
+
+.toc ul {
+  padding-left: 2px;
+}
+
+.toc li {
+  list-style: none;
+  padding-top: 8px;
+}
+
+.toc li:first-child {
+  padding-top: 4px;
+}
+
+.toc-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #666;
+  text-decoration: none;
+  display: block;
+}
+
+.toc-item:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+.toc-item.active {
+  color: black;
+  text-decoration: underline;
+}

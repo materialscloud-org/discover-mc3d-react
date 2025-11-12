@@ -32,3 +32,10 @@
     rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
     rgba(0, 0, 0, 0.1) 0px 2px 4px -2px;
 }
+
+/* another bootstrap override... */
+@media (min-width: 1400px) {
+  .container-xxl {
+    max-width: 1400px !important;
+  }
+}
