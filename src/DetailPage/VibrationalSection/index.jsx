@@ -10,16 +10,11 @@ import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
 export default function VibrationalSection({ params, loadedData }) {
-  // Early return if there's no supercon data
-
   const [phononVisData, setPhononVisData] = useState(null);
   const [notAvail, setNotAvail] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!loadedData?.details?.supercon) {
-      return; // dont fetch if no supercon data.
-    }
     setLoading(true);
 
     loadSuperConPhononVis(params.method, params.id)
@@ -35,9 +30,6 @@ export default function VibrationalSection({ params, loadedData }) {
       })
       .finally(() => setLoading(false));
   }, [params, loadedData]);
-
-  // dont render if no data.
-  if (!loadedData?.details?.supercon) return null;
 
   let content;
 

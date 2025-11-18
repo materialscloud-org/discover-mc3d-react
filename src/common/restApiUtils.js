@@ -95,8 +95,8 @@ export async function loadMetadata(method) {
 }
 
 export async function loadDetails(method, id) {
-  const primary = `${MC_REST_API_URL}/${method}/base/${id}`;
-  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/base/${id}`;
+  const primary = `${MC_REST_API_URL}/${method}/core_base/${id}`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/core_base/${id}`;
   return fetchWithFallback(primary, fallback);
 }
 
@@ -129,6 +129,8 @@ export async function loadAiidaBands(aiidaProfile, uuid) {
   let aiidaUrl = AIIDA_API_URLS[aiidaProfile];
   const endpoint = `${aiidaUrl}/nodes/${uuid}/download?download_format=json`;
 
+  console.log("abEndpoint", endpoint);
+
   try {
     const response = await fetch(endpoint, { method: "get" });
     const json = await response.json();
@@ -153,15 +155,21 @@ export async function loadXY(aiidaProfile, uuid) {
 }
 
 export async function loadXrd(method, id) {
-  const primary = `${MC_REST_API_URL}/${method}/xrd/${id}`;
-  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/xrd/${id}`;
+  const primary = `${MC_REST_API_URL}/${method}/core_xrd/${id}`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/core_xrd/${id}`;
   const result = await fetchWithFallback(primary, fallback);
   return result?.data ?? null;
 }
 
+export async function loadSuperConDetails(method, id) {
+  const primary = `${MC_REST_API_URL}/${method}/supercon_base/${id}`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/supercon_base/${id}`;
+  return fetchWithFallback(primary, fallback);
+}
+
 export async function loadSuperConPhononVis(method, id) {
-  const primary = `${MC_REST_API_URL}/${method}/supercon-phonon-vis/${id}`;
-  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/supercon-phonon-vis/${id}`;
+  const primary = `${MC_REST_API_URL}/${method}/supercon_phonon-vis/${id}`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/supercon_phonon-vis/${id}`;
   return fetchWithFallback(primary, fallback);
 }
 

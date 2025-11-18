@@ -24,8 +24,13 @@ import {
 } from "../../common/BandStructure/configs";
 
 // Main component
-export default function SuperConductivitySection({ params, loadedData }) {
-  const supercon = loadedData?.details?.supercon;
+export default function SuperConductivitySection({
+  params,
+  loadedData,
+  superconData,
+}) {
+  const supercon = superconData.supercon;
+
   const method = params.method;
 
   // --- Bands ---

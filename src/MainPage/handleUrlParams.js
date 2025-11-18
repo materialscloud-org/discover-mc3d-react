@@ -18,6 +18,20 @@ export const PRESETS = {
     ],
     filterColumns: ["allen_dynes_tc"],
   },
+  phonons: {
+    sort: "matdyn_highest_phonon_frequency:desc",
+    method: "pbesol-v1",
+    showColumns: [
+      "id",
+      "formula",
+      "num_elements",
+      "num_atoms",
+      "spacegroup_int",
+
+      "matdyn_highest_phonon_frequency",
+    ],
+    filterColumns: ["matdyn_highest_phonon_frequency"],
+  },
 };
 
 /*

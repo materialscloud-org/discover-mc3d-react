@@ -82,6 +82,10 @@ function MainPage() {
       // Preset
       url.searchParams.set("preset", selected);
       url.searchParams.delete("method");
+    } else if (selected === "phonons") {
+      // Preset
+      url.searchParams.set("preset", selected);
+      url.searchParams.delete("method");
     } else {
       // Normal DB
       url.searchParams.set("method", selected);

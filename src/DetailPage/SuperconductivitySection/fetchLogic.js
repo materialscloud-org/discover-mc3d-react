@@ -43,6 +43,7 @@ export function useAsyncEffect(fetcher, deps = []) {
 // --- Fetchers for superconductivity data ---
 
 export async function fetchBands(supercon, method) {
+  console.log("supercon settings", supercon);
   const [epwBands, qeBands, phBands] = await Promise.all([
     supercon.epw_el_band_structure_uuid
       ? loadAiidaBands(

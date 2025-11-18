@@ -19,6 +19,8 @@ import {
   loadDetails,
   loadAiidaAttributes,
   loadAiidaCif,
+  loadSuperConDetails,
+  loadSuperConPhononVis,
 } from "../common/restApiUtils";
 
 import OverviewSection from "./OverviewSection";
@@ -72,8 +74,28 @@ async function fetchCompoundData(method, id) {
   }
 }
 
+async function fetchCompoundDataOther(method, id) {
+  try {
+    const [scDetails, scPhonons] = await Promise.all([
+      loadSuperConDetails(method, id),
+      loadSuperConPhononVis(method, id),
+    ]);
+
+    return {
+      scDetails: scDetails,
+      scPhonon: scPhonons,
+    };
+  } catch {
+    return {
+      scDetails: null,
+      scPhonon: null,
+    };
+  }
+}
+
 function DetailPage() {
   const [loadedData, setLoadedData] = useState(null);
+  const [otherData, setOtherData] = useState(null);
 
   const navigate = useNavigate();
   const params = useParams(); // Route parameters
@@ -83,6 +105,14 @@ function DetailPage() {
     fetchCompoundData(params.method, params.id).then((loadedData) => {
       console.log("Loaded general data", loadedData);
       setLoadedData(loadedData);
+    });
+  }, [params.id, params.method]);
+
+  useEffect(() => {
+    setOtherData(null);
+    fetchCompoundDataOther(params.method, params.id).then((otherData) => {
+      console.log("Loaded Other data", otherData);
+      setOtherData(otherData);
     });
   }, [params.id, params.method]);
 
@@ -147,7 +177,7 @@ function DetailPage() {
         <XrdSection params={params} loadedData={loadedData} />
 
         {/* only try to load the following sections if you visit supercon */}
-        {loadedData?.details?.supercon && (
+        {otherData?.scPhonon && (
           <Suspense
             fallback={
               <div
@@ -161,7 +191,7 @@ function DetailPage() {
           </Suspense>
         )}
 
-        {loadedData?.details?.supercon && (
+        {otherData?.scDetails && (
           <Suspense
             fallback={
               <div
@@ -171,7 +201,11 @@ function DetailPage() {
               </div>
             }
           >
-            <SuperconductivitySection params={params} loadedData={loadedData} />
+            <SuperconductivitySection
+              params={params}
+              loadedData={loadedData}
+              superconData={otherData.scDetails}
+            />
           </Suspense>
         )}
 
