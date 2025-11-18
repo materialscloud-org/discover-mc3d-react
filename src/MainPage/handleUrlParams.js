@@ -2,6 +2,7 @@
 
 // Define presets here - these toggle everything else off by default
 // Allows applying a method, but this can be overwritten with &method=...
+// currently doesnt reset the sort params at all so they will get stacked if you switch between two presets.
 export const PRESETS = {
   superconductivity: {
     sort: "isotropic_tc:desc",
@@ -27,7 +28,6 @@ export const PRESETS = {
       "num_elements",
       "num_atoms",
       "spacegroup_int",
-
       "matdyn_highest_phonon_frequency",
     ],
     filterColumns: ["matdyn_highest_phonon_frequency"],
