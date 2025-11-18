@@ -1,4 +1,4 @@
-import { loadIndex, loadMetadata } from "../common/restApiUtils";
+import { loadIndex, loadMetadata } from "../common/MCrestApiUtils";
 
 import {
   spaceGroupSymbols,

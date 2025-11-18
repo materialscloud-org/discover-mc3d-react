@@ -4,7 +4,8 @@ import { DoiBadge } from "mc-react-library";
 
 import { CitationsList } from "../../common/CitationsList";
 import PhononVisualizer from "mc-react-phonon-visualizer";
-import { loadSuperConPhononVis } from "../../common/restApiUtils";
+
+import { loadSuperConPhononVis } from "../../common/MCrestApiUtils";
 
 import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";

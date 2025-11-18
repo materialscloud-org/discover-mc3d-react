@@ -17,11 +17,11 @@ import { Container } from "react-bootstrap";
 import {
   loadMetadata,
   loadDetails,
-  loadAiidaAttributes,
-  loadAiidaCif,
   loadSuperConDetails,
   loadSuperConPhononVis,
-} from "../common/restApiUtils";
+} from "../common/MCrestApiUtils";
+
+import { loadAiidaAttributes, loadAiidaCif } from "../common/AIIDArestApiUtils";
 
 import OverviewSection from "./OverviewSection";
 import StructureSection from "./StructureSection";

@@ -6,7 +6,8 @@ import { saveAs } from "file-saver";
 import { HelpButton } from "mc-react-library";
 import { Popover } from "react-bootstrap";
 
-import { loadStructureUuids, AIIDA_API_URLS } from "../common/restApiUtils";
+import { loadStructureUuids } from "../common/MCrestApiUtils";
+import { AIIDA_API_URLS } from "../common/AIIDArestApiUtils";
 
 import "./DownloadButton.css";
 

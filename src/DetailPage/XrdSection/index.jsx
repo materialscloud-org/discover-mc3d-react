@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import XrdPlot from "./XrdPlot";
 
-import { loadXrd } from "../../common/restApiUtils";
+import { loadXrd } from "../../common/MCrestApiUtils";
 
 import { McloudSpinner } from "mc-react-library";
 

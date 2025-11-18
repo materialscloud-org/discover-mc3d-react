@@ -18,7 +18,7 @@ import { loadDataMc3d } from "./loadDataMc3d";
 import { DownloadButton } from "./DownloadButton";
 
 import { MethodSelectionBox } from "./MethodSelectionBox";
-import { loadGeneralInfo } from "../common/restApiUtils";
+import { loadGeneralInfo } from "../common/MCrestApiUtils";
 
 import { CitationsList } from "../common/CitationsList.jsx";
 

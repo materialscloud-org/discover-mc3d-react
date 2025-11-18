@@ -10,7 +10,7 @@ import {
 
 import { CitationsList } from "../../common/CitationsList";
 import { DoiBadge, ExploreButton } from "mc-react-library";
-import { EXPLORE_URLS } from "../../common/restApiUtils";
+import { EXPLORE_URLS } from "../../common/AIIDArestApiUtils";
 
 import SuperconInfoBox from "./InfoBoxes";
 import GapFunction from "./GapFunction";

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { loadAiidaBands, loadXY } from "../../common/restApiUtils";
+import { loadAiidaBands, loadXY } from "../../common/AIIDArestApiUtils";
 
 import {
   normalizeBandsData,

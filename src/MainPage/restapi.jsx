@@ -1,8 +1,9 @@
 import {
   MC_REST_API_URL_BASE,
   MC_REST_API_URL,
-  AIIDA_API_URLS,
-} from "../common/restApiUtils";
+} from "../common/MCrestApiUtils";
+
+import { AIIDA_API_URLS } from "../common/AIIDArestApiUtils";
 
 import "./restapi.css";
 
