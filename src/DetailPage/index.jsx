@@ -17,11 +17,15 @@ import { Container } from "react-bootstrap";
 import {
   loadMetadata,
   loadDetails,
+  loadDatasetIndex,
   loadSuperConDetails,
   loadSuperConPhononVis,
 } from "../common/MCrestApiUtils";
 
 import { loadAiidaAttributes, loadAiidaCif } from "../common/AIIDArestApiUtils";
+
+import AlternativeMethodsList from "./AlternativeMethodsList";
+import buildAltMethodList from "../common/buildAltMethod";
 
 import OverviewSection from "./OverviewSection";
 import StructureSection from "./StructureSection";
@@ -38,6 +42,7 @@ const SuperconductivitySection = lazy(
 
 // if fetching fails we use this.
 import MissingDataWarning from "./MissingDataWarning";
+import { CitationsList } from "../common/CitationsList";
 
 // contributed sections
 
@@ -93,12 +98,49 @@ async function fetchCompoundDataOther(method, id) {
   }
 }
 
+/* 
+Hierachal order of rendering.
+2. Prioritise current method then best method
+// Current method BASE
+// Current method XRD
+// Current Method ALL OTHER
+// PBESOL V2 -those that exist above
+// PBESOL V1 -those that exist above
+
+General [ ALWAYS EXISTS ]
+Structural [ ALWAYS EXISTS ]
+Provenence [ ALWAYS EXISTS]
+XRD [ ALWAYS EXISTS ] 
+Electronic Props [ NOT ALWAYS - SHOW CURRENT OR BEST+WARN]
+  Band structures - subset in pbesol-v1 and another subset in pbesol-v2
+  Soon to be  wannier orbitals - subset in pbesol-v1
+  Soon to be Fermisurfaces - subset in pbesol-v1
+Vibrational Props [ NOT ALWAYS - SHOW CURRENT OR BEST+WARN]
+  Interactive phononvisualiser - tiny subset in pbesol-v1
+  Static phonon calculations - maybe never?
+  
+SUPERCONDUCTING Props [ NOT ALWAYS - SHOW CURRENT OR BEST+WARN]
+  QE vs EPW band structures
+  phonon + a2f phonon dos
+  superconducting gap function.
+*/
+
 function DetailPage() {
   const [loadedData, setLoadedData] = useState(null);
   const [otherData, setOtherData] = useState(null);
 
+  const [datasetIndex, setDatasetIndex] = useState(null);
+
   const navigate = useNavigate();
   const params = useParams(); // Route parameters
+
+  useEffect(() => {
+    setDatasetIndex(null);
+    loadDatasetIndex(params.method, params.id).then((lD) => {
+      setDatasetIndex(lD.index);
+      buildAltMethodList(lD.index, params.method);
+    });
+  }, [params.id, params.method]);
 
   useEffect(() => {
     setLoadedData(null);
@@ -152,6 +194,8 @@ function DetailPage() {
     params.method,
   );
 
+  console.log("dI", datasetIndex);
+
   return (
     <>
       <MaterialsCloudHeader
@@ -170,8 +214,25 @@ function DetailPage() {
       />
       <Container fluid="xxl">
         <TitleAndLogo />
+
         <div className="detail-page-heading">{title}</div>
-        <OverviewSection params={params} loadedData={loadedData} />
+
+        <CitationsList citationLabels={["HuberMc3d25"]} />
+        <div style={{ marginLeft: "16px" }}>
+          <AlternativeMethodsList
+            id={params.id}
+            methods={datasetIndex}
+            currentMethod={params.method}
+          />
+        </div>
+        <OverviewSection
+          params={params}
+          loadedData={loadedData}
+          headerStyle={{
+            margin: "0px 0px 10px 0px",
+            padding: "0px 0px 10px 0px",
+          }}
+        />
         <StructureSection params={params} loadedData={loadedData} />
         <ProvenanceSection params={params} loadedData={loadedData} />
         <XrdSection params={params} loadedData={loadedData} />

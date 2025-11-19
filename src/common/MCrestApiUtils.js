@@ -90,6 +90,12 @@ export async function loadDetails(method, id) {
   return fetchWithFallback(primary, fallback);
 }
 
+export async function loadDatasetIndex(method, id) {
+  const primary = `${MC_REST_API_URL}/dataset-index/${id}`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/dataset-index/${id}`;
+  return fetchWithFallback(primary, fallback);
+}
+
 export async function loadXrd(method, id) {
   const primary = `${MC_REST_API_URL}/${method}/core_xrd/${id}`;
   const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/core_xrd/${id}`;

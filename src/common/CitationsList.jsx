@@ -52,8 +52,11 @@ const CITATION_MAPPING = {
   },
 };
 
-export const CitationsList = ({ citationLabels }) => (
-  <div style={{ marginLeft: "8px" }}>
+export const CitationsList = ({
+  citationLabels,
+  containerStyle = { marginLeft: "8px" },
+}) => (
+  <div style={containerStyle}>
     {citationLabels.map((label) => (
       <CitationText key={label} info={CITATION_MAPPING[label]} />
     ))}
