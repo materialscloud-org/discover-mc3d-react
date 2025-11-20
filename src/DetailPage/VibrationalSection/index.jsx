@@ -10,15 +10,35 @@ import { loadSuperConPhononVis } from "../../common/MCrestApiUtils";
 import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
-export default function VibrationalSection({ params, loadedData }) {
+export default function VibrationalSection({ params, loadedData, phononData }) {
+  if (!phononData) return null;
+
   const [phononVisData, setPhononVisData] = useState(null);
   const [notAvail, setNotAvail] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const method = phononData.method;
+
+  // Warning if the vib method is different from the current method
+  const differentMethodWarning =
+    params.method !== method ? (
+      <div
+        className="alert alert-warning"
+        style={{ margin: "10px 10px 5px 10px" }}
+        role="alert"
+      >
+        {" "}
+        Warning: Vibrational properties have been calculated from the final
+        structure seen for
+        <strong>{method}</strong> which may differ to this structure (
+        <strong>{params.method}</strong>.).
+      </div>
+    ) : null;
+
   useEffect(() => {
     setLoading(true);
 
-    loadSuperConPhononVis(params.method, params.id)
+    loadSuperConPhononVis(phononData.method, params.id)
       .then((loadedSCPVis) => {
         if (loadedSCPVis) {
           setPhononVisData({
@@ -73,6 +93,7 @@ export default function VibrationalSection({ params, loadedData }) {
           <CitationsList citationLabels={["MBercxSupercon25"]} />
           <DoiBadge doi_id="9w-az" label="Data DOI" />
         </div>
+        {differentMethodWarning}
       </div>
       <Container fluid className="section-container">
         <Row>

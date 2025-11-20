@@ -121,10 +121,12 @@ const StructureViewerBox = ({ uuid, structureInfo, methodLabel }) => {
   );
 };
 
-function OverviewSection({ params, loadedData }) {
+function OverviewSection({ params, loadedData, headerStyle = {} }) {
   return (
     <div>
-      <div className="section-heading">General overview</div>
+      <div className="section-heading" style={headerStyle}>
+        General overview
+      </div>
       <Container fluid className="section-container">
         <Row>
           <Col className="flex-column">
