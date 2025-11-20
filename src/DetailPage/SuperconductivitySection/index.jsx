@@ -98,7 +98,7 @@ export default function SuperConductivitySection({
             />
           )}
         </div>
-        <div style={{ padding: "10px 10px" }}>
+        <div style={{ padding: "10px 10px", textAlign: "justify" }}>
           This dataset provides results from a high-throughput search for
           phonon-mediated superconductivity, where electron–phonon interactions
           and critical temperatures were systematically computed to identify and
@@ -121,7 +121,7 @@ export default function SuperConductivitySection({
           <Col sm={12} md={6} className="mt-3 mt-md-0">
             <div className="subsection-title">Electronic band structure</div>
             <div className="mb-3 ms-2">
-              Electronic band structure calculated with Quantum ESPRESSO (QE){" "}
+              Calculated with Quantum ESPRESSO (QE){" "}
               {supercon.qe_el_band_structure_uuid && (
                 <ExploreButton
                   explore_url={EXPLORE_URLS[params.method] + "-supercon"}
@@ -204,7 +204,7 @@ export default function SuperConductivitySection({
         {/* Anisotropic gap function. */}
         {supercon.aniso_info && (
           <Row>
-            <Col xs={12} style={{ maxWidth: "1200px" }}>
+            <Col style={{ maxWidth: "910px" }}>
               <div className="subsection-title">
                 Anisotropic superconducting gap function{" "}
                 {supercon.aniso_gap_function_uuid && (
