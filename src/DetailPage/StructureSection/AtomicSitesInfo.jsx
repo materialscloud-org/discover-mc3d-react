@@ -20,8 +20,6 @@ function cartToFrac(positions, cell) {
 export const AtomicSitesInfoBox = ({ structureInfo }) => {
   const [atomsModeState, setAtomsModeState] = useState(false);
 
-  console.log("sI", structureInfo.aiidaAttributes);
-
   const cell = structureInfo.aiidaAttributes.cell;
   const sites = structureInfo.aiidaAttributes.sites;
 

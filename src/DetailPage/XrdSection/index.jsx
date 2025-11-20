@@ -15,7 +15,6 @@ const XrdSection = (props) => {
   useEffect(() => {
     loadXrd(props.params.method, props.params.id).then((loadedXrd) => {
       if (loadedXrd) {
-        console.log("Loaded XRD data", loadedXrd);
         setXrdData(loadedXrd);
       } else {
         setNotAvail(true);

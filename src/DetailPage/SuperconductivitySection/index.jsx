@@ -29,9 +29,30 @@ export default function SuperConductivitySection({
   loadedData,
   superconData,
 }) {
-  const supercon = superconData.supercon;
+  console.log("scD", superconData);
+  if (!superconData) return null;
 
-  const method = params.method;
+  if (!superconData.scDetails.supercon) return null;
+
+  const method = superconData.method;
+
+  // Warning if the supercon method is different from the current method
+  const differentMethodWarning =
+    params.method !== method ? (
+      <div
+        className="alert alert-warning"
+        style={{ margin: "10px 10px 5px 10px" }}
+        role="alert"
+      >
+        {" "}
+        Warning: Superconducting properties have been calculated from the final
+        structure seen for <strong>{method}</strong> which may differ to this
+        structure (<strong>{params.method}</strong>).
+      </div>
+    ) : null;
+
+  const supercon = superconData.scDetails.supercon;
+  console.log("sc", supercon);
 
   // --- Bands ---
   const { data: bandsResults, loading: bandsLoading } = useAsyncEffect(
@@ -58,7 +79,6 @@ export default function SuperConductivitySection({
   const hasPhBands = !!phononBandsArray.length;
 
   // fallback if nothing exists.
-  if (!supercon) return <div className="empty-supercon-div" />;
 
   return (
     <div>
@@ -82,6 +102,7 @@ export default function SuperConductivitySection({
             <CitationsList citationLabels={["MBercxSupercon25"]} />
             <DoiBadge doi_id="9w-az" label="Data DOI" />
           </div>
+          {differentMethodWarning}
         </div>
 
         <div
@@ -157,7 +178,7 @@ export default function SuperConductivitySection({
                 Phonon band structure calculated with EPW{" "}
                 {supercon.epw_ph_band_structure_uuid && (
                   <ExploreButton
-                    explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+                    explore_url={EXPLORE_URLS[method] + "-supercon"}
                     uuid={supercon.epw_ph_band_structure_uuid}
                   />
                 )}{" "}
@@ -165,7 +186,7 @@ export default function SuperConductivitySection({
                 coupling strength [λ(ω)]{" "}
                 {supercon.a2f_uuid && (
                   <ExploreButton
-                    explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+                    explore_url={EXPLORE_URLS[method] + "-supercon"}
                     uuid={supercon.a2f_uuid}
                   />
                 )}{" "}
@@ -209,7 +230,7 @@ export default function SuperConductivitySection({
                 Anisotropic superconducting gap function{" "}
                 {supercon.aniso_gap_function_uuid && (
                   <ExploreButton
-                    explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+                    explore_url={EXPLORE_URLS[method] + "-supercon"}
                     uuid={supercon.aniso_gap_function_uuid}
                   />
                 )}{" "}
