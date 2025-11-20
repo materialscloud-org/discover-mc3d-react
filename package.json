@@ -21,7 +21,7 @@
     "katex": "^0.16.22",
     "mc-react-header": "^0.4.4",
     "mc-react-library": "^0.5.0",
-    "mc-react-phonon-visualizer": "^0.4.0",
+    "mc-react-phonon-visualizer": "^0.4.1",
     "mc-react-ptable-materials-grid": "^0.8.7",
     "mc-react-structure-visualizer": "^0.8.4",
     "plotly.js-basic-dist-min": "^3.1.2",
