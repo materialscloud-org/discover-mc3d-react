@@ -110,10 +110,10 @@ export default function GapFunction({
 
     // build traces
     const traces = Object.entries(gapfuncData)
-      .filter(([val]) => Array.isArray(val))
-      .map(([arr]) => {
-        const xVals = arr.map(([x]) => x);
-        const yVals = arr.map(([y]) => y);
+      .filter(([_, arr]) => Array.isArray(arr))
+      .map(([key, arrOfPoints]) => {
+        const xVals = arrOfPoints.map(([x]) => x);
+        const yVals = arrOfPoints.map(([_, y]) => y);
 
         // compute leftVert and distance
         const { leftVerts, distances } = xVals.reduce(
@@ -137,6 +137,7 @@ export default function GapFunction({
           y: yVals,
           customdata: distances, // x - leftVert distances
           text: leftVerts, // attach leftVert values here
+          opacity: 0.8,
           type: "scatter",
           mode: "lines",
           line: { color: GAP_TRACE_CONFIG.color },
