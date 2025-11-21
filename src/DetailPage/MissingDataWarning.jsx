@@ -23,21 +23,33 @@ export default function MissingDataWarning({ params, navigate }) {
           style={{
             textAlign: "center",
             marginTop: "5rem",
-            marginBottom: "10rem",
+            marginBottom: "25rem",
           }}
         >
           <div
             style={{
               color: "red",
-              fontSize: "1.2rem",
-              marginBottom: "2rem",
+              fontSize: "large",
+              marginBottom: "0.5rem",
             }}
           >
-            {`Warning: Fetching of data failed, suggesting that ${params.id} has not been calculated with ${params.method}`}
+            {`Oops! You tried to visit ${params.id}/${params.method} but something went wrong.`}
           </div>
-          <Button variant="primary" onClick={() => navigate("/")}>
-            Return to MC3D homepage
-          </Button>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <Button variant="primary" onClick={() => navigate(0)}>
+              Try Again
+            </Button>
+            <Button variant="primary" onClick={() => navigate("/")}>
+              Home Page
+            </Button>
+          </div>
         </div>
       </Container>
     </>
