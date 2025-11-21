@@ -52,7 +52,7 @@ export const COMMON_LAYOUT_CONFIG = {
     showgrid: true,
     ticks: "inside",
     tickfont: { size: 14, color: "#333" },
-    title: { font: { size: 16, color: "#333" } },
+    title: { font: { size: 16, color: "#333" }, text: "k-path" },
     // No tickvals/ticktext
   },
 

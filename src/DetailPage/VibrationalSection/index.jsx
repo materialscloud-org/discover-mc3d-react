@@ -18,11 +18,20 @@ export default function VibrationalSection({ params, loadedData }) {
   useEffect(() => {
     setLoading(true);
 
+    // supercon phonons is in CM1 WE WANT MEV
     loadSuperConPhononVis(params.method, params.id)
       .then((loadedSCPVis) => {
         if (loadedSCPVis) {
+          const CM1_TO_MEV = 0.12398;
+
+          // Convert eigenvalues to meV
+          const convertedEigenvalues = loadedSCPVis.eigenvalues?.map(
+            (bandArray) => bandArray.map((val) => val * CM1_TO_MEV),
+          );
+
           setPhononVisData({
             ...loadedSCPVis,
+            eigenvalues: convertedEigenvalues,
             highsym_qpts: loadedSCPVis.highsym_qpts?.map(prettifyLabels),
           });
         } else {
@@ -33,6 +42,8 @@ export default function VibrationalSection({ params, loadedData }) {
   }, [params, loadedData]);
 
   let content;
+
+  console.log("pvd", phononVisData);
 
   if (notAvail) {
     // dont render if something went wrong.
@@ -47,7 +58,24 @@ export default function VibrationalSection({ params, loadedData }) {
     content = (
       <PhononVisualizer
         key={JSON.stringify(phononVisData)}
-        props={{ ...phononVisData }}
+        props={{
+          plotlyLayoutFormat: {
+            xaxis: {
+              title: {
+                text: "q-path",
+              },
+              tickangle: 0,
+              automargin: true,
+            },
+            yaxis: {
+              title: {
+                text: "Energy [meV]",
+              },
+              automargin: true,
+            },
+          },
+          ...phononVisData,
+        }}
       />
     );
   }
