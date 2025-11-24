@@ -10,7 +10,23 @@ The theoretical background for understanding high temperature superconductivity 
 
 This dataset extends the base dataset (PBEsol-v1) and therefore the methodology may slightly differ. Full details are available in the publication[^1].
 
-A high-throughput computational search for novel phonon-mediated superconductors, starting from the Materials Cloud 3-dimensional structure database of experimentally known inorganic stoichiometric compounds. The Allen-Dynes critical temperature ($T_{c}$) was calculated for 4533 non-magnetic metals using a direct and progressively finer sampling of the electron-phonon couplings. For the candidates with the largest $T_{c}$, a process of automated Wannierizations and electron-phonon interpolations was used to identify the most promising 250 dynamically stable structures. For these structures, spectral functions, superconducting bandgaps, and isotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{iso}}$) were calculated. For $T_{c}^{\textrm{iso}}$ > 5 K, we compute the anisotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{aniso}}$) which contains 140 materials. For all calculations, we use the "simple" acoustic sum [rule](https://docs.epw-code.org/doc/Inputs.html#asr-typ) which may lead to small soft modes.
+A high-throughput computational search for novel phonon-mediated superconductors, starting from the Materials Cloud 3-dimensional structure database of experimentally known inorganic stoichiometric compounds.
+The dynamical matrix and Allen-Dynes critical temperature ($T_{c}$) were calculated for 4533 non-magnetic metals using a direct and progressively finer sampling of the electron-phonon couplings. 
+As an intermediate result, we collect 2825 successful `PhBaseWorkChain`. Based on the dynamical matrices, we performed interpolation of visualized phonon dispersion using the "all" acoustic sum rull[^7](https://www.quantum-espresso.org/Doc/INPUT_MATDYN.html#id4).
+For the candidates with the largest $T_{c}$, a process of automated Wannierizations and electron-phonon interpolations was used to identify the most promising 250 dynamically stable structures. For these structures, spectral functions, superconducting bandgaps, and isotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{iso}}$) were calculated. For $T_{c}^{\textrm{iso}}$ > 5 K, we compute the anisotropic Migdal-Eliashberg critical temperatures ($T_{c}^{\textrm{aniso}}$) which contains 140 materials. For all calculations, we use the "simple" acoustic sum [rule](https://docs.epw-code.org/doc/Inputs.html#asr-typ) which may lead to small soft modes.
+
+---
+
+### Phonon calculation details
+
+The dynamical matrices are calculated in the sub-process `PhBaseWorkChain` in a five-step workchain for electron-phonon coupling. Then subsequent `Q2rBaseWorkChain` and `MatdynBaseWorkChain` are done independently for a visualization of interpolated phonon dispersion. The pseudopotentials used here are from SSSP library[^4] with the planewave cutoff ($E_{\textrm{cut}}$) being the highest value recommended by the library.
+
+In summary, the spliced workflow is:
+
+1. compute ground state property via a scf calculation.
+2. compute dynamical matrices via a phonon calculation.
+3. compute interatomic force constants.
+4. interpolate for visualized phonon dispersion.
 
 ---
 
@@ -98,3 +114,6 @@ Other details:
 [^6]:
     _Wannier localization details:_ Damle Anil, Lin Lin. Disentanglement via entanglement: A unified method for Wannier functions. _SIAM Journal on Scientific Computing_, 39(5) (2018)
     https://doi.org/10.1137/17M1129696
+
+
+[^7]: _asr all:_ Lin, C., Poncé, S. & Marzari, N. General invariance and equilibrium conditions for lattice dynamics in 1D, 2D, and 3D materials. npj Comput Mater 8, 236 (2022). https://doi.org/10.1038/s41524-022-00920-6
