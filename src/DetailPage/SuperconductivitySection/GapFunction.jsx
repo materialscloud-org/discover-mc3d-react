@@ -218,7 +218,7 @@ export default function GapFunction({
       style={{
         position: "relative",
         width: "100%",
-        height: "450px",
+        height: "350px",
         border: loading ? "2px solid #ccc" : "none",
         borderRadius: loading ? "8px" : "0",
       }}
