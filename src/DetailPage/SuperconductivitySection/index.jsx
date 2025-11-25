@@ -176,7 +176,7 @@ export default function SuperConductivitySection({
                 loading={bandsLoading}
                 loadingIconScale={7}
                 minYval={0}
-                maxYval={supercon.highest_phonon_frequency + 2}
+                maxYval={supercon.highest_phonon_frequency + 4}
                 dosDataArray={[
                   {
                     dosData: { x: [0], y: [0] }, // fake dosData.

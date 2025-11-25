@@ -21,6 +21,8 @@ import MaterialsCloudHeader from "mc-react-header";
 
 const markdownEntries = ["preface.md", "phonon.md", "superconductivity.md"];
 
+import { McloudSpinner } from "mc-react-library";
+
 // TODO - maybe switch this to being a many contributions page?
 function ContributionsPage() {
   const [markdowns, setMarkdowns] = useState([]);
@@ -57,70 +59,74 @@ function ContributionsPage() {
       />
       <Container fluid="xxl">
         <TitleAndLogo />
-        {markdowns.length === 0
-          ? "Loading..."
-          : markdowns.map((md, i) => {
-              const containerId = `markdown-entry-${i}`; // unique ID per file
-              return (
-                <div key={i} className="markdown-entry" id={containerId}>
-                  <ReactMarkdown
-                    remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
-                    rehypePlugins={[rehypeKatex]}
-                    components={{
-                      a: ({ ...props }) => {
-                        const href = props.href || "";
-                        const isHashLink = href.startsWith("#");
+        {markdowns.length === 0 ? (
+          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+            <McloudSpinner />
+          </div>
+        ) : (
+          markdowns.map((md, i) => {
+            const containerId = `markdown-entry-${i}`; // unique ID per file
+            return (
+              <div key={i} className="markdown-entry" id={containerId}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
+                  rehypePlugins={[rehypeKatex]}
+                  components={{
+                    a: ({ ...props }) => {
+                      const href = props.href || "";
+                      const isHashLink = href.startsWith("#");
 
-                        if (isHashLink) {
-                          return (
-                            <a
-                              {...props}
-                              onClick={(e) => {
-                                e.preventDefault();
-
-                                // scope to container if needed
-                                const container =
-                                  e.currentTarget.closest(".markdown-entry");
-                                const el = container?.querySelector(href);
-
-                                if (el) {
-                                  const yOffset = -80; // adjust for fixed header
-                                  const y =
-                                    el.getBoundingClientRect().top +
-                                    window.pageYOffset +
-                                    yOffset;
-                                  window.scrollTo({
-                                    top: y,
-                                    behavior: "smooth",
-                                  });
-
-                                  // Add flash class
-                                  el.classList.add("footnote-flash");
-                                  setTimeout(() => {
-                                    el.classList.remove("footnote-flash");
-                                  }, 2000); // duration matches CSS animation
-                                }
-                              }}
-                            />
-                          );
-                        }
-
-                        // external links
+                      if (isHashLink) {
                         return (
                           <a
                             {...props}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            onClick={(e) => {
+                              e.preventDefault();
+
+                              // scope to container if needed
+                              const container =
+                                e.currentTarget.closest(".markdown-entry");
+                              const el = container?.querySelector(href);
+
+                              if (el) {
+                                const yOffset = -80; // adjust for fixed header
+                                const y =
+                                  el.getBoundingClientRect().top +
+                                  window.pageYOffset +
+                                  yOffset;
+                                window.scrollTo({
+                                  top: y,
+                                  behavior: "smooth",
+                                });
+
+                                // Add flash class
+                                el.classList.add("footnote-flash");
+                                setTimeout(() => {
+                                  el.classList.remove("footnote-flash");
+                                }, 2000); // duration matches CSS animation
+                              }
+                            }}
                           />
                         );
-                      },
-                    }}
-                  >
-                    {md}
-                  </ReactMarkdown>
-                </div>
-              );
-            })}
+                      }
+
+                      // external links
+                      return (
+                        <a
+                          {...props}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        />
+                      );
+                    },
+                  }}
+                >
+                  {md}
+                </ReactMarkdown>
+              </div>
+            );
+          })
+        )}
       </Container>
     </>
   );
