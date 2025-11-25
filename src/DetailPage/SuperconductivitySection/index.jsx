@@ -107,7 +107,7 @@ export default function SuperConductivitySection({
           well as the intermediate electronic and vibrational calculated
           properties. For further details regarding the methodology see the{" "}
           <a href="./#/contributions" target="_blank" rel="noopener noreferrer">
-            contribution details
+            extended dataset documentation
           </a>
           .
         </div>

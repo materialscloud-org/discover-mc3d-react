@@ -19,8 +19,9 @@ import TitleAndLogo from "../common/TitleAndLogo";
 
 import MaterialsCloudHeader from "mc-react-header";
 
-const markdownEntries = ["preface.md", "superconductivity.md"];
+const markdownEntries = ["preface.md", "phonon.md", "superconductivity.md"];
 
+// TODO - maybe switch this to being a many contributions page?
 function ContributionsPage() {
   const [markdowns, setMarkdowns] = useState([]);
 
