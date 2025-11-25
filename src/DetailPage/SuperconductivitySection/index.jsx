@@ -93,7 +93,7 @@ export default function SuperConductivitySection({
           methodology. To see this structure, explore the AiiDA provenance{" "}
           {supercon.structure_uuid && (
             <ExploreButton
-              explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+              explore_url={EXPLORE_URLS["pbesol-v1-supercon"]}
               uuid={supercon.structure_uuid}
             />
           )}
@@ -116,7 +116,7 @@ export default function SuperConductivitySection({
         <Row>
           {/* Looks bad on sm/md breakpoints but also md/lg breakpoints look bad too... */}
           <Col sm={12} md={6} className="mt-2 mt-md-5">
-            <SuperconInfoBox superconData={supercon} />
+            <SuperconInfoBox params={params} superconData={supercon} />
           </Col>
           <Col sm={12} md={6} className="mt-3 mt-md-0">
             <div className="subsection-title">Electronic band structure</div>
@@ -124,14 +124,14 @@ export default function SuperConductivitySection({
               Calculated with Quantum ESPRESSO (QE){" "}
               {supercon.qe_el_band_structure_uuid && (
                 <ExploreButton
-                  explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+                  explore_url={EXPLORE_URLS["pbesol-v1-supercon"]}
                   uuid={supercon.qe_el_band_structure_uuid}
                 />
               )}{" "}
               and EPW{" "}
               {supercon.epw_el_band_structure_uuid && (
                 <ExploreButton
-                  explore_url={EXPLORE_URLS[params.method] + "-supercon"}
+                  explore_url={EXPLORE_URLS["pbesol-v1-supercon"]}
                   uuid={supercon.epw_el_band_structure_uuid}
                 />
               )}

@@ -1,5 +1,9 @@
 import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
 
+import { EXPLORE_URLS } from "../../common/AIIDArestApiUtils";
+
+import { ExploreButton } from "mc-react-library";
+
 // some symbols need a little space to look good.
 const omegaLogLabel = (
   <>
@@ -17,48 +21,68 @@ const TcLabel = (
 
 // helper function to round a float from loadedData.
 // we use undefined + .filter() to remove entries from an array
-function formatIfExists(
+// we also use a hard coded defined base URL here.
+// this is a messy pattern and should be fixed
+function formatIfExists({
   value,
-  { decimals = 3, format = (v) => v, fallback = undefined } = {},
-) {
+  exploreBaseURL = EXPLORE_URLS["pbesol-v1-supercon"],
+  uuid = null,
+  decimals = 3,
+  format = (v) => v,
+  fallback = undefined,
+}) {
+  let formatted;
+
   if (typeof value === "number" && !isNaN(value)) {
-    const rounded = Number(value.toFixed(decimals));
-    return format(rounded);
+    formatted = format(Number(value.toFixed(decimals)));
   } else if (Array.isArray(value)) {
-    // Join arrays with a nice multiplication sign
-    return format(value.join(" × "));
+    formatted = format(value.join(" × "));
   } else if (value !== undefined && value !== null) {
-    return format(value);
+    formatted = format(value);
+  } else {
+    return fallback;
   }
-  return fallback;
+
+  return uuid ? (
+    <>
+      {formatted} <ExploreButton explore_url={exploreBaseURL} uuid={uuid} />
+    </>
+  ) : (
+    formatted
+  );
 }
 
-export function SuperconInfoBox({ superconData, style = {} }) {
+export function SuperconInfoBox({ params, superconData, style = {} }) {
+  console.log("scD", superconData);
   const genInfo = [
     {
       key: "Space group number",
-      value: formatIfExists(superconData.space_group_number, {
+      value: formatIfExists({
+        value: superconData.space_group_number,
         format: (v) => `${v}`,
         fallback: "Unknown Spacegroup",
       }),
     },
     {
       key: "Total energy",
-      value: formatIfExists(superconData.total_energy, {
+      value: formatIfExists({
+        value: superconData.total_energy,
         format: (v) => `${v} eV`,
         fallback: "Unknown Total energy",
       }),
     },
     {
       key: "Cell volume",
-      value: formatIfExists(superconData.cell_volume, {
+      value: formatIfExists({
+        value: superconData.cell_volume,
         format: (v) => `${v} Å³`,
         fallback: "Unknown Spacegroup",
       }),
     },
     {
       key: "Fermi energy",
-      value: formatIfExists(superconData.fermi_energy_coarse, {
+      value: formatIfExists({
+        value: superconData.fermi_energy_coarse,
         format: (v) => `${v} eV`,
       }),
     },
@@ -68,7 +92,9 @@ export function SuperconInfoBox({ superconData, style = {} }) {
           ω<sup>max</sup>
         </>
       ),
-      value: formatIfExists(superconData.highest_phonon_frequency, {
+      value: formatIfExists({
+        value: superconData.highest_phonon_frequency,
+        uuid: superconData.uuid,
         format: (v) => `${v} meV`,
       }),
     },
@@ -81,14 +107,18 @@ export function SuperconInfoBox({ superconData, style = {} }) {
           E<sub>cut</sub>
         </>
       ),
-      value: formatIfExists(superconData.ecut, {
+      value: formatIfExists({
+        value: superconData.ecut,
+        uuid: superconData.uuid,
         format: (v) => `${(v / 13.605703976).toFixed(0)} Ry`,
         fallback: "No data",
       }),
     },
     {
       key: "Smearing",
-      value: formatIfExists(superconData.scf_smearing, {
+      value: formatIfExists({
+        value: superconData.scf_smearing,
+        uuid: superconData.uuid,
         format: (v) => `${v} eV`,
         fallback: "No data",
       }),
@@ -99,7 +129,9 @@ export function SuperconInfoBox({ superconData, style = {} }) {
           DFPT <b>k</b>-grid
         </>
       ),
-      value: formatIfExists(superconData.kpoints_mesh, {
+      value: formatIfExists({
+        value: superconData.kgrid_dfpt.mesh,
+        uuid: superconData.kgrid_dfpt.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No DFPT kgrid data",
       }),
@@ -110,7 +142,9 @@ export function SuperconInfoBox({ superconData, style = {} }) {
           DFPT <b>q</b>-grid
         </>
       ),
-      value: formatIfExists(superconData.qpoints_mesh, {
+      value: formatIfExists({
+        value: superconData.qgrid_epw_coarse.mesh,
+        uuid: superconData.qgrid_epw_coarse.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No DFPT qgrid data",
       }),
@@ -120,13 +154,16 @@ export function SuperconInfoBox({ superconData, style = {} }) {
   const epwInfo = [
     {
       key: "Type of anisotropy",
-      value: formatIfExists(superconData.type, {
+      value: formatIfExists({
+        value: superconData.type,
+        uuid: superconData.uuid,
         format: (v) => `${v}`,
       }),
     },
     {
       key: "Number of Wannier functions",
-      value: formatIfExists(superconData.number_of_wannier_functions, {
+      value: formatIfExists({
+        value: superconData.number_of_wannier_functions,
         format: (v) => `${v}`,
       }),
     },
@@ -136,7 +173,9 @@ export function SuperconInfoBox({ superconData, style = {} }) {
           Coarse <b>k</b>-grid
         </>
       ),
-      value: formatIfExists(superconData.kpoints_mesh, {
+      value: formatIfExists({
+        value: superconData.kgrid_epw_coarse.mesh,
+        uuid: superconData.kgrid_epw_coarse.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No EPW coarse kgriddata",
       }),
@@ -147,7 +186,9 @@ export function SuperconInfoBox({ superconData, style = {} }) {
           Coarse <b>q</b>-grid
         </>
       ),
-      value: formatIfExists(superconData.qpoints_mesh, {
+      value: formatIfExists({
+        value: superconData.qgrid_epw_coarse.mesh,
+        uuid: superconData.qgrid_epw_coarse.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No EPW coarse qgriddata",
       }),
@@ -158,7 +199,9 @@ export function SuperconInfoBox({ superconData, style = {} }) {
           Fine <b>k</b>-grid
         </>
       ),
-      value: formatIfExists(superconData.kfpoints_mesh, {
+      value: formatIfExists({
+        value: superconData.kgrid_epw_fine.mesh,
+        uuid: superconData.kgrid_epw_fine.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No EPW fine kgriddata",
       }),
@@ -169,21 +212,27 @@ export function SuperconInfoBox({ superconData, style = {} }) {
           Fine <b>q</b>-grid
         </>
       ),
-      value: formatIfExists(superconData.qfpoints_mesh, {
+      value: formatIfExists({
+        value: superconData.qgrid_epw_fine.mesh,
+        uuid: superconData.qgrid_epw_fine.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
         fallback: "No EPW fine qgriddata",
       }),
     },
     {
       key: "Smearing-q",
-      value: formatIfExists(superconData.smearing_q, {
+      value: formatIfExists({
+        value: superconData.smearing_q,
+        uuid: superconData.uuid,
         format: (v) => `${v} meV`,
         fallback: "No data",
       }),
     },
     {
       key: "Fermi window",
-      value: formatIfExists(superconData.fermi_window, {
+      value: formatIfExists({
+        value: superconData.fermi_window,
+        uuid: superconData.uuid,
         format: (v) => `±${v} eV`,
         fallback: "No data",
       }),
@@ -193,28 +242,36 @@ export function SuperconInfoBox({ superconData, style = {} }) {
   const superconInfo = [
     {
       key: omegaLogLabel,
-      value: formatIfExists(superconData.omega_log, {
+      value: formatIfExists({
+        value: superconData.omega_log,
+        uuid: superconData.uuid,
         format: (v) => `${v} meV`,
         fallback: "Not calculated",
       }),
     },
     {
       key: "λ",
-      value: formatIfExists(superconData.lambda, {
+      value: formatIfExists({
+        value: superconData.lambda,
+        uuid: superconData.uuid,
         format: (v) => `${v}`,
         fallback: "Not calculated",
       }),
     },
     {
       key: <>Allen-Dynes {TcLabel}</>,
-      value: formatIfExists(superconData.allen_dynes_tc, {
+      value: formatIfExists({
+        value: superconData.allen_dynes_tc,
+        uuid: superconData.uuid,
         format: (v) => `${v} K`,
         fallback: "Not calculated",
       }),
     },
     {
       key: <>Isotropic {TcLabel}</>,
-      value: formatIfExists(superconData.iso_tc, {
+      value: formatIfExists({
+        value: superconData.iso_tc,
+        uuid: superconData.uuid,
         format: (v) => `${v} K`,
         fallback: "Not superconducting",
       }),
@@ -229,14 +286,18 @@ export function SuperconInfoBox({ superconData, style = {} }) {
           (0)
         </>
       ),
-      value: formatIfExists(superconData.aniso_info?.delta0, {
+      value: formatIfExists({
+        value: superconData.aniso_info?.delta0,
+        uuid: superconData.uuid,
         format: (v) => `${v} K`,
         fallback: "No nk Data",
       }),
     },
     {
       key: <>Anisotropic {TcLabel}</>,
-      value: formatIfExists(superconData.aniso_info?.Tc, {
+      value: formatIfExists({
+        value: superconData.aniso_info?.Tc,
+        uuid: superconData.uuid,
         format: (v) => `${v} K`,
         fallback: "Not superconducting",
       }),
@@ -273,7 +334,13 @@ export function SuperconInfoBox({ superconData, style = {} }) {
       }
       childrenRight={
         <div>
-          <b>DFT calculation details </b>
+          <b>
+            DFT calculation details{" "}
+            <ExploreButton
+              explore_url={EXPLORE_URLS["pbesol-v1-supercon"]}
+              uuid={superconData.pw_uuid}
+            />
+          </b>
           <ul className="no-bullets">
             {dftInfo
               .filter((item) => item.value !== undefined)
@@ -283,7 +350,13 @@ export function SuperconInfoBox({ superconData, style = {} }) {
                 </li>
               ))}
           </ul>
-          <b>EPW calculation details</b>
+          <b>
+            EPW calculation details{" "}
+            <ExploreButton
+              explore_url={EXPLORE_URLS["pbesol-v1-supercon"]}
+              uuid={superconData.epw_uuid}
+            />
+          </b>
           <ul className="no-bullets">
             {epwInfo
               .filter((item) => item.value !== undefined)

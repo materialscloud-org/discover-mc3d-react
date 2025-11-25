@@ -116,7 +116,7 @@ export const SUPERCON_PHONON_A2F_LAYOUT_CONFIG = {
   xaxis: {
     ticks: "inside",
     tickfont: { size: 14, color: "#333" },
-    title: { text: "q-path", font: { size: 16, color: "#333" } },
+    title: { text: "", font: { size: 16, color: "#333" } },
     // No tickvals/ticktext
   },
 

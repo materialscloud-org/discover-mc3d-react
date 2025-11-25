@@ -43,8 +43,6 @@ export default function VibrationalSection({ params, loadedData }) {
 
   let content;
 
-  console.log("pvd", phononVisData);
-
   if (notAvail) {
     // dont render if something went wrong.
     return null;
@@ -61,17 +59,12 @@ export default function VibrationalSection({ params, loadedData }) {
         props={{
           plotlyLayoutFormat: {
             xaxis: {
-              title: {
-                text: "q-path",
-              },
-              tickangle: 0,
-              automargin: true,
+              title: {},
             },
             yaxis: {
               title: {
                 text: "Energy [meV]",
               },
-              automargin: true,
             },
           },
           ...phononVisData,

@@ -28,7 +28,7 @@ export const EXPLORE_URLS = {
   "pbe-v1": `${EXPLORE_BASE_URL}/mc3d-pbe-v1`,
   "pbesol-v1": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1`,
   "pbesol-v2": `${EXPLORE_BASE_URL}/mc3d-pbesol-v2`,
-  "pbesol-v1-supercon": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1-supercon/api/v4`,
+  "pbesol-v1-supercon": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1-supercon`,
 };
 
 // delay function for testing loading animations:
