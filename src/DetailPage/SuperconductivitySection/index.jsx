@@ -89,7 +89,9 @@ export default function SuperConductivitySection({
             <DoiBadge doi_id="9w-az" label="Data DOI" />
           </div>
         </div>
-        {params.method !== method && <WarningBoxOtherMethod method={method} />}
+        {params.method !== method && (
+          <WarningBoxOtherMethod method={method} id={params.id} />
+        )}
         {
           <WarningBox>
             Warning: This dataset re-relaxes the structure with a different

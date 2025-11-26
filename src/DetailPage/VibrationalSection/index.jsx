@@ -104,7 +104,9 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
         </div>
       </div>
 
-      {params.method !== method && <WarningBoxOtherMethod method={method} />}
+      {params.method !== method && (
+        <WarningBoxOtherMethod method={method} id={params.id} />
+      )}
       <Container fluid className="section-container">
         <div style={{ padding: "10px 10px", textAlign: "justify" }}>
           This dataset provides results from a high-throughput search for

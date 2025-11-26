@@ -10,7 +10,10 @@ export const WarningBox = ({ children }) => {
   );
 };
 
-export const WarningBoxOtherMethod = ({ method }) => {
+export const WarningBoxOtherMethod = ({ method, id }) => {
+  // Build the hash-router URL to this method
+  const methodUrl = `#/details/${id}/${method}`;
+
   return (
     <div
       className="alert alert-warning"
@@ -18,7 +21,7 @@ export const WarningBoxOtherMethod = ({ method }) => {
       role="alert"
     >
       Warning: This section has been calculated starting from the structure in
-      the <strong>{method}</strong> sub-database instead of the currently
+      the <a href={methodUrl}>{method}</a> sub-database instead of the currently
       selected one.
     </div>
   );
