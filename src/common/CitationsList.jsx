@@ -40,7 +40,7 @@ const CITATION_MAPPING = {
   },
   MBercxSupercon25: {
     authorsText: "Bercx et al.",
-    journalText: "PRX Energy 4, 033012 ",
+    journalText: "PRX Energy 4, 033012",
     doi: "10.1103/sb28-fjc9",
     year: 2025,
   },
@@ -52,8 +52,11 @@ const CITATION_MAPPING = {
   },
 };
 
-export const CitationsList = ({ citationLabels }) => (
-  <div style={{ marginLeft: "8px" }}>
+export const CitationsList = ({
+  citationLabels,
+  containerStyle = { marginLeft: "8px" },
+}) => (
+  <div style={containerStyle}>
     {citationLabels.map((label) => (
       <CitationText key={label} info={CITATION_MAPPING[label]} />
     ))}

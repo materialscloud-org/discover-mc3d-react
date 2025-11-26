@@ -7,19 +7,27 @@ import PhononVisualizer from "mc-react-phonon-visualizer";
 
 import { loadSuperConPhononVis } from "../../common/MCrestApiUtils";
 
+import { WarningBoxOtherMethod } from "../../common/WarningBox";
+
 import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
-export default function VibrationalSection({ params, loadedData }) {
+export default function VibrationalSection({ params, loadedData, phononData }) {
+  if (!phononData) return null;
+
   const [phononVisData, setPhononVisData] = useState(null);
   const [notAvail, setNotAvail] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const method = phononData.method;
+
+  console.log(method);
 
   useEffect(() => {
     setLoading(true);
 
     // supercon phonons is in CM1 WE WANT MEV
-    loadSuperConPhononVis(params.method, params.id)
+    loadSuperConPhononVis(method, params.id)
       .then((loadedSCPVis) => {
         if (loadedSCPVis) {
           const CM1_TO_MEV = 0.12398;
@@ -95,6 +103,10 @@ export default function VibrationalSection({ params, loadedData }) {
           <DoiBadge doi_id="9w-az" label="Data DOI" />
         </div>
       </div>
+
+      {params.method !== method && (
+        <WarningBoxOtherMethod method={method} id={params.id} />
+      )}
       <Container fluid className="section-container">
         <div style={{ padding: "10px 10px", textAlign: "justify" }}>
           This dataset provides results from a high-throughput search for

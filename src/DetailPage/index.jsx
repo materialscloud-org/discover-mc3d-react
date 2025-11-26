@@ -17,30 +17,29 @@ import { Container } from "react-bootstrap";
 import {
   loadMetadata,
   loadDetails,
+  loadDatasetIndex,
   loadSuperConDetails,
   loadSuperConPhononVis,
 } from "../common/MCrestApiUtils";
 
-import { loadAiidaAttributes, loadAiidaCif } from "../common/AIIDArestApiUtils";
+import { loadAiidaAttributes, loadAiidaCif } from "../common/aiidaRestApiUtils";
+
+import AlternativeMethodsList from "./AlternativeMethodsList";
+import buildResultsObject from "../common/buildResultsObject";
 
 import OverviewSection from "./OverviewSection";
 import StructureSection from "./StructureSection";
 import ProvenanceSection from "./ProvenanceSection";
 import XrdSection from "./XrdSection";
 
-// import VibrationalSection from "./VibrationalSection";
-// import SuperConductivity from "./Superconductivity";
-// lazy load the sections that may not exist.
-const VibrationalSection = lazy(() => import("./VibrationalSection"));
-const SuperconductivitySection = lazy(
-  () => import("./SuperconductivitySection"),
-);
+import VibrationalSection from "./VibrationalSection";
+import SuperconductivitySection from "./SuperconductivitySection";
 
 // if fetching fails we use this.
 import MissingDataWarning from "./MissingDataWarning";
+import { CitationsList } from "../common/CitationsList";
 
 // contributed sections
-
 // import RelatedSection from "./RelatedSection";
 
 async function fetchCompoundData(method, id) {
@@ -74,7 +73,7 @@ async function fetchCompoundData(method, id) {
   }
 }
 
-async function fetchCompoundDataOther(method, id) {
+async function fetchSuperconSubset(method, id) {
   try {
     const [scDetails, scPhonons] = await Promise.all([
       loadSuperConDetails(method, id),
@@ -82,11 +81,13 @@ async function fetchCompoundDataOther(method, id) {
     ]);
 
     return {
+      method: method,
       scDetails: scDetails,
       scPhonon: scPhonons,
     };
   } catch {
     return {
+      method: method,
       scDetails: null,
       scPhonon: null,
     };
@@ -94,30 +95,55 @@ async function fetchCompoundDataOther(method, id) {
 }
 
 function DetailPage() {
-  const [loadedData, setLoadedData] = useState(null);
-  const [otherData, setOtherData] = useState(null);
-
   const navigate = useNavigate();
   const params = useParams(); // Route parameters
 
+  const [datasetIndex, setDatasetIndex] = useState(null);
+  const [resultsObject, setResultsObject] = useState({});
+
+  const [coreData, setCoreData] = useState(null);
+
+  const [superconPhononData, setSuperconPhononData] = useState(null);
+
+  const [superconSCData, setSuperconSCData] = useState();
+
   useEffect(() => {
-    setLoadedData(null);
-    fetchCompoundData(params.method, params.id).then((loadedData) => {
-      console.log("Loaded general data", loadedData);
-      setLoadedData(loadedData);
+    setDatasetIndex(null);
+    loadDatasetIndex(params.method, params.id).then((lD) => {
+      setDatasetIndex(lD.index);
+      setResultsObject(buildResultsObject(lD.index, params.method));
     });
   }, [params.id, params.method]);
 
   useEffect(() => {
-    setOtherData(null);
-    fetchCompoundDataOther(params.method, params.id).then((otherData) => {
-      console.log("Loaded Other data", otherData);
-      setOtherData(otherData);
+    if (!resultsObject) return;
+
+    console.log(resultsObject);
+
+    // check if the core props exist in the resultsObject...
+    // if it doesnt something has gone very wrong.
+    if (resultsObject.core_base !== params.method) {
+      console.log("Something went very wrong.");
+      return;
+    }
+
+    setCoreData(null);
+    fetchCompoundData(params.method, params.id).then((data) => {
+      setCoreData(data);
     });
-  }, [params.id, params.method]);
+
+    // Check if supercon entries exist in resultsObject
+    // This should be extended to the other partial methods at somepoint.
+    if (resultsObject.supercon_base) {
+      fetchSuperconSubset(resultsObject.supercon_base, params.id).then((sc) => {
+        setSuperconSCData(sc); // superconducting details
+        setSuperconPhononData(sc); // phonon/vis data
+      });
+    }
+  }, [resultsObject, params.id, params.method]);
 
   // While loading, show spinner
-  if (loadedData === null) {
+  if (coreData === null) {
     return (
       <MaterialsCloudHeader
         activeSection={"discover"}
@@ -141,13 +167,13 @@ function DetailPage() {
   }
 
   // if Data is missing we show the Error.
-  if (loadedData?.missingStructureWarning) {
+  if (coreData?.missingStructureWarning) {
     return <MissingDataWarning params={params} navigate={navigate} />;
   }
 
   // Otherwise proceed as normal.
   const title = formatTitle(
-    loadedData.details.general.formula,
+    coreData.details.general.formula,
     params.id,
     params.method,
   );
@@ -170,46 +196,43 @@ function DetailPage() {
       />
       <Container fluid="xxl">
         <TitleAndLogo />
+
         <div className="detail-page-heading">{title}</div>
-        <OverviewSection params={params} loadedData={loadedData} />
-        <StructureSection params={params} loadedData={loadedData} />
-        <ProvenanceSection params={params} loadedData={loadedData} />
-        <XrdSection params={params} loadedData={loadedData} />
 
-        {/* only try to load the following sections if you visit supercon */}
-        {otherData?.scPhonon && (
-          <Suspense
-            fallback={
-              <div
-                style={{ width: "150px", padding: "40px", margin: "0 auto" }}
-              >
-                <McloudSpinner />
-              </div>
-            }
-          >
-            <VibrationalSection params={params} loadedData={loadedData} />
-          </Suspense>
-        )}
+        {/* Place this somewhere nice */}
+        {/* <CitationsList citationLabels={["HuberMc3d25"]} /> */}
 
-        {otherData?.scDetails && (
-          <Suspense
-            fallback={
-              <div
-                style={{ width: "150px", padding: "40px", margin: "0 auto" }}
-              >
-                <McloudSpinner />
-              </div>
-            }
-          >
-            <SuperconductivitySection
-              params={params}
-              loadedData={loadedData}
-              superconData={otherData.scDetails}
-            />
-          </Suspense>
-        )}
+        <div style={{ paddingLeft: "12px" }}>
+          <AlternativeMethodsList
+            id={params.id}
+            methods={datasetIndex}
+            currentMethod={params.method}
+          />
+        </div>
 
-        {/* <RelatedSection /> */}
+        <OverviewSection
+          params={params}
+          loadedData={coreData}
+          headerStyle={{
+            margin: "0px 0px 10px 0px",
+            padding: "0px 0px 10px 0px",
+          }}
+        />
+        <StructureSection params={params} loadedData={coreData} />
+        <ProvenanceSection params={params} loadedData={coreData} />
+        <XrdSection params={params} loadedData={coreData} />
+
+        <VibrationalSection
+          params={params}
+          loadedData={coreData}
+          phononData={superconPhononData}
+        />
+
+        <SuperconductivitySection
+          params={params}
+          loadedData={coreData}
+          superconData={superconSCData}
+        />
       </Container>
     </>
   );

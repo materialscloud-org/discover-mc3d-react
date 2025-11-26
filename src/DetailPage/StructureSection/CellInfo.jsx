@@ -32,7 +32,6 @@ export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
 
   const primitive_matrix = structureInfo.aiidaAttributes.cell;
   const transform_matrix = getPrimToConvMatrix(spacegroup_symbol);
-  console.log("Cell transformation matrix:", transform_matrix);
 
   // bundle matrices
   const prim_bundled = bundleLatticeData({ baseMatrix: primitive_matrix });

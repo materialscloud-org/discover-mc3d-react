@@ -63,7 +63,7 @@ export async function loadAiidaBands(aiidaProfile, uuid) {
   let aiidaUrl = AIIDA_API_URLS[aiidaProfile];
   const endpoint = `${aiidaUrl}/nodes/${uuid}/download?download_format=json`;
 
-  console.log("abEndpoint", endpoint);
+  console.log("bands endpoint", endpoint);
 
   try {
     const response = await fetch(endpoint, { method: "get" });

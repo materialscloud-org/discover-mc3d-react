@@ -7,7 +7,7 @@ import { HelpButton } from "mc-react-library";
 import { Popover } from "react-bootstrap";
 
 import { loadStructureUuids } from "../common/MCrestApiUtils";
-import { AIIDA_API_URLS } from "../common/AIIDArestApiUtils";
+import { AIIDA_API_URLS } from "../common/aiidaRestApiUtils";
 
 import "./DownloadButton.css";
 

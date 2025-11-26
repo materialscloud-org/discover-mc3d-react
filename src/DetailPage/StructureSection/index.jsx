@@ -7,7 +7,7 @@ import { Container, Row, Col } from "react-bootstrap";
 
 import { MCInfoBox } from "../../common/MCInfoBox";
 
-import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/AIIDArestApiUtils";
+import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
 import { format_aiida_prop } from "../../common/utils";
 
 const StructureSection = ({ params, loadedData }) => {
