@@ -22,7 +22,7 @@ import {
   loadSuperConPhononVis,
 } from "../common/MCrestApiUtils";
 
-import { loadAiidaAttributes, loadAiidaCif } from "../common/AIIDArestApiUtils";
+import { loadAiidaAttributes, loadAiidaCif } from "../common/aiidaRestApiUtils";
 
 import AlternativeMethodsList from "./AlternativeMethodsList";
 import buildResultsObject from "../common/buildResultsObject";
@@ -202,11 +202,13 @@ function DetailPage() {
         {/* Place this somewhere nice */}
         {/* <CitationsList citationLabels={["HuberMc3d25"]} /> */}
 
-        <AlternativeMethodsList
-          id={params.id}
-          methods={datasetIndex}
-          currentMethod={params.method}
-        />
+        <div style={{ paddingLeft: "12px" }}>
+          <AlternativeMethodsList
+            id={params.id}
+            methods={datasetIndex}
+            currentMethod={params.method}
+          />
+        </div>
 
         <OverviewSection
           params={params}

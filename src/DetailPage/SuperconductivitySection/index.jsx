@@ -10,13 +10,15 @@ import {
 
 import { CitationsList } from "../../common/CitationsList";
 import { DoiBadge, ExploreButton } from "mc-react-library";
-import { EXPLORE_URLS } from "../../common/AIIDArestApiUtils";
+import { EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
 
 import SuperconInfoBox from "./InfoBoxes";
 import GapFunction from "./GapFunction";
 import { getA2FTraces } from "./getA2FTraces";
 
 import BandStructure from "../../common/BandStructure/BandStructure";
+
+import { WarningBox, WarningBoxOtherMethod } from "../../common/WarningBox";
 
 import {
   SUPERCON_BANDS_LAYOUT_CONFIG,
@@ -34,21 +36,6 @@ export default function SuperConductivitySection({
   if (!superconData.scDetails.supercon) return null;
 
   const method = superconData.method;
-
-  // Warning if the supercon method is different from the current method
-  const differentMethodWarning =
-    params.method !== method ? (
-      <div
-        className="alert alert-warning"
-        style={{ margin: "10px 10px 5px 10px" }}
-        role="alert"
-      >
-        {" "}
-        Warning: Superconducting properties have been calculated from the final
-        structure seen for <strong>{method}</strong> which may differ to this
-        structure (<strong>{params.method}</strong>).
-      </div>
-    ) : null;
 
   const supercon = superconData.scDetails.supercon;
   console.log("sc", supercon);
@@ -101,23 +88,18 @@ export default function SuperConductivitySection({
             <CitationsList citationLabels={["MBercxSupercon25"]} />
             <DoiBadge doi_id="9w-az" label="Data DOI" />
           </div>
-          {differentMethodWarning}
         </div>
-
-        <div
-          className="alert alert-warning"
-          style={{ margin: "10px 10px 5px 10px" }}
-          role="alert"
-        >
-          This contribution re-relaxes the structure with a different
-          methodology. To see this structure, explore the AiiDA provenance{" "}
-          {supercon.structure_uuid && (
+        {params.method !== method && <WarningBoxOtherMethod method={method} />}
+        {
+          <WarningBox>
+            Warning: This dataset re-relaxes the structure with a different
+            methodology. To see this new structure, explore the AiiDA provenance{" "}
             <ExploreButton
               explore_url={EXPLORE_URLS["pbesol-v1-supercon"]}
               uuid={supercon.structure_uuid}
             />
-          )}
-        </div>
+          </WarningBox>
+        }
         <div style={{ padding: "10px 10px", textAlign: "justify" }}>
           This dataset provides results from a high-throughput search for
           phonon-mediated superconductivity, where electron–phonon interactions

@@ -1,6 +1,6 @@
 import { formatChemicalFormula } from "mc-react-library";
 import { ExploreButton } from "mc-react-library";
-import { EXPLORE_URLS } from "./AIIDArestApiUtils";
+import { EXPLORE_URLS } from "./aiidaRestApiUtils";
 
 export function countNumberOfAtoms(formula) {
   // split on capital letters to get element+number strings

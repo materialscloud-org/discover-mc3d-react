@@ -17,7 +17,7 @@ The dynamical matrices were calculated for 4533 non-magnetic metals, utilizing a
 ### Phonon calculation details
 
 We collected 2825 dynamical matrices from successful subproces `PhBaseWorkChain` originating from a five-step workchain for electron-phonon coupling.
-Based on the dynamical matrices, we performed subsequent `Q2rBaseWorkChain` and `MatdynBaseWorkChain` interpolation independently for the visualized phonon dispersion using the "all" acoustic sum rull[^2](https://www.quantum-espresso.org/Doc/INPUT_MATDYN.html#id4).
+Based on the dynamical matrices, we performed subsequent `Q2rBaseWorkChain` and `MatdynBaseWorkChain` interpolation independently for the visualized phonon dispersion using the "all" acoustic sum rule[^2](https://www.quantum-espresso.org/Doc/INPUT_MATDYN.html#id4).
 The pseudopotentials used here are from SSSP library[^3] with the planewave cutoff ($E_{\textrm{cut}}$) being the highest value recommended by the library.
 
 In summary, the global workflow is:

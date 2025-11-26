@@ -18,7 +18,7 @@ import { MCInfoBox } from "../../common/MCInfoBox";
 
 import SourceInfo from "./SourceInfo";
 
-import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/AIIDArestApiUtils";
+import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
 
 function GeneralInfoBox({ details, metadata, methodLabel }) {
   return (

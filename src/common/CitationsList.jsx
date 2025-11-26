@@ -40,7 +40,7 @@ const CITATION_MAPPING = {
   },
   MBercxSupercon25: {
     authorsText: "Bercx et al.",
-    journalText: "PRX Energy 4, 033012 ",
+    journalText: "PRX Energy 4, 033012",
     doi: "10.1103/sb28-fjc9",
     year: 2025,
   },

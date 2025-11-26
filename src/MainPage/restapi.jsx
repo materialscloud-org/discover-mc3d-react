@@ -3,7 +3,7 @@ import {
   MC_REST_API_URL,
 } from "../common/MCrestApiUtils";
 
-import { AIIDA_API_URLS } from "../common/AIIDArestApiUtils";
+import { AIIDA_API_URLS } from "../common/aiidaRestApiUtils";
 
 import "./restapi.css";
 

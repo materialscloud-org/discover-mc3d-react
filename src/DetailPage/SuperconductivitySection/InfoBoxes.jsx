@@ -1,6 +1,6 @@
 import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
 
-import { EXPLORE_URLS } from "../../common/AIIDArestApiUtils";
+import { EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
 
 import { ExploreButton } from "mc-react-library";
 
@@ -29,7 +29,7 @@ function formatIfExists({
   uuid = null,
   decimals = 3,
   format = (v) => v,
-  fallback = undefined,
+  fallback = "N/A",
 }) {
   let formatted;
 
@@ -60,7 +60,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
       value: formatIfExists({
         value: superconData.space_group_number,
         format: (v) => `${v}`,
-        fallback: "Unknown Spacegroup",
       }),
     },
     {
@@ -68,7 +67,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
       value: formatIfExists({
         value: superconData.total_energy,
         format: (v) => `${v} eV`,
-        fallback: "Unknown Total energy",
       }),
     },
     {
@@ -76,7 +74,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
       value: formatIfExists({
         value: superconData.cell_volume,
         format: (v) => `${v} Å³`,
-        fallback: "Unknown Spacegroup",
       }),
     },
     {
@@ -111,7 +108,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.ecut,
         uuid: superconData.uuid,
         format: (v) => `${(v / 13.605703976).toFixed(0)} Ry`,
-        fallback: "No data",
       }),
     },
     {
@@ -120,7 +116,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.scf_smearing,
         uuid: superconData.uuid,
         format: (v) => `${v} eV`,
-        fallback: "No data",
       }),
     },
     {
@@ -133,7 +128,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.kgrid_dfpt.mesh,
         uuid: superconData.kgrid_dfpt.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
-        fallback: "No DFPT kgrid data",
       }),
     },
     {
@@ -146,7 +140,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.qgrid_epw_coarse.mesh,
         uuid: superconData.qgrid_epw_coarse.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
-        fallback: "No DFPT qgrid data",
       }),
     },
   ];
@@ -177,7 +170,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.kgrid_epw_coarse.mesh,
         uuid: superconData.kgrid_epw_coarse.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
-        fallback: "No EPW coarse kgriddata",
       }),
     },
     {
@@ -190,7 +182,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.qgrid_epw_coarse.mesh,
         uuid: superconData.qgrid_epw_coarse.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
-        fallback: "No EPW coarse qgriddata",
       }),
     },
     {
@@ -203,7 +194,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.kgrid_epw_fine.mesh,
         uuid: superconData.kgrid_epw_fine.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
-        fallback: "No EPW fine kgriddata",
       }),
     },
     {
@@ -216,7 +206,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.qgrid_epw_fine.mesh,
         uuid: superconData.qgrid_epw_fine.uuid,
         format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
-        fallback: "No EPW fine qgriddata",
       }),
     },
     {
@@ -225,7 +214,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.smearing_q,
         uuid: superconData.uuid,
         format: (v) => `${v} meV`,
-        fallback: "No data",
       }),
     },
     {
@@ -234,7 +222,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.fermi_window,
         uuid: superconData.uuid,
         format: (v) => `±${v} eV`,
-        fallback: "No data",
       }),
     },
   ];
@@ -246,7 +233,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.omega_log,
         uuid: superconData.uuid,
         format: (v) => `${v} meV`,
-        fallback: "Not calculated",
       }),
     },
     {
@@ -255,7 +241,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.lambda,
         uuid: superconData.uuid,
         format: (v) => `${v}`,
-        fallback: "Not calculated",
       }),
     },
     {
@@ -264,7 +249,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.allen_dynes_tc,
         uuid: superconData.uuid,
         format: (v) => `${v} K`,
-        fallback: "Not calculated",
       }),
     },
     {
@@ -290,7 +274,6 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         value: superconData.aniso_info?.delta0,
         uuid: superconData.uuid,
         format: (v) => `${v} K`,
-        fallback: "No nk Data",
       }),
     },
     {

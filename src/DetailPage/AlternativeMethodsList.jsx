@@ -5,7 +5,7 @@ const order = ["pbesol-v2", "pbesol-v1", "pbe-v1"];
 
 // simple component that takes metods and currentMethods and returns clickable buttons and some text string
 export default function MethodologyButtons({
-  commentString = "This structure has also been optimized with methodologies:",
+  commentString = "This structure has been relaxed with the following methodologies:",
   id,
   methods,
   currentMethod,

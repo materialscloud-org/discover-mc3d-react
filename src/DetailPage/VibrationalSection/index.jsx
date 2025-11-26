@@ -7,6 +7,8 @@ import PhononVisualizer from "mc-react-phonon-visualizer";
 
 import { loadSuperConPhononVis } from "../../common/MCrestApiUtils";
 
+import { WarningBoxOtherMethod } from "../../common/WarningBox";
+
 import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
@@ -20,22 +22,6 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
   const method = phononData.method;
 
   console.log(method);
-
-  // Warning if the vib method is different from the current method
-  const differentMethodWarning =
-    params.method !== method ? (
-      <div
-        className="alert alert-warning"
-        style={{ margin: "10px 10px 5px 10px" }}
-        role="alert"
-      >
-        {" "}
-        Warning: Vibrational properties have been calculated from the final
-        structure seen for
-        <strong>{method}</strong> which may differ to this structure (
-        <strong>{params.method}</strong>.).
-      </div>
-    ) : null;
 
   useEffect(() => {
     setLoading(true);
@@ -116,8 +102,9 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
           <CitationsList citationLabels={["MBercxSupercon25"]} />
           <DoiBadge doi_id="9w-az" label="Data DOI" />
         </div>
-        {differentMethodWarning}
       </div>
+
+      {params.method !== method && <WarningBoxOtherMethod method={method} />}
       <Container fluid className="section-container">
         <div style={{ padding: "10px 10px", textAlign: "justify" }}>
           This dataset provides results from a high-throughput search for
