@@ -21,8 +21,11 @@ export const WarningBoxOtherMethod = ({ method, id }) => {
       role="alert"
     >
       Warning: This section has been calculated starting from the structure in
-      the <a href={methodUrl}>{method}</a> sub-database instead of the currently
-      selected one.
+      the{" "}
+      <a style={{ color: "black" }} href={methodUrl}>
+        {method}
+      </a>{" "}
+      sub-database instead of the currently selected one.
     </div>
   );
 };
