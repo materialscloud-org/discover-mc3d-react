@@ -11,7 +11,6 @@ import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
 export default function VibrationalSection({ params, loadedData, phononData }) {
-  console.log("pD", phononData);
   if (!phononData) return null;
 
   const [phononVisData, setPhononVisData] = useState(null);

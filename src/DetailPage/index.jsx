@@ -207,6 +207,7 @@ function DetailPage() {
           methods={datasetIndex}
           currentMethod={params.method}
         />
+
         <OverviewSection
           params={params}
           loadedData={coreData}

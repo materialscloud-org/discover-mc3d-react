@@ -29,7 +29,6 @@ export default function SuperConductivitySection({
   loadedData,
   superconData,
 }) {
-  console.log("scD", superconData);
   if (!superconData) return null;
 
   if (!superconData.scDetails.supercon) return null;
