@@ -192,7 +192,7 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
           .
         </div>
         <Row>
-          <Col md={5}>
+          <Col sm={12} style={{ maxWidth: "600px" }}>
             <div className="subsection-title">Info</div>
 
             <TwoWideInfoBox
