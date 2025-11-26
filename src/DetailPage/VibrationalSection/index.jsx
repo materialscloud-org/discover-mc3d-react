@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Row, Container } from "react-bootstrap";
+import { Row, Col, Container } from "react-bootstrap";
 import { DoiBadge } from "mc-react-library";
 
 import { CitationsList } from "../../common/CitationsList";
@@ -12,16 +12,87 @@ import { WarningBoxOtherMethod } from "../../common/WarningBox";
 import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
+import { MCInfoBox } from "../../common/MCInfoBox";
+import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
+
+import formatIfExists from "../../common/resultFormatter";
+
 export default function VibrationalSection({ params, loadedData, phononData }) {
+  // if data doesnt exist dont render.
   if (!phononData) return null;
+
+  const pdInfo = phononData?.scDetails?.phonons || null;
+  const vibCalcInfo = [
+    {
+      key: (
+        <>
+          E<sub>cut</sub>
+        </>
+      ),
+      value: formatIfExists({
+        value: pdInfo.ecut,
+        format: (v) => `${(v / 13.605703976).toFixed(0)} Ry`,
+      }),
+    },
+    {
+      key: (
+        <>
+          <b>k</b>-grid
+        </>
+      ),
+      value: formatIfExists({
+        value: pdInfo.kgrid_dfpt.mesh,
+        uuid: pdInfo.kgrid_dfpt.uuid,
+        format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
+      }),
+    },
+    {
+      key: (
+        <>
+          <b>q</b>-grid
+        </>
+      ),
+      value: formatIfExists({
+        value: pdInfo.qgrid_dfpt.mesh,
+        uuid: pdInfo.qgrid_dfpt.uuid,
+        format: (v) => (Array.isArray(v) ? v.join(" × ") : `${v}`),
+      }),
+    },
+  ];
+
+  const vibResInfo = [
+    {
+      key: "Smearing",
+      value: formatIfExists({
+        value: pdInfo.scf_smearing,
+        format: (v) => `${v} eV`,
+      }),
+    },
+    {
+      key: "Fermi energy",
+      value: formatIfExists({
+        value: pdInfo.fermi_energy_coarse,
+        format: (v) => `${v} eV`,
+      }),
+    },
+    {
+      key: (
+        <>
+          ω<sup>max</sup>
+        </>
+      ),
+      value: formatIfExists({
+        value: pdInfo.matdyn_highest_phonon_frequency,
+        format: (v) => `${v} meV`,
+      }),
+    },
+  ];
 
   const [phononVisData, setPhononVisData] = useState(null);
   const [notAvail, setNotAvail] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const method = phononData.method;
-
-  console.log(method);
 
   useEffect(() => {
     setLoading(true);
@@ -120,6 +191,42 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
           </a>
           .
         </div>
+        <Row>
+          <Col md={5}>
+            <div className="subsection-title">Info</div>
+
+            <TwoWideInfoBox
+              style={{ height: "110px", marginBottom: "20px" }}
+              childrenLeft={
+                <div>
+                  <ul className="no-bullets">
+                    {vibCalcInfo
+                      .filter((item) => item.value !== undefined)
+                      .map((item, idx) => (
+                        <li key={idx}>
+                          {item.key}: {item.value}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              }
+              childrenRight={
+                <div>
+                  <ul className="no-bullets">
+                    {vibResInfo
+                      .filter((item) => item.value !== undefined)
+                      .map((item, idx) => (
+                        <li key={idx}>
+                          {item.key}: {item.value}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              }
+            />
+          </Col>
+        </Row>
+
         <Row>
           <div className="subsection-title">
             Interactive phonon visualization

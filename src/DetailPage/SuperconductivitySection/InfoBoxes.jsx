@@ -1,8 +1,8 @@
 import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
-
+import { ExploreButton } from "mc-react-library";
 import { EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
 
-import { ExploreButton } from "mc-react-library";
+import formatIfExists from "../../common/resultFormatter";
 
 // some symbols need a little space to look good.
 const omegaLogLabel = (
@@ -23,37 +23,8 @@ const TcLabel = (
 // we use undefined + .filter() to remove entries from an array
 // we also use a hard coded defined base URL here.
 // this is a messy pattern and should be fixed
-function formatIfExists({
-  value,
-  exploreBaseURL = EXPLORE_URLS["pbesol-v1-supercon"],
-  uuid = null,
-  decimals = 3,
-  format = (v) => v,
-  fallback = "N/A",
-}) {
-  let formatted;
-
-  if (typeof value === "number" && !isNaN(value)) {
-    formatted = format(Number(value.toFixed(decimals)));
-  } else if (Array.isArray(value)) {
-    formatted = format(value.join(" × "));
-  } else if (value !== undefined && value !== null) {
-    formatted = format(value);
-  } else {
-    return fallback;
-  }
-
-  return uuid ? (
-    <>
-      {formatted} <ExploreButton explore_url={exploreBaseURL} uuid={uuid} />
-    </>
-  ) : (
-    formatted
-  );
-}
 
 export function SuperconInfoBox({ params, superconData, style = {} }) {
-  console.log("scD", superconData);
   const genInfo = [
     {
       key: "Space group number",
