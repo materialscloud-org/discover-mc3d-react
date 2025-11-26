@@ -199,14 +199,14 @@ function DetailPage() {
 
         <div className="detail-page-heading">{title}</div>
 
-        <CitationsList citationLabels={["HuberMc3d25"]} />
-        <div style={{ marginLeft: "16px" }}>
-          <AlternativeMethodsList
-            id={params.id}
-            methods={datasetIndex}
-            currentMethod={params.method}
-          />
-        </div>
+        {/* Place this somewhere nice */}
+        {/* <CitationsList citationLabels={["HuberMc3d25"]} /> */}
+
+        <AlternativeMethodsList
+          id={params.id}
+          methods={datasetIndex}
+          currentMethod={params.method}
+        />
         <OverviewSection
           params={params}
           loadedData={coreData}

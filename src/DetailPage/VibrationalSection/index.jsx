@@ -11,6 +11,7 @@ import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
 export default function VibrationalSection({ params, loadedData, phononData }) {
+  console.log("pD", phononData);
   if (!phononData) return null;
 
   const [phononVisData, setPhononVisData] = useState(null);
@@ -18,6 +19,8 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
   const [loading, setLoading] = useState(true);
 
   const method = phononData.method;
+
+  console.log(method);
 
   // Warning if the vib method is different from the current method
   const differentMethodWarning =
@@ -39,7 +42,7 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
     setLoading(true);
 
     // supercon phonons is in CM1 WE WANT MEV
-    loadSuperConPhononVis(params.method, params.id)
+    loadSuperConPhononVis(method, params.id)
       .then((loadedSCPVis) => {
         if (loadedSCPVis) {
           const CM1_TO_MEV = 0.12398;
