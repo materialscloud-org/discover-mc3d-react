@@ -32,13 +32,10 @@ export default function SuperConductivitySection({
   superconData,
 }) {
   if (!superconData) return null;
-
   if (!superconData.scDetails.supercon) return null;
 
   const method = superconData.method;
-
   const supercon = superconData.scDetails.supercon;
-  console.log("sc", supercon);
 
   // --- Bands ---
   const { data: bandsResults, loading: bandsLoading } = useAsyncEffect(

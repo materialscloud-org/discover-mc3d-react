@@ -19,7 +19,8 @@ import formatIfExists from "../../common/resultFormatter";
 
 export default function VibrationalSection({ params, loadedData, phononData }) {
   // if data doesnt exist dont render.
-  if (!phononData) return null;
+  if (!phononData || !phononData?.scDetails?.phonons) return null;
+  if (!phononData?.scDetails?.phonons?.matdyn_uuid) return null;
 
   const pdInfo = phononData?.scDetails?.phonons || null;
   const vibCalcInfo = [

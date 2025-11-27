@@ -123,7 +123,6 @@ function DetailPage() {
     // check if the core props exist in the resultsObject...
     // if it doesnt something has gone very wrong.
     if (resultsObject.core_base !== params.method) {
-      console.log("Something went very wrong.");
       return;
     }
 
