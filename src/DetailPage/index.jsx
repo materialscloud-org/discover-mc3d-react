@@ -35,6 +35,8 @@ import XrdSection from "./XrdSection";
 import VibrationalSection from "./VibrationalSection";
 import SuperconductivitySection from "./SuperconductivitySection";
 
+import SimilaritySection from "./SimilaritySection";
+
 // if fetching fails we use this.
 import MissingDataWarning from "./MissingDataWarning";
 import { CitationsList } from "../common/CitationsList";
@@ -108,7 +110,13 @@ function DetailPage() {
   const [superconSCData, setSuperconSCData] = useState();
 
   useEffect(() => {
+    // Reset all dependent state so stale data never appears
     setDatasetIndex(null);
+    setResultsObject({});
+    setCoreData(null);
+    setSuperconPhononData(null);
+    setSuperconSCData(null);
+
     loadDatasetIndex(params.method, params.id).then((lD) => {
       setDatasetIndex(lD.index);
       setResultsObject(buildResultsObject(lD.index, params.method));
@@ -117,8 +125,6 @@ function DetailPage() {
 
   useEffect(() => {
     if (!resultsObject) return;
-
-    console.log(resultsObject);
 
     // check if the core props exist in the resultsObject...
     // if it doesnt something has gone very wrong.
@@ -232,6 +238,7 @@ function DetailPage() {
           loadedData={coreData}
           superconData={superconSCData}
         />
+        <SimilaritySection params={params} />
       </Container>
     </>
   );

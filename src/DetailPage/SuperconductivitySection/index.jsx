@@ -31,8 +31,7 @@ export default function SuperConductivitySection({
   loadedData,
   superconData,
 }) {
-  if (!superconData) return null;
-  if (!superconData.scDetails.supercon) return null;
+  if (!superconData?.scDetails?.supercon) return null;
 
   const method = superconData.method;
   const supercon = superconData.scDetails.supercon;
