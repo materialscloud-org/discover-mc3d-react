@@ -66,7 +66,7 @@ for **k**/**q**-grids the following holds true:
 - The Fine **q**-grid is obtained from Fourier/Wannier interpolation.
 
 Other details:
-
+- The material is identified as dynamically stable only if its minimal phonon frequency computed from EPW interpolation is more than -1 meV.
 - $\Delta_{n\mathbf{k}}(0)$ is the value of the superconducting gap (in meV), extrapolated at 0K. It is obtained from a fit of the anisotropic $T_c$ data with a BCS equation.
 - The smearing value (_Smearing-q_) refers to the _"degaussq"_ input variable in EPW and is the smearing over q in the electron-phonon coupling in meV.
 - The Fermi window refers to the states around the Fermi level included in the superconducting calculation, expressed in eV.
