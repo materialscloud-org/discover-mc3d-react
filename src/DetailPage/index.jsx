@@ -238,7 +238,7 @@ function DetailPage() {
           loadedData={coreData}
           superconData={superconSCData}
         />
-        <SimilaritySection params={params} />
+        {/* <SimilaritySection params={params} /> */}
       </Container>
     </>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
+import { MCTable } from "../../common/MCTable";
 
 const S3_ROOT_URL =
   "https://rgw.cscs.ch/matcloud:mc-public/mc3d_similarity_info";
@@ -37,12 +38,28 @@ export default function SimilaritySection({ params }) {
     fetchData();
   }, [id, method]);
 
-  // handle edge cases.
   if (loading) return <Row></Row>;
   if (error) return <Row></Row>;
 
-  // remove entries from sims if the rms is very large.
   const sims = (data?.comparisons ?? []).filter((comp) => comp.rms <= 0.5);
+
+  // table headings
+  const header = ["RMS", "Max site distance", "Link"];
+
+  // convert comparisons → table rows
+  const contents = sims.map((comp) => {
+    const methodString = comp.method.replace(/^mc3d-/, "");
+    const url = `#/details/${comp.mc3d_id}/${methodString}`;
+    const label = `${comp.mc3d_id}/${methodString}`;
+
+    return [
+      comp.rms.toFixed(4),
+      comp.max.toFixed(4),
+      <a href={url} rel="noopener noreferrer">
+        {label}
+      </a>,
+    ];
+  });
 
   return (
     <div>
@@ -54,28 +71,15 @@ export default function SimilaritySection({ params }) {
           similar:
         </p>
 
-        <div className="d-inline-flex flex-wrap gap-1 align-items-center">
-          {sims.length > 0 ? (
-            sims.map((comp, idx) => {
-              const method_string = comp.method.replace(/^mc3d-/, "");
-              const url = `#/details/${comp.mc3d_id}/${method_string}`;
-              const label = `${comp.mc3d_id}/${method_string}`;
-
-              return (
-                <a
-                  key={idx}
-                  href={url}
-                  rel="noopener noreferrer"
-                  className="btn btn-sm btn-primary rounded-lg px-2"
-                >
-                  {label}
-                </a>
-              );
-            })
-          ) : (
-            <span>No similarity data found.</span>
-          )}
-        </div>
+        {sims.length > 0 ? (
+          <MCTable
+            headerRow={header}
+            contents={contents}
+            style={{ maxHeight: "332px" }}
+          />
+        ) : (
+          <span>No similarity data found.</span>
+        )}
       </Container>
     </div>
   );
