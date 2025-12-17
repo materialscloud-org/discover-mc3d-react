@@ -104,7 +104,7 @@ export default function ElectronicStructureSection({ params }) {
         </div>
       </Row>
     );
-  if (error) return <Row>Error: {error}</Row>;
+  if (error) return <Row></Row>;
 
   console.log("Fermi surface:", fermisurfaceData);
   console.log("DHVA data:", dhvaData);
