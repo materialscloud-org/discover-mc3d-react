@@ -40,6 +40,7 @@ import SimilaritySection from "./SimilaritySection";
 // if fetching fails we use this.
 import MissingDataWarning from "./MissingDataWarning";
 import { CitationsList } from "../common/CitationsList";
+import ElectronicStructureSection from "./ElectronicStructureSection";
 
 // contributed sections
 // import RelatedSection from "./RelatedSection";
@@ -104,9 +105,7 @@ function DetailPage() {
   const [resultsObject, setResultsObject] = useState({});
 
   const [coreData, setCoreData] = useState(null);
-
   const [superconPhononData, setSuperconPhononData] = useState(null);
-
   const [superconSCData, setSuperconSCData] = useState();
 
   useEffect(() => {
@@ -226,6 +225,8 @@ function DetailPage() {
         <StructureSection params={params} loadedData={coreData} />
         <ProvenanceSection params={params} loadedData={coreData} />
         <XrdSection params={params} loadedData={coreData} />
+
+        <ElectronicStructureSection params={params} />
 
         <VibrationalSection
           params={params}

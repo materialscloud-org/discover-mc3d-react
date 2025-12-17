@@ -22,6 +22,7 @@ export const EXPLORE_URLS = {
   "pbe-v1": `${EXPLORE_BASE_URL}/mc3d-pbe-v1`,
   "pbesol-v1": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1`,
   "pbesol-v2": `${EXPLORE_BASE_URL}/mc3d-pbesol-v2`,
+  "pbesol-v1-fermisurf": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1-fermisurf/api/v4`,
   "pbesol-v1-supercon": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1-supercon/api/v4`,
 };
 
@@ -101,6 +102,12 @@ export async function loadXrd(method, id) {
   const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/core_xrd/${id}`;
   const result = await fetchWithFallback(primary, fallback);
   return result?.data ?? null;
+}
+
+export async function loadDhva(method, id) {
+  const primary = `${MC_REST_API_URL}/${method}/fermisurf_base/${id}`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/fermisurf_base/${id}`;
+  return fetchWithFallback(primary, fallback);
 }
 
 export async function loadSuperConDetails(method, id) {

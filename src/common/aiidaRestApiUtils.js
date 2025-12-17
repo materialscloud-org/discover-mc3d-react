@@ -21,6 +21,7 @@ export const AIIDA_API_URLS = {
   "pbe-v1": `${AIIDA_REST_BASE_URL}/mc3d-pbe-v1/api/v4`,
   "pbesol-v1": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1/api/v4`,
   "pbesol-v2": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v2/api/v4`,
+  "pbesol-v1-fermisurf": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1-fermisurf/api/v4`,
   "pbesol-v1-supercon": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1-supercon/api/v4`,
 };
 
@@ -77,7 +78,10 @@ export async function loadAiidaBands(aiidaProfile, uuid) {
 export async function loadXY(aiidaProfile, uuid) {
   // await delay(2000);
   let aiidaUrl = AIIDA_API_URLS[aiidaProfile];
+
   const endpoint = `${aiidaUrl}/nodes/${uuid}/download?download_format=json`;
+
+  console.log(endpoint);
 
   try {
     const response = await fetch(endpoint, { method: "get" });

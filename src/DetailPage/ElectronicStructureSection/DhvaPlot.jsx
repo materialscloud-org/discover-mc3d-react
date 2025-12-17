@@ -1,0 +1,160 @@
+import { useEffect, useRef, useState } from "react";
+import Plotly from "plotly.js-basic-dist-min";
+
+function getMfPathEdgeLabels(path) {
+  const parts = path.split("_");
+  if (parts.length === 2) return parts;
+  return [path, path]; // fallback if format unexpected
+}
+
+const COMMON_LAYOUT_CONFIG = {
+  // Common Y-axis settings
+  yaxis: {
+    zeroline: false,
+    showgrid: false,
+    showline: false,
+    ticks: "inside",
+    tickfont: { size: 14, color: "#333" },
+    title: {
+      font: { size: 16, color: "#333" },
+      standoff: 10,
+      text: "frequency",
+    },
+    // Do NOT set 'tickvals' or 'ticktext' here
+  },
+
+  // Common X-axis settings
+  xaxis: {
+    zeroline: false,
+    showgrid: true,
+    ticks: "inside",
+    tickfont: { size: 14, color: "#333" },
+    title: {
+      font: { size: 16, color: "#333" },
+      standoff: 10,
+      text: "Rotation",
+    },
+    // No tickvals/ticktext
+  },
+
+  // Legend defaults
+  legend: {
+    orientation: "v",
+    y: 0.985,
+    x: 0.985,
+    xanchor: "right",
+    font: { size: 14, color: "#333" },
+    bgcolor: "rgba(250, 250, 250, 1.0)",
+    bordercolor: "#ccc",
+    borderwidth: 1,
+  },
+
+  margin: { l: 65, r: 10, t: 10, b: 50 },
+
+  shapes: [
+    {
+      type: "rect",
+      xref: "paper",
+      yref: "paper",
+      x0: 0,
+      y0: 0,
+      x1: 1,
+      y1: 1,
+      line: { color: "black", width: 1.25 },
+      layer: "above",
+    },
+  ],
+};
+
+export default function DhvaPlot({ data }) {
+  const containerRef = useRef(null);
+  const [selectedMfPath, setSelectedMfPath] = useState(null);
+
+  const mfPaths = data?.skeaf_workchains?.map((wc) => wc.mf_path) ?? [];
+
+  useEffect(() => {
+    if (!data || !containerRef.current || !mfPaths.length) return;
+    if (!selectedMfPath) setSelectedMfPath(mfPaths[0]);
+  }, [data, mfPaths, selectedMfPath]);
+
+  useEffect(() => {
+    if (!selectedMfPath || !containerRef.current) return;
+
+    const wc = data.skeaf_workchains.find(
+      (wc) => wc.mf_path === selectedMfPath,
+    );
+    if (!wc) return;
+
+    const traces = wc.bands
+      .filter((band) => band.xyData?.freq)
+      .map((band) => ({
+        x: band.xyData.freq.map((_, i) => i), // discrete indices
+        y: band.xyData.freq,
+        mode: "markers",
+        name: `Band ${band.band_number}`,
+        hoverinfo: "skip",
+      }));
+
+    const [firstLabel, lastLabel] = getMfPathEdgeLabels(selectedMfPath);
+
+    const lastIndex = Math.max(...traces.map((t) => t.x[t.x.length - 1]));
+    const maxY = Math.max(...traces.flatMap((t) => t.y));
+    const yMax = maxY * 1.25; // add 20% buffer
+
+    const layout = {
+      ...COMMON_LAYOUT_CONFIG,
+      xaxis: {
+        ...COMMON_LAYOUT_CONFIG.xaxis,
+        tickfont: { size: 14, color: "#333" },
+
+        tickvals: [0, lastIndex],
+        ticktext: [firstLabel, lastLabel],
+        range: [-2, lastIndex + 2],
+      },
+      yaxis: {
+        ...COMMON_LAYOUT_CONFIG.yaxis,
+        range: [-2, yMax],
+      },
+    };
+
+    Plotly.newPlot(containerRef.current, traces, layout, { responsive: true });
+
+    return () => Plotly.purge(containerRef.current);
+  }, [selectedMfPath, data]);
+
+  if (!mfPaths.length) return null;
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: "500px" }}>
+      {/* Absolute positioned dropdown */}
+      <div
+        style={{
+          position: "absolute",
+          top: "15px",
+          left: "70px",
+          backgroundColor: "rgba(182, 22, 22, 0)",
+          padding: "4px 8px",
+          zIndex: 10,
+        }}
+      >
+        <select
+          id="mfPathSelect"
+          value={selectedMfPath}
+          onChange={(e) => setSelectedMfPath(e.target.value)}
+        >
+          {mfPaths.map((path) => {
+            const [firstLabel, lastLabel] = getMfPathEdgeLabels(path);
+            return (
+              <option key={path} value={path}>
+                {firstLabel} → {lastLabel}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+
+      {/* Plot container */}
+      <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+    </div>
+  );
+}
