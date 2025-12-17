@@ -60,7 +60,7 @@ export default function ElectronicStructureSection({ params }) {
 
       try {
         // 1. Load base DHVA metadata
-        const baseData = await loadDhva(method, id);
+        const baseData = await loadDhva("pbesol-v1", id);
 
         // 2. For each skeaf_workchain, fetch actual frequency arrays
         const enrichedWorkchains = await Promise.all(
