@@ -68,17 +68,33 @@ const COMMON_LAYOUT_CONFIG = {
 
 export default function DhvaPlot({ data }) {
   const containerRef = useRef(null);
+  const mountedRef = useRef(false);
   const [selectedMfPath, setSelectedMfPath] = useState(null);
 
   const mfPaths = data?.skeaf_workchains?.map((wc) => wc.mf_path) ?? [];
 
+  // guard against missing DOM
   useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+      if (containerRef.current) {
+        Plotly.purge(containerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!mountedRef.current) return;
     if (!data || !containerRef.current || !mfPaths.length) return;
     if (!selectedMfPath) setSelectedMfPath(mfPaths[0]);
   }, [data, mfPaths, selectedMfPath]);
 
   useEffect(() => {
-    if (!selectedMfPath || !containerRef.current) return;
+    if (!mountedRef.current) return;
+    if (!selectedMfPath) return;
+    if (!containerRef.current) return;
 
     const wc = data.skeaf_workchains.find(
       (wc) => wc.mf_path === selectedMfPath,
@@ -88,73 +104,76 @@ export default function DhvaPlot({ data }) {
     const traces = wc.bands
       .filter((band) => band.xyData?.freq)
       .map((band) => ({
-        x: band.xyData.freq.map((_, i) => i), // discrete indices
+        x: band.xyData.freq.map((_, i) => i),
         y: band.xyData.freq,
         mode: "markers",
         name: `Band ${band.band_number}`,
         hoverinfo: "skip",
       }));
 
+    if (!traces.length) return;
+
     const [firstLabel, lastLabel] = getMfPathEdgeLabels(selectedMfPath);
 
     const lastIndex = Math.max(...traces.map((t) => t.x[t.x.length - 1]));
     const maxY = Math.max(...traces.flatMap((t) => t.y));
-    const yMax = maxY * 1.25; // add 20% buffer
 
     const layout = {
       ...COMMON_LAYOUT_CONFIG,
       xaxis: {
         ...COMMON_LAYOUT_CONFIG.xaxis,
-        tickfont: { size: 14, color: "#333" },
-
         tickvals: [0, lastIndex],
         ticktext: [firstLabel, lastLabel],
         range: [-2, lastIndex + 2],
       },
       yaxis: {
         ...COMMON_LAYOUT_CONFIG.yaxis,
-        range: [-2, yMax],
+        range: [-2, maxY * 1.25],
       },
     };
 
-    Plotly.newPlot(containerRef.current, traces, layout, { responsive: true });
-
-    return () => Plotly.purge(containerRef.current);
+    Plotly.react(containerRef.current, traces, layout, {
+      responsive: true,
+      displayModeBar: false,
+    });
   }, [selectedMfPath, data]);
 
   if (!mfPaths.length) return null;
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "500px" }}>
-      {/* Absolute positioned dropdown */}
-      <div
-        style={{
-          position: "absolute",
-          top: "15px",
-          left: "70px",
-          backgroundColor: "rgba(182, 22, 22, 0)",
-          padding: "4px 8px",
-          zIndex: 10,
-        }}
-      >
-        <select
-          id="mfPathSelect"
-          value={selectedMfPath}
-          onChange={(e) => setSelectedMfPath(e.target.value)}
+    <>
+      <div className="subsection-title">De Haas-Van Alphen plots</div>
+      <div style={{ position: "relative", width: "100%", height: "500px" }}>
+        {/* Absolute positioned dropdown */}
+        <div
+          style={{
+            position: "absolute",
+            top: "15px",
+            left: "70px",
+            backgroundColor: "rgba(182, 22, 22, 0)",
+            padding: "4px 8px",
+            zIndex: 10,
+          }}
         >
-          {mfPaths.map((path) => {
-            const [firstLabel, lastLabel] = getMfPathEdgeLabels(path);
-            return (
-              <option key={path} value={path}>
-                {firstLabel} → {lastLabel}
-              </option>
-            );
-          })}
-        </select>
-      </div>
+          <select
+            id="mfPathSelect"
+            value={selectedMfPath}
+            onChange={(e) => setSelectedMfPath(e.target.value)}
+          >
+            {mfPaths.map((path) => {
+              const [firstLabel, lastLabel] = getMfPathEdgeLabels(path);
+              return (
+                <option key={path} value={path}>
+                  {firstLabel} → {lastLabel}
+                </option>
+              );
+            })}
+          </select>
+        </div>
 
-      {/* Plot container */}
-      <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
-    </div>
+        {/* Plot container */}
+        <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+      </div>
+    </>
   );
 }

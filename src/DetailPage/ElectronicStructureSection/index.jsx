@@ -3,6 +3,8 @@ import { Container, Row, Col } from "react-bootstrap";
 import FermiVisualiserReact from "./FermiSurface";
 import DhvaPlot from "./DhvaPlot";
 
+import { McloudSpinner } from "mc-react-library";
+
 import { WarningBoxOtherMethod } from "../../common/WarningBox";
 
 import { loadXY } from "../../common/aiidaRestApiUtils";
@@ -94,7 +96,14 @@ export default function ElectronicStructureSection({ params }) {
   const loading = fermiLoading || dhvaLoading;
   const error = fermiError || dhvaError;
 
-  if (loading) return <Row>Loading Fermi surface / DHVA data...</Row>;
+  if (loading)
+    return (
+      <Row>
+        <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+          <McloudSpinner />
+        </div>
+      </Row>
+    );
   if (error) return <Row>Error: {error}</Row>;
 
   console.log("Fermi surface:", fermisurfaceData);
@@ -110,14 +119,14 @@ export default function ElectronicStructureSection({ params }) {
 
       <Container fluid className="section-container">
         <Row>
-          {dhvaData && (
-            <Col md={6}>
-              <DhvaPlot data={dhvaData} />
+          {fermisurfaceData && (
+            <Col md={5}>
+              <FermiVisualiserReact data={fermisurfaceData} />
             </Col>
           )}
-          {fermisurfaceData && (
-            <Col md={6}>
-              <FermiVisualiserReact data={fermisurfaceData} />
+          {dhvaData && (
+            <Col md={7}>
+              <DhvaPlot data={dhvaData} />
             </Col>
           )}
         </Row>
