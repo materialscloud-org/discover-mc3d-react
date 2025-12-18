@@ -63,7 +63,7 @@ export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
       >
         {/* Text Align left */}
         <div style={{ flex: 1 }}>
-          <span>Cell Info</span>
+          <span>Cell info</span>
         </div>
         {/* Switch Align right */}
         <div

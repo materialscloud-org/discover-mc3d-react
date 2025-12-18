@@ -104,14 +104,19 @@ const COMMON_LAYOUT_CONFIG = {
   ],
 };
 
-export default function DhvaPlot({ data }) {
+export default function DhvaPlot({ datasets }) {
   const containerRef = useRef(null);
   const mountedRef = useRef(false);
   const [selectedMfPath, setSelectedMfPath] = useState(null);
+  const [selectedFermiShift, setSelectedFermiShift] = useState(null);
 
-  const mfPaths = data?.skeaf_workchains?.map((wc) => wc.mf_path) ?? [];
+  // Extract mfPaths from the currently selected dataset
+  const currentData =
+    datasets?.find((d) => d.fermiShift === selectedFermiShift)?.data ?? null;
 
-  // guard against missing DOM
+  const mfPaths = currentData?.skeaf_workchains?.map((wc) => wc.mf_path) ?? [];
+
+  // Guard against missing DOM
   useEffect(() => {
     mountedRef.current = true;
 
@@ -123,23 +128,31 @@ export default function DhvaPlot({ data }) {
     };
   }, []);
 
+  // Initialize selections
   useEffect(() => {
     if (!mountedRef.current) return;
-    if (!data || !containerRef.current || !mfPaths.length) return;
-    if (!selectedMfPath) setSelectedMfPath(mfPaths[0]);
-  }, [data, mfPaths, selectedMfPath]);
+    if (!datasets || !datasets.length) return;
+    if (!selectedFermiShift) setSelectedFermiShift(datasets[0].fermiShift);
+  }, [datasets, selectedFermiShift]);
 
   useEffect(() => {
     if (!mountedRef.current) return;
-    if (!selectedMfPath) return;
+    if (!currentData || !mfPaths.length) return;
+    if (!selectedMfPath) setSelectedMfPath(mfPaths[0]);
+  }, [currentData, mfPaths, selectedMfPath]);
+
+  // Update plot
+  useEffect(() => {
+    if (!mountedRef.current) return;
+    if (!selectedMfPath || !currentData) return;
     if (!containerRef.current) return;
 
-    const wc = data.skeaf_workchains.find(
+    const wc = currentData.skeaf_workchains.find(
       (wc) => wc.mf_path === selectedMfPath,
     );
     if (!wc) return;
 
-    const maxY = getMaxY(data);
+    const maxY = getMaxY(currentData);
 
     const traces = wc.bands
       .filter(
@@ -147,7 +160,6 @@ export default function DhvaPlot({ data }) {
       )
       .map((band) => {
         const { phi = [], theta = [] } = band.xyData;
-
         const x = buildDiscreteX(phi, theta);
 
         return {
@@ -162,7 +174,6 @@ export default function DhvaPlot({ data }) {
     if (!traces.length) return;
 
     const [firstLabel, lastLabel] = getMfPathEdgeLabels(selectedMfPath);
-
     const lastIndex = Math.max(...traces.map((t) => t.x[t.x.length - 1]));
 
     const layout = {
@@ -183,44 +194,73 @@ export default function DhvaPlot({ data }) {
       responsive: true,
       displayModeBar: false,
     });
-  }, [selectedMfPath, data]);
+  }, [selectedMfPath, currentData]);
 
-  if (!mfPaths.length) return null;
+  if (!datasets?.length) return null;
 
   return (
     <>
-      <div className="subsection-title">De Haas-Van Alphen plots</div>
-      <div style={{ position: "relative", width: "100%", height: "500px" }}>
-        {/* Absolute positioned dropdown */}
-        <div
-          style={{
-            position: "absolute",
-            top: "15px",
-            left: "70px",
-            backgroundColor: "rgba(182, 22, 22, 0)",
-            padding: "4px 8px",
-            zIndex: 10,
-          }}
-        >
-          <select
-            id="mfPathSelect"
-            value={selectedMfPath}
-            onChange={(e) => setSelectedMfPath(e.target.value)}
-          >
-            {mfPaths.map((path) => {
-              const [firstLabel, lastLabel] = getMfPathEdgeLabels(path);
-              return (
-                <option key={path} value={path}>
-                  {firstLabel} → {lastLabel}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "px",
+        }}
+      >
+        {/* Chart title */}
+        <div className="subsection-title">De Haas-Van Alphen effect</div>
 
-        {/* Plot container */}
-        <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+        {/* Dropdowns container */}
+        <div style={{ display: "flex", gap: "25px" }}>
+          {/* Fermi shift dropdown */}
+          <div>
+            <label htmlFor="fermiShiftSelect" style={{ marginRight: "6px" }}>
+              Fermi energy shift:
+            </label>
+            <select
+              id="fermiShiftSelect"
+              value={selectedFermiShift}
+              onChange={(e) => {
+                setSelectedFermiShift(Number(e.target.value));
+                setSelectedMfPath(null);
+              }}
+            >
+              {datasets.map((d) => (
+                <option key={d.fermiShift} value={d.fermiShift}>
+                  {`${d.fermiShift} meV`}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* MF path dropdown */}
+          {mfPaths.length > 0 && (
+            <div>
+              <label htmlFor="mfPathSelect" style={{ marginRight: "6px" }}>
+                MF path:
+              </label>
+              <select
+                id="mfPathSelect"
+                value={selectedMfPath}
+                onChange={(e) => setSelectedMfPath(e.target.value)}
+              >
+                {mfPaths.map((path) => {
+                  const [firstLabel, lastLabel] = getMfPathEdgeLabels(path);
+                  return (
+                    <option key={path} value={path}>
+                      {firstLabel} ⟶ {lastLabel}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Plot container */}
+      <div style={{ width: "100%", height: "500px" }} ref={containerRef} />
     </>
   );
 }

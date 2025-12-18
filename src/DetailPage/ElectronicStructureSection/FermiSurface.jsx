@@ -45,7 +45,7 @@ export default function FermiVisualiserReact({
 
   return (
     <>
-      <div className="subsection-title">Fermisurface Plot</div>
+      <div className="subsection-title">Fermi surface</div>
 
       <div
         style={{
@@ -53,7 +53,7 @@ export default function FermiVisualiserReact({
           width: `${size}px`,
           aspectRatio: "1 / 1",
           border: "1px solid #888",
-          borderRadius: "8px",
+          borderRadius: "4px",
           overflow: "hidden",
         }}
       >

@@ -111,7 +111,7 @@ export default function ElectronicStructureSection({ params }) {
 
   return (
     <div>
-      <div className="section-heading">Electronic Structure</div>
+      <div className="section-heading">Electronic structure</div>
 
       {method !== fermiMethod && (
         <WarningBoxOtherMethod method={fermiMethod} id={id} />
@@ -126,7 +126,7 @@ export default function ElectronicStructureSection({ params }) {
           )}
           {dhvaData && (
             <Col md={7}>
-              <DhvaPlot data={dhvaData} />
+              <DhvaPlot datasets={[{ data: dhvaData, fermiShift: 0 }]} />
             </Col>
           )}
         </Row>

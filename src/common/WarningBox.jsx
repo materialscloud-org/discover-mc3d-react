@@ -17,7 +17,7 @@ export const WarningBoxOtherMethod = ({ method, id }) => {
   return (
     <div
       className="alert alert-warning"
-      style={{ margin: "10px 10px 5px 10px" }}
+      style={{ margin: "10px 10px 20px 10px" }}
       role="alert"
     >
       Warning: This section has been calculated starting from the structure in
