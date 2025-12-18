@@ -81,8 +81,6 @@ export async function loadXY(aiidaProfile, uuid) {
 
   const endpoint = `${aiidaUrl}/nodes/${uuid}/download?download_format=json`;
 
-  console.log(endpoint);
-
   try {
     const response = await fetch(endpoint, { method: "get" });
     const json = await response.json();
