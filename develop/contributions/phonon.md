@@ -31,6 +31,8 @@ In summary, the global workflow is:
 
 Other details:
 
+- We consider the material as computationally stable if the minimal phonon freqency $\omega^{\textrm{min}}$ from `MatdynBaseWorkChain` is above -1 meV.
+
 - Following convention $\omega^{\textrm{max}}$ refers to the maximum phonon frequency computed with density functional perturbation theory (DFPT).
 
 ---
