@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import FermiVisualiserReact from "./FermiSurface";
 import DhvaPlot from "./DhvaPlot";
+
+import { buildBandColorMap } from "./getColor";
 
 import { McloudSpinner } from "mc-react-library";
 
@@ -96,6 +98,12 @@ export default function ElectronicStructureSection({ params }) {
   const loading = fermiLoading || dhvaLoading;
   const error = fermiError || dhvaError;
 
+  // Compute shared color map once both datasets are loaded
+  const bandColorMap = useMemo(() => {
+    if (!dhvaData || !fermisurfaceData) return {};
+    return buildBandColorMap(dhvaData, fermisurfaceData);
+  }, [dhvaData, fermisurfaceData]);
+
   if (loading)
     return (
       <Row>
@@ -105,9 +113,6 @@ export default function ElectronicStructureSection({ params }) {
       </Row>
     );
   if (error) return <Row></Row>;
-
-  console.log("Fermi surface:", fermisurfaceData);
-  console.log("DHVA data:", dhvaData);
 
   return (
     <div>
@@ -121,12 +126,18 @@ export default function ElectronicStructureSection({ params }) {
         <Row>
           {fermisurfaceData && (
             <Col md={5}>
-              <FermiVisualiserReact data={fermisurfaceData} />
+              <FermiVisualiserReact
+                data={fermisurfaceData}
+                bandColorMap={bandColorMap} // pass the shared color map
+              />
             </Col>
           )}
           {dhvaData && (
             <Col md={7}>
-              <DhvaPlot datasets={[{ data: dhvaData, fermiShift: 0 }]} />
+              <DhvaPlot
+                datasets={[{ data: dhvaData, fermiShift: 0 }]}
+                bandColorMap={bandColorMap} // same map here
+              />
             </Col>
           )}
         </Row>

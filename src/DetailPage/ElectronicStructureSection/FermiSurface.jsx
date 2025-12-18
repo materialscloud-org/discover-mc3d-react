@@ -9,6 +9,7 @@ export default function FermiVisualiserReact({
   loading = false,
   spinnerScale = 15,
   size = 500,
+  bandColorMap,
 }) {
   const containerRef = useRef(null);
   const visRef = useRef(null);
@@ -28,7 +29,9 @@ export default function FermiVisualiserReact({
   useEffect(() => {
     if (loading || !containerRef.current || !data) return;
 
-    visRef.current = new FermiVisualiser(containerRef.current, data);
+    visRef.current = new FermiVisualiser(containerRef.current, data, {
+      colorPalette: Object.values(bandColorMap),
+    });
     visRef.current.update(baseEf);
 
     return () => {
@@ -51,7 +54,7 @@ export default function FermiVisualiserReact({
         style={{
           position: "relative",
           width: `${size}px`,
-          aspectRatio: "1 / 1",
+          aspectRatio: "1/1",
           border: "1px solid #888",
           borderRadius: "4px",
           overflow: "hidden",
@@ -96,21 +99,6 @@ export default function FermiVisualiserReact({
             onChange={(e) => setFermiLevel(parseFloat(e.target.value))}
           />
         </div>
-
-        {loading && (
-          <div
-            style={{
-              width: `${spinnerScale}%`,
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 20,
-            }}
-          >
-            <McloudSpinner />
-          </div>
-        )}
       </div>
     </>
   );

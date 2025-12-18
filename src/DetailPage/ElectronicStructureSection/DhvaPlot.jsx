@@ -104,7 +104,7 @@ const COMMON_LAYOUT_CONFIG = {
   ],
 };
 
-export default function DhvaPlot({ datasets }) {
+export default function DhvaPlot({ datasets, bandColorMap }) {
   const containerRef = useRef(null);
   const mountedRef = useRef(false);
   const [selectedMfPath, setSelectedMfPath] = useState(null);
@@ -159,15 +159,15 @@ export default function DhvaPlot({ datasets }) {
         (band) => band.xyData?.freq && (band.xyData?.phi || band.xyData?.theta),
       )
       .map((band) => {
-        const { phi = [], theta = [] } = band.xyData;
-        const x = buildDiscreteX(phi, theta);
-
+        const x = buildDiscreteX(band.xyData.phi, band.xyData.theta);
+        const color = bandColorMap[band.band_number];
         return {
           x,
           y: band.xyData.freq,
           mode: "markers",
           name: `Band ${band.band_number}`,
           hoverinfo: "skip",
+          marker: { color },
         };
       });
 
@@ -228,7 +228,7 @@ export default function DhvaPlot({ datasets }) {
             >
               {datasets.map((d) => (
                 <option key={d.fermiShift} value={d.fermiShift}>
-                  {`${d.fermiShift} meV`}
+                  {d.fermiShift} meV
                 </option>
               ))}
             </select>
