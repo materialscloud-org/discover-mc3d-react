@@ -68,7 +68,7 @@ export default function FermiVisualiserReact({
             left: "10px",
             padding: "2px",
             zIndex: 10,
-            width: "140px",
+            width: "220px",
           }}
         >
           <div
@@ -81,7 +81,7 @@ export default function FermiVisualiserReact({
             }}
           >
             <span>
-              shift: <b>{(fermiLevel - baseEf).toFixed(2)}</b>
+              Fermi level shift: <b>{(fermiLevel - baseEf).toFixed(2)} eV</b>
             </span>
             <Button size="sm" onClick={() => setFermiLevel(baseEf)}>
               reset

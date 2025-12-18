@@ -7,6 +7,44 @@ function getMfPathEdgeLabels(path) {
   return [path, path]; // fallback if format unexpected
 }
 
+function buildDiscreteX(phi = [], theta = []) {
+  let step = -1;
+  let lastKey = null;
+
+  return phi.map((p, i) => {
+    const t = theta?.[i] ?? null;
+    const key = `${p}|${t}`;
+
+    if (key !== lastKey) {
+      step += 1;
+      lastKey = key;
+    }
+
+    return step;
+  });
+}
+
+function getMaxY(data) {
+  if (!data?.skeaf_workchains) return 0;
+
+  let maxY = -Infinity;
+
+  for (const wc of data.skeaf_workchains) {
+    for (const band of wc.bands ?? []) {
+      const freq = band.xyData?.freq;
+      if (!Array.isArray(freq)) continue;
+
+      for (const v of freq) {
+        if (typeof v === "number" && v > maxY) {
+          maxY = v;
+        }
+      }
+    }
+  }
+
+  return maxY === -Infinity ? 0 : maxY;
+}
+
 const COMMON_LAYOUT_CONFIG = {
   // Common Y-axis settings
   yaxis: {
@@ -18,7 +56,7 @@ const COMMON_LAYOUT_CONFIG = {
     title: {
       font: { size: 16, color: "#333" },
       standoff: 10,
-      text: "frequency",
+      text: "frequency kT",
     },
     // Do NOT set 'tickvals' or 'ticktext' here
   },
@@ -101,22 +139,31 @@ export default function DhvaPlot({ data }) {
     );
     if (!wc) return;
 
+    const maxY = getMaxY(data);
+
     const traces = wc.bands
-      .filter((band) => band.xyData?.freq)
-      .map((band) => ({
-        x: band.xyData.freq.map((_, i) => i),
-        y: band.xyData.freq,
-        mode: "markers",
-        name: `Band ${band.band_number}`,
-        hoverinfo: "skip",
-      }));
+      .filter(
+        (band) => band.xyData?.freq && (band.xyData?.phi || band.xyData?.theta),
+      )
+      .map((band) => {
+        const { phi = [], theta = [] } = band.xyData;
+
+        const x = buildDiscreteX(phi, theta);
+
+        return {
+          x,
+          y: band.xyData.freq,
+          mode: "markers",
+          name: `Band ${band.band_number}`,
+          hoverinfo: "skip",
+        };
+      });
 
     if (!traces.length) return;
 
     const [firstLabel, lastLabel] = getMfPathEdgeLabels(selectedMfPath);
 
     const lastIndex = Math.max(...traces.map((t) => t.x[t.x.length - 1]));
-    const maxY = Math.max(...traces.flatMap((t) => t.y));
 
     const layout = {
       ...COMMON_LAYOUT_CONFIG,
