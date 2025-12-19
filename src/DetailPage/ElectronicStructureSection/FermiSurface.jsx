@@ -8,7 +8,6 @@ export default function FermiVisualiserReact({
   data,
   loading = false,
   spinnerScale = 15,
-  size = 500,
   bandColorMap,
 }) {
   const containerRef = useRef(null);
@@ -53,11 +52,10 @@ export default function FermiVisualiserReact({
       <div
         style={{
           position: "relative",
-          width: `${size}px`,
-          aspectRatio: "1/1",
+          width: "100%",
+          aspectRatio: "1 / 1",
           border: "1px solid #888",
           borderRadius: "4px",
-          overflow: "hidden",
         }}
       >
         {/* Plot */}

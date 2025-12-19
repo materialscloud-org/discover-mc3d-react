@@ -128,7 +128,7 @@ export default function ElectronicStructureSection({ params }) {
             <Col md={5}>
               <FermiVisualiserReact
                 data={fermisurfaceData}
-                bandColorMap={bandColorMap} // pass the shared color map
+                bandColorMap={bandColorMap}
               />
             </Col>
           )}
@@ -136,7 +136,7 @@ export default function ElectronicStructureSection({ params }) {
             <Col md={7}>
               <DhvaPlot
                 datasets={[{ data: dhvaData, fermiShift: 0 }]}
-                bandColorMap={bandColorMap} // same map here
+                bandColorMap={bandColorMap}
               />
             </Col>
           )}

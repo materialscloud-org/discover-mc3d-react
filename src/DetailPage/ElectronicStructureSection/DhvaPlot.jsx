@@ -167,7 +167,7 @@ export default function DhvaPlot({ datasets, bandColorMap }) {
           mode: "markers",
           name: `Band ${band.band_number}`,
           hoverinfo: "skip",
-          marker: { color },
+          marker: { color, size: 4 },
         };
       });
 
